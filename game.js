@@ -817,6 +817,8 @@ function beginGame(){
   }, 1000);
 
   spawnNextBug();
+  btnAbort.disabled = false;
+
 }
 
 /* buttons in end overlay */
@@ -885,3 +887,5 @@ function abortGame() {
 
   btnAbort.disabled = true;
 }
+
+btnAbort.addEventListener("click", abortGame);
