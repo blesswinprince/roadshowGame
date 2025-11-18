@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CI/CD Defense Arcade</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>
+      <span class="title-main">CI/CD</span>
+      <span class="title-sub">Defense Arcade</span>
+    </h1>
+    <div class="controls">
+      <div class="pill pill-player">
+        <span class="pill-label">Player</span>
+        <span id="playerName" class="pill-value">—</span>
+      </div>
+      <div class="pill pill-score">
+        <span class="pill-label">Score</span>
+        <span id="score" class="pill-value">0</span>
+      </div>
+      <div class="pill pill-combo">
+        <span class="pill-label">Combo</span>
+        <span id="combo" class="pill-value">0</span>
+      </div>
+      <button id="btnStart" class="btn-primary">▶ Start</button>
+      <button id="btnLB" class="btn-secondary">🏆 Leaderboard</button>
+      <button id="btnTutorial" class="btn-secondary">❓ Tutorial</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="hud">
+      <div class="hud-chip">
+        <span class="hud-label">Mode</span>
+        <span class="hud-value">Classic (single)</span>
+      </div>
+      <div class="hud-chip">
+        <span class="hud-label">Upcoming</span>
+        <span class="hud-value" id="upcoming">—</span>
+      </div>
+      <div class="hud-chip">
+        <span class="hud-label">Remaining</span>
+        <span class="hud-value" id="remaining">—</span>
+      </div>
+      <div class="hud-chip">
+        <span class="hud-label">Speed</span>
+        <span class="hud-value" id="speedLbl">1.00x</span>
+      </div>
+      <div class="hud-chip hud-chip-timer">
+        <span class="hud-label">Time</span>
+        <span class="hud-value" id="timer">90</span><span class="hud-unit">s</span>
+      </div>
+    </div>
+
+    <div class="game-area" id="gameArea">
+      <div class="grid"></div>
+      <div class="wave-banner" id="banner">Ready</div>
+      <div class="lanes" id="lanes"></div>
+
+      <div class="prod-column healthy" id="prodCol">
+        <div class="prod-crack" id="prodCrack"></div>
+        <div class="prod-icon">⚙️</div>
+        <div class="prod-label">PROD</div>
+        <div class="health" title="Production Stability">
+          <div id="healthInner" class="health-inner"></div>
+        </div>
+      </div>
+
+      <!-- End-of-game overlay -->
+      <div id="endOverlay" class="end-overlay" style="display:none">
+        <div class="end-card">
+          <div id="endTitle" class="end-title">Time Up!</div>
+          <div id="endScore" class="end-score">Score: 0</div>
+          <div id="endRank" class="end-rank"></div>
+          <div class="end-actions">
+            <button id="endBtnPlay">Play Again</button>
+            <button id="endBtnLB">View Leaderboard</button>
+            <button id="endBtnNew">New Game</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Start-of-game overlay (kids game effect + name input) -->
+      <div id="startOverlay" class="end-overlay" style="display:flex">
+        <div class="end-card">
+          <div id="startTitle" class="end-title timeup">
+            CI/CD Defense Arcade
+          </div>
+          <div id="startSubtitle" class="end-score">
+            Defend PROD from sneaky CI/CD bugs!
+          </div>
+
+          <input id="playerNameInput"
+                 type="text"
+                 class="name-input"
+                 placeholder="Type your hero name here" />
+
+          <div class="end-rank">
+            Drag UNIT / CONTRACT / INTEGRATION gates onto builds to stop bugs early.
+          </div>
+          <div class="end-actions">
+            <button id="startOverlayBtn" disabled>Start Game ▶</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gate bar -->
+    <div class="gate-bar" id="gateBar">
+      <div class="gate-btn blue" draggable="true" data-type="unit">UNIT TEST</div>
+      <div class="gate-btn green" draggable="true" data-type="contract">CONTRACT TEST</div>
+      <div class="gate-btn orange" draggable="true" data-type="integration">INTEGRATION</div>
+    </div>
+
+    <!-- Hidden leaderboard & controls (used only by JS) -->
+    <div style="display:flex;gap:12px;align-items:flex-start">
+      <div id="lbPanel" style="flex:1;display:none">
+        <div class="muted">Leaderboard</div>
+        <div class="lb" id="lb"></div>
+      </div>
+
+      <div id="controlsPanel"
+           style="width:260px;margin-left:auto;display:none">
+        <div class="muted">Controls</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <button id="spawnBtn">Spawn Next Bug</button>
+          <button id="resetBtn">Reset Session</button>
+          <button id="clearLb">Clear Scores</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer-tip">
+    💡 Tip:
+    Drag a gate up from the bottom bar and drop it onto a lane.
+    Correct gate blocks the bug for <b>+50 to +250 points</b> (earlier in the pipeline = more points).
+    Wrong gate pauses the bug 0.5s and costs −100.
+    Bug reaching PROD costs −500 and damages production. 5 hits = full PROD meltdown.
+  </footer>
+</div>
+
+<!-- Modal (for tutorial + leaderboard) -->
+<div id="modal" class="modal-root" style="display:none">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
