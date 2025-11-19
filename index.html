@@ -4,11 +4,7 @@
   <meta charset="UTF-8" />
   <title>Defense Arcade – Bug Gate Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Your main CSS -->
-  <link rel="stylesheet" href="style.css" />
-
-  <!-- Game JS -->
+  <link rel="stylesheet" href="styles.css" />
   <script defer src="game.js"></script>
 </head>
 <body>
@@ -39,7 +35,7 @@
 
     <!-- Main layout -->
     <main class="main-layout">
-      <!-- Left panel: stats + mini leaderboard + gates -->
+      <!-- Left side: HUD + gates + mini LB -->
       <section class="left-panel">
         <div class="panel panel-status">
           <div id="banner" class="banner">Ready</div>
@@ -76,7 +72,6 @@
           </div>
         </div>
 
-        <!-- Gates -->
         <div class="panel panel-gates">
           <div class="panel-heading">Drag a Gate</div>
           <div class="gate-row">
@@ -87,7 +82,6 @@
           <div class="hint">Drag & drop onto a lane to block the bug.</div>
         </div>
 
-        <!-- Mini leaderboard -->
         <div class="panel panel-leaderboard">
           <div class="panel-heading">Top Scores</div>
           <div id="lb" class="lb-mini">
@@ -95,7 +89,6 @@
           </div>
         </div>
 
-        <!-- Dev / admin controls (optional, can hide via CSS) -->
         <div class="panel panel-dev">
           <div class="panel-heading">Admin / Debug</div>
           <div class="dev-buttons">
@@ -165,4 +158,3 @@
   </div>
 </body>
 </html>
-
