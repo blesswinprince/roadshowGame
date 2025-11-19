@@ -298,62 +298,88 @@ btnTutorial.addEventListener('click', ()=>{
 });
 
 /* Fancy leaderboard modal – now from Firebase */
-btnLB.addEventListener('click', async ()=>{
-    window._lbMode = window._lbMode || 'global';  // <-- NEW FIX LINE
+btnLB.addEventListener('click', async () => {
 
-  const mode = window._lbMode;
+  // Always set a mode if none exists
+  if (!window._lbMode) window._lbMode = "global";
+
+  // Load both score lists
   const globalRows = await fetchLeaderboardFromFirebase();
-  const localRows  = loadLocalScores();
+  const localRows = loadLocalScores();
 
-  function renderGlobal(){
-    return renderTable(globalRows, true);
-  }
-  function renderLocal(){
-    return renderTable(localRows, false);
-  }
-
-  function renderTable(rows, isGlobal){
-    if(!rows.length){
-      return `<p>${isGlobal?'No global scores.':'No local scores yet on this device.'}</p>`;
+  // Render table rows
+  function renderTable(rows, isGlobal) {
+    if (!rows.length) {
+      return `
+        <p style="opacity:.8;margin-top:10px">
+          ${isGlobal ? "No global scores yet." : "No local scores stored on this device."}
+        </p>`;
     }
+
     return `
       <table class="lb-table">
-        <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Score</th></tr></thead>
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th>Player</th>
+            <th style="text-align:right">Score</th>
+          </tr>
+        </thead>
         <tbody>
-        ${
-          rows.map((r,i)=>`
+          ${rows.map((r, i) => `
             <tr class="lb-row">
-              <td>${i+1}</td>
+              <td>${i + 1}</td>
               <td>${r.name}</td>
               <td style="text-align:right">${r.score}</td>
             </tr>
-          `).join('')
-        }
+          `).join("")}
         </tbody>
-      </table>`;
+      </table>
+    `;
   }
 
-  const html = `
-    <h2>🏆 Leaderboard</h2>
+  // Build the modal HTML
+  function buildHTML(mode) {
+    return `
+      <h2>🏆 Leaderboard</h2>
 
-    <div style="display:flex;gap:10px;margin-bottom:10px">
-      <button onclick="window._lbMode='global'; document.getElementById('modalContent').innerHTML = window._renderLB()" class="btn-secondary">🌐 Global</button>
-      <button onclick="window._lbMode='local';  document.getElementById('modalContent').innerHTML = window._renderLB()" class="btn-secondary">💾 My Scores</button>
-    </div>
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        <button class="btn-secondary" 
+                style="border:${mode==='global'?'2px solid #6ef6ff':''}" 
+                onclick="window._lbMode='global'; document.getElementById('lbContent').innerHTML = window._renderLBBody()">
+          🌐 Global
+        </button>
 
-    <div id="lbContent">
-      ${ mode==='global' ? renderGlobal() : renderLocal() }
-    </div>
+        <button class="btn-secondary" 
+                style="border:${mode==='local'?'2px solid #6ef6ff':''}" 
+                onclick="window._lbMode='local'; document.getElementById('lbContent').innerHTML = window._renderLBBody()">
+          💾 My Scores
+        </button>
+      </div>
 
-    <div style="text-align:right;margin-top:12px">
-      <button onclick="hideModal()">Close</button>
-    </div>
-  `;
+      <div id="lbContent">
+        ${mode === "global" ? renderTable(globalRows, true) : renderTable(localRows, false)}
+      </div>
 
-  window._renderLB = ()=> html;
+      <div style="text-align:right;margin-top:16px">
+        <button onclick="hideModal()">Close</button>
+      </div>
+    `;
+  }
+
+  // Body-only render function for switching tabs
+  window._renderLBBody = () => {
+    return window._lbMode === "global"
+      ? renderTable(globalRows, true)
+      : renderTable(localRows, false);
+  };
+
+  // Full modal content
+  const html = buildHTML(window._lbMode);
 
   showModal(html);
 });
+
 
 /* Clear leaderboard – deletes /scores in Firebase */
 clearLbBtn.addEventListener('click', async ()=>{
@@ -905,4 +931,5 @@ function saveLocalScore(name, score, timestamp){
 function loadLocalScores(){
   return JSON.parse(localStorage.getItem("localScores") || "[]");
 }
+
 
