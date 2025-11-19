@@ -299,57 +299,58 @@ btnTutorial.addEventListener('click', ()=>{
 
 /* Fancy leaderboard modal – now from Firebase */
 btnLB.addEventListener('click', async ()=>{
-  const rows = await fetchLeaderboardFromFirebase();
-  let body = '';
+  const mode = window._lbMode || 'global';
+  const globalRows = await fetchLeaderboardFromFirebase();
+  const localRows  = loadLocalScores();
 
-  if(!rows.length){
-    body = '<p>No scores yet. Play a round to become the first champion! 🏆</p>';
-  } else {
-    body = `
-      <table class="lb-table">
-        <thead>
-          <tr>
-            <th style="width:36px">#</th>
-            <th>Player</th>
-            <th style="text-align:right">Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${
-            rows.map((r,idx)=>{
-              let medal = '';
-              if(idx===0) medal = '🥇';
-              else if(idx===1) medal = '🥈';
-              else if(idx===2) medal = '🥉';
-
-              const meClass = (state.player && r.name === state.player) ? ' me' : '';
-              const topClass = idx===0 ? ' top1' : idx===1 ? ' top2' : idx===2 ? ' top3' : '';
-              return `
-                <tr class="lb-row${meClass}${topClass}">
-                  <td class="lb-medal">${medal || (idx+1)}</td>
-                  <td>${r.name}</td>
-                  <td style="text-align:right">${r.score}</td>
-                </tr>
-              `;
-            }).join('')
-          }
-        </tbody>
-      </table>
-    `;
+  function renderGlobal(){
+    return renderTable(globalRows, true);
+  }
+  function renderLocal(){
+    return renderTable(localRows, false);
   }
 
-  const playerLine = state.player
-    ? `<p style="margin-top:10px;font-size:13px;opacity:0.85">You are playing as <b>${state.player}</b>. Try to beat the top score!</p>`
-    : '';
+  function renderTable(rows, isGlobal){
+    if(!rows.length){
+      return `<p>${isGlobal?'No global scores.':'No local scores yet on this device.'}</p>`;
+    }
+    return `
+      <table class="lb-table">
+        <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Score</th></tr></thead>
+        <tbody>
+        ${
+          rows.map((r,i)=>`
+            <tr class="lb-row">
+              <td>${i+1}</td>
+              <td>${r.name}</td>
+              <td style="text-align:right">${r.score}</td>
+            </tr>
+          `).join('')
+        }
+        </tbody>
+      </table>`;
+  }
 
-  showModal(`
+  const html = `
     <h2>🏆 Leaderboard</h2>
-    ${body}
-    ${playerLine}
+
+    <div style="display:flex;gap:10px;margin-bottom:10px">
+      <button onclick="window._lbMode='global'; document.getElementById('modalContent').innerHTML = window._renderLB()" class="btn-secondary">🌐 Global</button>
+      <button onclick="window._lbMode='local';  document.getElementById('modalContent').innerHTML = window._renderLB()" class="btn-secondary">💾 My Scores</button>
+    </div>
+
+    <div id="lbContent">
+      ${ mode==='global' ? renderGlobal() : renderLocal() }
+    </div>
+
     <div style="text-align:right;margin-top:12px">
       <button onclick="hideModal()">Close</button>
     </div>
-  `);
+  `;
+
+  window._renderLB = ()=> html;
+
+  showModal(html);
 });
 
 /* Clear leaderboard – deletes /scores in Firebase */
@@ -791,6 +792,7 @@ async function endGame(reason){
   }catch(e){
     console.error('Error updating Firebase leaderboard', e);
   }
+  saveLocalScore(state.player, state.score, stamp);
 
   showEndOverlay(reason, rank);
   renderLB();
@@ -889,3 +891,15 @@ function abortGame() {
 }
 
 btnAbort.addEventListener("click", abortGame);
+
+function saveLocalScore(name, score, timestamp){
+  let list = JSON.parse(localStorage.getItem("localScores") || "[]");
+  list.push({ name, score, timestamp });
+  list.sort((a,b)=>b.score - a.score);
+  list = list.slice(0, 500); // keep last 50
+  localStorage.setItem("localScores", JSON.stringify(list));
+}
+
+function loadLocalScores(){
+  return JSON.parse(localStorage.getItem("localScores") || "[]");
+}
