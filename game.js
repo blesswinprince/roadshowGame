@@ -433,14 +433,11 @@ btnTutorial.addEventListener('click', () => {
   `);
 });
 
-/* Leaderboard modal – now with Global / My Scores tabs */
 btnLB.addEventListener('click', async () => {
   const globalRows = await fetchLeaderboardFromFirebase();
-  const allLocal = loadLocalScores();
-  const myLocal = state.player
-    ? allLocal.filter((r) => r.name === state.player)
-    : [];
+  const localRows  = loadLocalScores();   // ⬅ all local scores on this device
 
+  /* ---------- Global scores table ---------- */
   let globalBody = '';
   if (!globalRows.length) {
     globalBody =
@@ -487,24 +484,24 @@ btnLB.addEventListener('click', async () => {
     `;
   }
 
+  /* ---------- My Scores (local device) ---------- */
   let myBody = '';
-  if (!state.player) {
+  if (!localRows.length) {
     myBody =
-      '<p style="padding:8px 0">Enter a player name and finish a game to see your scores on this device.</p>';
-  } else if (!myLocal.length) {
-    myBody = `<p style="padding:8px 0">No scores stored locally yet for <b>${state.player}</b>. Finish a game to record your first score.</p>`;
+      '<p style="padding:8px 0">No scores stored yet on this device. Finish a game to record your first score.</p>';
   } else {
     myBody = `
       <table class="lb-table">
         <thead>
           <tr>
             <th style="width:36px">#</th>
-            <th style="text-align:left">Score</th>
+            <th>Player</th>
+            <th style="text-align:right">Score</th>
             <th style="text-align:right">When</th>
           </tr>
         </thead>
         <tbody>
-          ${myLocal
+          ${localRows
             .map((r, idx) => {
               const d = new Date(r.timestamp);
               const when = isNaN(d.getTime())
@@ -515,10 +512,15 @@ btnLB.addEventListener('click', async () => {
                     hour: '2-digit',
                     minute: '2-digit'
                   });
+
+              const meClass =
+                state.player && r.name === state.player ? ' me' : '';
+
               return `
-                <tr class="lb-row">
+                <tr class="lb-row${meClass}">
                   <td class="lb-medal">${idx + 1}</td>
-                  <td>${r.score}</td>
+                  <td>${r.name || 'Anon'}</td>
+                  <td style="text-align:right">${r.score}</td>
                   <td style="text-align:right;opacity:.85">${when}</td>
                 </tr>
               `;
@@ -530,14 +532,27 @@ btnLB.addEventListener('click', async () => {
   }
 
   const playerLine = state.player
-    ? `<p style="margin-top:10px;font-size:13px;opacity:0.85">You are playing as <b>${state.player}</b>.</p>`
-    : '';
+    ? `<p style="margin-top:10px;font-size:13px;opacity:0.85">
+         You are playing as <b>${state.player}</b>. 
+         “My Scores” shows all scores stored on this device.
+       </p>`
+    : `<p style="margin-top:10px;font-size:13px;opacity:0.85">
+         “My Scores” shows all scores stored on this device.
+       </p>`;
 
   showModal(`
     <h2>🏆 Scores</h2>
-    <div class="lb-tabs" style="display:flex;gap:6px;margin-bottom:10px;">
-      <button id="lbTabGlobal" class="lb-tab lb-tab-active" onclick="_showLbTab('global')" style="flex:1;">Global</button>
-      <button id="lbTabMine" class="lb-tab" onclick="_showLbTab('mine')" style="flex:1;">My Scores</button>
+    <div class="lb-tabs">
+      <button id="lbTabGlobal"
+              class="lb-tab lb-tab-active"
+              onclick="_showLbTab('global')">
+        Global
+      </button>
+      <button id="lbTabMine"
+              class="lb-tab"
+              onclick="_showLbTab('mine')">
+        My Scores
+      </button>
     </div>
 
     <div id="lbGlobalPanel" class="lb-panel">
@@ -1134,3 +1149,4 @@ function abortGame() {
 }
 
 btnAbort.addEventListener('click', abortGame);
+
