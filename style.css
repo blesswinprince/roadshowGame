@@ -815,3 +815,123 @@ button:active{
 }
 
 
+
+/* Tabs for Global / My Scores */
+.lb-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 4px;
+  margin-bottom: 12px;
+  background: radial-gradient(circle at top, rgba(255,255,255,0.06), rgba(0,0,0,0.6));
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.lb-tab {
+  flex: 1;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+  transition:
+    background 0.18s ease-out,
+    color 0.18s ease-out,
+    box-shadow 0.18s ease-out,
+    transform 0.1s ease-out;
+}
+
+.lb-tab:hover {
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14);
+  transform: translateY(-1px);
+}
+
+.lb-tab-active {
+  background: linear-gradient(135deg, #1a7cff, #24d3ff);
+  color: #ffffff;
+  box-shadow:
+    0 0 12px rgba(36, 211, 255, 0.55),
+    inset 0 0 0 1px rgba(0,0,0,0.4);
+}
+
+/* Score + muted timestamp under it */
+.lb-score-main {
+  font-weight: 600;
+}
+
+.lb-score-when {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+/* Highlight rows that match a locally stored Firebase id */
+.lb-row.my-global {
+  background: linear-gradient(90deg, rgba(36,211,255,0.12), rgba(0,0,0,0));
+}
+
+.lb-row.my-global .lb-score-main {
+  color: #24d3ff;
+}
+
+.lb-row.my-global .lb-medal {
+  color: #24d3ff;
+}
+
+/* Basic modal and overlay (if you don't already have) */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  background: rgba(0,0,0,0.55);
+  z-index: 100;
+}
+
+.overlay-card {
+  background: rgba(10, 14, 30, 0.96);
+  border-radius: 18px;
+  padding: 20px 22px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 0 28px rgba(0,0,0,0.7);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 120;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+}
+
+.modal-window {
+  position: relative;
+  background: rgba(10,14,30,0.97);
+  border-radius: 18px;
+  padding: 20px 22px;
+  max-width: 540px;
+  width: 100%;
+  box-shadow: 0 0 28px rgba(0,0,0,0.7);
+}
+
+.modal-content {
+  max-height: 70vh;
+  overflow: auto;
+}
