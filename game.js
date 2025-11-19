@@ -112,6 +112,7 @@ const clearLbBtn     = document.getElementById('clearLb');
 const btnStart       = document.getElementById('btnStart');
 const btnLB          = document.getElementById('btnLB');
 const btnTutorial    = document.getElementById('btnTutorial');
+const btnAbort       = document.getElementById('btnAbort');
 const prodCol        = document.getElementById('prodCol');
 
 const endOverlay     = document.getElementById('endOverlay');
@@ -236,14 +237,22 @@ function updateProdDamageVisual(){
   }
 }
 
-function flashBanner(text, ms=900){
+/* Modified: allow optional "no revert" so we don't overwrite the new incoming bug text after combos */
+function flashBanner(text, ms=900, revert=true){
   const old = banner.textContent;
   banner.textContent = text;
   banner.style.animation = 'pop 0.4s ease-out';
-  setTimeout(()=>{
-    banner.textContent = old;
-    banner.style.animation = '';
-  }, ms);
+
+  if (revert) {
+    setTimeout(()=>{
+      banner.textContent = old;
+      banner.style.animation = '';
+    }, ms);
+  } else {
+    setTimeout(()=>{
+      banner.style.animation = '';
+    }, ms);
+  }
 }
 
 /* Floating score text */
@@ -551,7 +560,8 @@ function handleGateHit(bug, gate){
     if(state.combo>0 && state.combo % CONFIG.scoring.comboSize === 0){
       state.score += CONFIG.scoring.comboBonus;
       showFloatingText(`+${CONFIG.scoring.comboBonus}`, gx + 10, gy - 26, '#ffd36b');
-      flashBanner(`Combo! +${CONFIG.scoring.comboBonus}`);
+      // IMPORTANT: do not revert to old text or it will show previous bug name
+      flashBanner(`Combo! +${CONFIG.scoring.comboBonus}`, 900, false);
     }
 
     bug.active = false;
