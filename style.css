@@ -747,3 +747,72 @@ button:active{
   .title-main{font-size:22px;}
   .gate-bar{flex-wrap:wrap;}
 }
+
+@media (max-width: 520px) {
+  body {
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+  }
+
+  .wrap {
+    margin: 0;
+    padding: 8px;
+    border-radius: 0;
+  }
+
+  header {
+    gap: 6px;
+  }
+
+  .controls {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .game-area {
+    padding: 8px;
+    min-height: 420px;
+  }
+
+  .lanes {
+    margin: 40px 0 20px 0;
+    gap: 6px;
+  }
+
+  .lane {
+    border-width: 1px;
+    min-height: 36px;
+  }
+
+  .prod-column {
+    position: static;
+    width: 100%;
+    margin-top: 12px;
+  }
+
+  .gate-bar {
+    flex-direction: column;
+  }
+
+  .gate-btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .wave-banner {
+    font-size: 11px;
+  }
+
+  .bug {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+}
+.gate-btn {
+  touch-action: none;
+}
+
+.lane {
+  touch-action: none;
+}
