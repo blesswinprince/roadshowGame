@@ -882,45 +882,45 @@
     addPro(mode,"TEST sees one clean build for this PR – no firefighting.");
     await delay(2200);
   }
+async function playComparison(withIntro){
+  const token = ++storyToken;
+  resetPR();
 
-  async function playComparison(withIntro){
-    const token = ++storyToken;
-    resetPR();
-
-    resetPipeline("as-is");
-    buildSteps("as-is");
-    resetPipeline("to-be");
-    buildSteps("to-be");
-
-    if(withIntro){
-      await delay(10);
-      if(token !== storyToken) return;
-    }
-
-    await Promise.all([
-      runAsIs(token),
-      runToBe(token)
-    ]);
+  // Optional tiny intro delay for first loop
+  if(withIntro){
+    await delay(10);
     if(token !== storyToken) return;
-
-    prPill.className = "pr-pill merged";
-    prPill.textContent = "Merged · TO-BE gives a cleaner path to TEST";
-    prSub.textContent  = "Same PR · AS-IS needs 3 TEST deployments vs TO-BE’s 1.";
-
-    await delay(2600);
-
-    if(token === storyToken){
-      setTimeout(()=>{
-        if(token === storyToken){
-          playComparison(false);
-        }
-      }, 1200);
-    }
   }
 
-  // start automatically and loop
-  playComparison(true);
-})();
+  // 1️⃣ Run AS-IS pipeline completely
+  await runAsIs(token);
+  if(token !== storyToken) return;
+
+  // Small pause between stories
+  await delay(1500);
+  if(token !== storyToken) return;
+
+  // 2️⃣ Then run TO-BE pipeline
+  await runToBe(token);
+  if(token !== storyToken) return;
+
+  // Final PR summary once both flows are done
+  prPill.className = "pr-pill merged";
+  prPill.textContent = "Merged · TO-BE gives a cleaner path to TEST";
+  prSub.textContent  = "Same PR · AS-IS needs 3 TEST deployments vs TO-BE’s 1.";
+
+  await delay(2600);
+
+  // Loop again from the start
+  if(token === storyToken){
+    setTimeout(()=>{
+      if(token === storyToken){
+        playComparison(false);
+      }
+    }, 1200);
+  }
+}
 </script>
 </body>
 </html>
+
