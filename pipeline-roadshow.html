@@ -576,7 +576,6 @@
     </div> <!-- layout -->
   </div>
 </div>
-
 <script>
 (function(){
   const prPill = document.getElementById("prPill");
@@ -603,7 +602,7 @@
     }
   };
 
-  /* ENV helpers */
+  /* ---------- ENV helpers ---------- */
 
   function resetEnv(mode){
     const ctx = pipelines[mode];
@@ -613,7 +612,7 @@
 
   function setEnvLabel(mode,text){
     const ctx = pipelines[mode];
-    ctx.envBox.classList.remove("ok","fail"); // grey
+    ctx.envBox.classList.remove("ok","fail");
     ctx.envStatus.textContent = text;
   }
 
@@ -625,7 +624,7 @@
     ctx.envStatus.textContent = text;
   }
 
-  /* Pros / Cons */
+  /* ---------- Pros / Cons ---------- */
 
   function resetProsCons(mode){
     const ctx = pipelines[mode];
@@ -651,31 +650,27 @@
     requestAnimationFrame(()=>li.classList.add("visible"));
   }
 
-  /* Steps */
+  /* ---------- Steps ---------- */
 
   function buildSteps(mode){
     const ctx = pipelines[mode];
     ctx.pipeList.innerHTML = "";
+
     let labels;
     if(mode === "as-is"){
       labels = [
-        "Unit tests",
-        "Functional tests",
-        "PR review",
+        "PR CREATED (Unit + functional tests)",
         "Merge to master",
         "Deploy to TEST"
       ];
     }else{
       labels = [
-        "Unit tests",
-        "Functional tests",
-        "Contract tests (CI)",
-        "Integration tests (CI)",
-        "PR review",
+        "PR CREATED (Unit + functional + contract + integration checks in CI)",
         "Merge to master",
         "Deploy to TEST"
       ];
     }
+
     labels.forEach((label,idx)=>{
       const li = document.createElement("li");
       li.className = "pipe-step";
@@ -744,13 +739,15 @@
     return {failIdx};
   }
 
+  /* ---------- PR pill ---------- */
+
   function resetPR(){
     prPill.className = "pr-pill";
     prPill.textContent = "Open · under comparison";
     prSub.textContent  = "Created just now · comparison running side by side";
   }
 
-  /* AS-IS behaviour */
+  /* ---------- AS-IS behaviour (3 TEST deployments) ---------- */
 
   async function runAsIs(token){
     const mode = "as-is";
@@ -761,34 +758,34 @@
     addPro(mode,"Simple flow – fewer CI stages today.");
     addCon(mode,"Quality gates are late – issues only show up after deploy to TEST.");
 
-    // Build 1 – fails in TEST
+    // Build 1 – contract issue only seen in TEST
     setEnvLabel(mode,"Waiting for Build #1 with Dev’s PR…");
-    addCon(mode,"Build #1 goes all the way to TEST with a hidden contract bug.");
+    addCon(mode,"Build #1 reaches TEST with a hidden contract bug.");
 
-    let outcomes = ["ok","ok","ok","ok","fail"];
+    let outcomes = ["ok","ok","fail"]; // fail at Deploy to TEST
     let r = await runTimeline(mode,outcomes,{token,perStep:1100});
     if(token !== storyToken) return;
-    if(r.failIdx === 4){
+    if(r.failIdx === 2){
       setEnvState(
         mode,
         "fail",
         "System tests in TEST failed – contract mismatch (`currency` vs `currencyCode`)."
       );
-      addCon(mode,"TEST is red for everyone while the contract bug is debugged.");
+      addCon(mode,"TEST turns red for everyone while the contract bug is debugged.");
     }
     await delay(2000);
     if(token !== storyToken) return;
 
-    // Build 2 – fails again
+    // Build 2 – integration problem still only seen in TEST
     buildSteps(mode);
     resetEnv(mode);
     setEnvLabel(mode,"Waiting for Build #2 after contract fix…");
     addCon(mode,"Even after the contract fix, an integration mismatch is still hidden.");
 
-    outcomes = ["ok","ok","ok","ok","fail"];
+    outcomes = ["ok","ok","fail"];
     r = await runTimeline(mode,outcomes,{token,perStep:1100});
     if(token !== storyToken) return;
-    if(r.failIdx === 4){
+    if(r.failIdx === 2){
       setEnvState(
         mode,
         "fail",
@@ -799,13 +796,13 @@
     await delay(2000);
     if(token !== storyToken) return;
 
-    // Build 3 – finally passes
+    // Build 3 – finally stable TEST
     buildSteps(mode);
     resetEnv(mode);
     setEnvLabel(mode,"Waiting for Build #3 after all fixes…");
-    addCon(mode,"Third build is needed before TEST is finally useful again for others.");
+    addCon(mode,"Third build is needed before TEST is finally useful again.");
 
-    outcomes = ["ok","ok","ok","ok","ok"];
+    outcomes = ["ok","ok","ok"];
     await runTimeline(mode,outcomes,{token,perStep:1100});
     if(token !== storyToken) return;
 
@@ -818,7 +815,7 @@
     await delay(2200);
   }
 
-  /* TO-BE behaviour – 3 CI runs: contract fail, integration fail, then green */
+  /* ---------- TO-BE behaviour (3 CI runs, 1 TEST deploy) ---------- */
 
   async function runToBe(token){
     const mode = "to-be";
@@ -826,40 +823,40 @@
     resetPipeline(mode);
     buildSteps(mode);
 
-    addPro(mode,"Contract & integration checks are part of CI on the PR.");
+    addPro(mode,"Contract & integration checks run in CI on the PR.");
     addPro(mode,"TEST only sees builds that already passed all CI gates.");
     addCon(mode,"Slightly longer CI for this PR – more checks before merge.");
 
-    // CI run #1 – contract tests fail
+    // CI run #1 – fail at contract tests inside PR CREATED
     setEnvLabel(mode,"TEST protected – waiting for CI on Dev’s PR (Run #1)…");
-    let outcomes = ["ok","ok","fail","skipped","skipped","skipped","skipped"];
+    let outcomes = ["fail","skipped","skipped"]; // fail at PR CREATED
     let r = await runTimeline(mode,outcomes,{token,perStep:800});
     if(token !== storyToken) return;
-    if(r.failIdx === 2){
+    if(r.failIdx === 0){
       setEnvLabel(
         mode,
-        "CI Run #1 failed at Contract tests – TEST stays green and untouched."
+        "CI Run #1 failed inside PR CREATED – Contract tests red, TEST untouched."
       );
       addPro(mode,"Contract mismatch is caught early on the PR branch.");
-      addCon(mode,"Dev needs to fix contract and re-run CI before merge.");
+      addCon(mode,"Dev fixes contract and re-runs CI before merge.");
     }
     await delay(2000);
     if(token !== storyToken) return;
 
-    // CI run #2 – integration tests fail
+    // CI run #2 – fail at integration tests (still inside PR CREATED)
     buildSteps(mode);
     resetEnv(mode);
     setEnvLabel(mode,"CI Run #2 – re-testing after contract fix…");
-    outcomes = ["ok","ok","ok","fail","skipped","skipped","skipped"];
+    outcomes = ["fail","skipped","skipped"];
     r = await runTimeline(mode,outcomes,{token,perStep:800});
     if(token !== storyToken) return;
-    if(r.failIdx === 3){
+    if(r.failIdx === 0){
       setEnvLabel(
         mode,
-        "CI Run #2 failed at Integration tests – TEST still not touched."
+        "CI Run #2 failed inside PR CREATED – Integration tests caught rupees vs paise."
       );
-      addPro(mode,"Integration issue (rupees vs paise) is caught before deploy.");
-      addCon(mode,"Second CI run is needed, but still zero impact on TEST.");
+      addPro(mode,"Integration issue is caught before any deploy happens.");
+      addCon(mode,"Second CI run is needed, but TEST still remains clean.");
     }
     await delay(2000);
     if(token !== storyToken) return;
@@ -870,7 +867,7 @@
     setEnvLabel(mode,"CI Run #3 – all checks expected to pass → single deploy to TEST.");
     addPro(mode,"Once CI is green, we merge and deploy to TEST exactly once.");
 
-    const outcomes3 = ["ok","ok","ok","ok","ok","ok","ok"];
+    const outcomes3 = ["ok","ok","ok"];
     await runTimeline(mode,outcomes3,{token,perStep:800});
     if(token !== storyToken) return;
 
@@ -882,47 +879,60 @@
     addPro(mode,"TEST sees one clean build for this PR – no firefighting.");
     await delay(2200);
   }
-async function playComparison(withIntro){
-  const token = ++storyToken;
-  resetPR();
 
-  // Optional tiny intro delay for first loop
-  if(withIntro){
-    await delay(10);
+  /* ---------- Main comparison controller ---------- */
+
+  async function playComparison(withIntro){
+    const token = ++storyToken;
+    resetPR();
+
+    // build empty skeleton once quickly so the screen is not blank
+    resetPipeline("as-is");
+    buildSteps("as-is");
+    resetPipeline("to-be");
+    buildSteps("to-be");
+
+    if(withIntro){
+      await delay(600);
+      if(token !== storyToken) return;
+    }
+
+    // 1️⃣ Run AS-IS completely
+    await runAsIs(token);
     if(token !== storyToken) return;
+
+    // Small pause between the two stories
+    await delay(1500);
+    if(token !== storyToken) return;
+
+    // 2️⃣ Then run TO-BE
+    await runToBe(token);
+    if(token !== storyToken) return;
+
+    // Final PR summary
+    prPill.className = "pr-pill merged";
+    prPill.textContent = "Merged · TO-BE gives a cleaner path to TEST";
+    prSub.textContent  = "Same PR · AS-IS needs 3 TEST deployments vs TO-BE’s 1.";
+
+    await delay(2600);
+
+    // Loop again from the start
+    if(token === storyToken){
+      setTimeout(()=>{
+        if(token === storyToken){
+          playComparison(false);
+        }
+      }, 1200);
+    }
   }
 
-  // 1️⃣ Run AS-IS pipeline completely
-  await runAsIs(token);
-  if(token !== storyToken) return;
-
-  // Small pause between stories
-  await delay(1500);
-  if(token !== storyToken) return;
-
-  // 2️⃣ Then run TO-BE pipeline
-  await runToBe(token);
-  if(token !== storyToken) return;
-
-  // Final PR summary once both flows are done
-  prPill.className = "pr-pill merged";
-  prPill.textContent = "Merged · TO-BE gives a cleaner path to TEST";
-  prSub.textContent  = "Same PR · AS-IS needs 3 TEST deployments vs TO-BE’s 1.";
-
-  await delay(2600);
-
-  // Loop again from the start
-  if(token === storyToken){
-    setTimeout(()=>{
-      if(token === storyToken){
-        playComparison(false);
-      }
-    }, 1200);
-  }
-}
-})
+  // start automatically and loop
+  playComparison(true);
+})();
 </script>
+
 </body>
 </html>
+
 
 
