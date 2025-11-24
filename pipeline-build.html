@@ -7,6 +7,10 @@
   <title>CI/CD Defense Arcade</title>
 
   <style>
+    html, body {
+  height: 100%;
+  overflow: hidden !important;
+}
     :root{
       --bg:#040611;
       --bg-soft:#071327;
@@ -201,16 +205,15 @@
 
     /* ---------- GAME AREA ---------- */
 
-    .game-area{
-      position:relative;
-      height:460px;
-      background:radial-gradient(circle at 50% 0%, rgba(110,246,255,0.12), transparent 55%),
-                 linear-gradient(180deg, rgba(24,40,80,0.8), rgba(4,6,17,0.98));
-      border-radius:20px;
-      overflow:hidden;
-      border:1px solid rgba(110,246,255,0.28);
-      box-shadow:0 18px 40px rgba(0,0,0,0.7);
-    }
+@media (max-width: 600px) {
+  .game-area {
+    flex: none;
+    overflow: hidden !important;   /* 🔥 BLOCK SCROLL */
+    height: 520px !important;      /* stable fixed height */
+    min-height: 520px !important;
+    padding-bottom: 0;
+  }
+}
 
     .grid{
       position:absolute;
@@ -223,25 +226,24 @@
       opacity:0.7;
     }
 
-    .lanes{
-      position:absolute;
-      left:8px;
-      right:120px;
-      top:16px;
-      bottom:8px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      padding-right:8px;
-    }
+    @media (max-width: 600px) {
+  .lanes {
+    order: 1;
+    height: 360px !important;     /* MORE room for bug path */
+    min-height: 360px !important;
+    width: 100%;
+    flex-direction: row;
+    margin: 20px 0 0 0;
+    overflow: visible;             /* Gates won't get clipped */
+  }
 
-    .lane{
-      flex:1;
-      background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
-      border-radius:10px;
-      position:relative;
-      overflow:visible;
-    }
+  .lane {
+    min-width: 58px;
+    border-radius: 10px;
+    overflow: visible;
+    position: relative;
+  }
+}
 
     .lane::before{
       content:"";
@@ -279,26 +281,24 @@
 
     /* PROD column – tall vertical on desktop */
 
-    .prod-column{
-      position:absolute;
-      right:10px;
-      top:12px;
-      width:110px;
-      bottom:12px;
-      border-radius:18px;
-      background:radial-gradient(circle at 50% 0%, rgba(255,224,151,0.12), transparent 55%),
-                 linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.4));
-      border:2px solid rgba(110,246,255,0.8); /* healthy default border */
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      padding:10px;
-      gap:8px;
-      box-sizing:border-box;
-      box-shadow:0 10px 25px rgba(0,0,0,0.6);
-    }
-
+    @media (max-width: 600px) {
+  .prod-column {
+    order: 2;
+    margin-top: 12px;
+    position: relative;
+    width: 240px;
+    height: 80px;
+    z-index: 50;               /* 🔥 BUG GOES BEHIND PROD */
+  }
+}
+.bug {
+  z-index: 20;  /* PROD above bug always */
+}
+    @media (max-width: 600px) {
+  .bug span:nth-child(2) {
+    display: none !important;  /* force hide text */
+  }
+}
     .prod-crack{
       position:absolute;
       inset:5px;
@@ -1499,7 +1499,10 @@ gameArea.addEventListener('drop', (e) => {
   const laneSize = (isMobileMode() ? lanesRect.width : lanesRect.height) / CONFIG.lanes;
   const chosen = Math.max(0, Math.min(CONFIG.lanes - 1, Math.floor(mainAxis / laneSize)));
 
-  const coord = isMobileMode() ? e.clientY : e.clientX;
+  const areaRect = gameArea.getBoundingClientRect();
+const coord = isMobileMode()
+  ? touch.clientY - areaRect.top
+  : touch.clientX - areaRect.left;
   placeGate(drag.type, chosen, coord);
   drag = null;
 });
@@ -2118,4 +2121,5 @@ window.addEventListener('resize', () => {
 </script>
 </body>
 </html>
+
 
