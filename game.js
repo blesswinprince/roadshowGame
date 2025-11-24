@@ -976,4 +976,7 @@ gameArea.addEventListener('touchend', e => {
 
 
 
+function isMobileMode() {
+  return window.innerWidth < 600;
+}
 
