@@ -9,30 +9,25 @@
     :root {
       --bg-main: #050814;
       --bg-panel: #0b1020;
-      --bg-panel-soft: #111729;
-      --border-soft: rgba(255,255,255,0.08);
       --text-main: #f7f9ff;
       --muted: rgba(230,235,255,0.65);
       --neon-cyan: #6ef6ff;
       --neon-green: #7affb4;
       --neon-orange: #ffb36b;
-      --neon-pink: #ff6bd5;
       --error-red: #ff6b6b;
     }
 
-    *,
-    *::before,
-    *::after {
+    * {
       box-sizing: border-box;
     }
 
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: radial-gradient(circle at top, #18243a 0, #050814 50%, #02030a 100%);
       color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overscroll-behavior: none;
     }
 
     body {
@@ -49,77 +44,42 @@
       box-shadow:
         0 18px 40px rgba(0,0,0,0.6),
         0 0 0 1px rgba(255,255,255,0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
+      gap: 12px;
     }
 
     header h1 {
       margin: 0;
-      display: flex;
-      flex-direction: column;
-      line-height: 1.05;
-    }
-
-    .title-main {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
+      font-size: 22px;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--neon-cyan);
-      text-shadow: 0 0 14px rgba(110,246,255,0.6);
-    }
-
-    .title-sub {
-      font-size: 18px;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--muted);
     }
 
     .controls {
       display: flex;
-      align-items: center;
-      gap: 10px;
       flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
     }
 
     .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
       padding: 6px 10px;
       border-radius: 999px;
-      background: radial-gradient(circle at top left, rgba(255,255,255,0.05), rgba(0,0,0,0.8));
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05);
       font-size: 12px;
     }
 
-    .pill-label {
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      font-size: 10px;
-      color: var(--muted);
-    }
-
-    .pill-value {
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .pill-player .pill-value {
-      color: var(--neon-cyan);
-    }
-    .pill-score .pill-value {
-      color: var(--neon-green);
-    }
-    .pill-combo .pill-value {
-      color: var(--neon-orange);
+    .pill span {
+      font-weight: 600;
     }
 
     button {
@@ -127,11 +87,11 @@
       cursor: pointer;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.2);
-      padding: 6px 14px;
-      font-size: 13px;
+      padding: 6px 12px;
+      font-size: 12px;
       background: rgba(255,255,255,0.02);
       color: var(--text-main);
-      transition: background 0.15s ease, transform 0.07s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      transition: background 0.15s ease, transform 0.07s ease, box-shadow 0.15s ease;
     }
 
     button:hover:not(:disabled) {
@@ -146,7 +106,7 @@
     }
 
     button:disabled {
-      opacity: 0.45;
+      opacity: 0.5;
       cursor: default;
     }
 
@@ -157,109 +117,73 @@
       font-weight: 700;
     }
 
-    .btn-primary:hover:not(:disabled) {
-      box-shadow: 0 0 12px rgba(110,246,255,0.7);
-    }
-
-    .btn-secondary {
-      background: rgba(15,25,45,0.9);
-    }
-
     .main {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
+      flex: 1;
     }
 
     .hud {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 6px;
+      gap: 6px;
     }
 
     .hud-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
+      padding: 4px 8px;
       border-radius: 999px;
       background: rgba(0,0,0,0.7);
-      border: 1px solid rgba(255,255,255,0.08);
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .hud-label {
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       font-size: 10px;
       color: var(--muted);
+      margin-right: 4px;
     }
 
     .hud-value {
       font-weight: 600;
-      font-size: 13px;
-    }
-
-    .hud-chip-timer {
-      background: radial-gradient(circle at top, rgba(255,255,255,0.1), rgba(0,0,0,0.9));
-      border-color: rgba(255,255,255,0.5);
-    }
-
-    .hud-unit {
-      margin-left: 2px;
-      font-size: 11px;
-      opacity: 0.75;
     }
 
     .game-area {
       position: relative;
-      margin-top: 4px;
-      border-radius: 16px;
+      border-radius: 14px;
       background: radial-gradient(circle at top, #19243d 0, #050814 55%, #01020a 100%);
       border: 1px solid rgba(255,255,255,0.1);
-      padding: 16px;
-      min-height: 360px;
+      min-height: 340px;
       overflow: hidden;
-    }
-
-    .grid {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: 0.25;
-      pointer-events: none;
-      z-index: 1;
+      flex: 1;
+      padding: 16px;
     }
 
     .wave-banner {
       position: absolute;
-      top: 10px;
+      top: 8px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 5;
-      padding: 3px 12px;
+      padding: 3px 10px;
       border-radius: 999px;
       background: rgba(5,10,25,0.9);
-      border: 1px solid rgba(110,246,255,0.7);
-      color: var(--neon-cyan);
-      font-size: 12px;
+      border: 1px solid var(--neon-cyan);
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      box-shadow: 0 0 10px rgba(110,246,255,0.4);
+      color: var(--neon-cyan);
+      z-index: 5;
     }
 
     .lanes {
       position: relative;
-      z-index: 2;
-      margin: 38px 170px 36px 12px;
+      margin: 38px 160px 32px 12px;
       height: 260px;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      z-index: 2;
     }
 
     .lane {
@@ -267,7 +191,6 @@
       flex: 1;
       border-radius: 10px;
       background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(0,0,0,0.7));
-      overflow: hidden;
       border: 1px solid rgba(255,255,255,0.1);
     }
 
@@ -287,33 +210,13 @@
       top: 0;
       bottom: 0;
       width: 3px;
-      background: linear-gradient(to bottom, var(--neon-cyan), transparent 35%, transparent 65%, var(--neon-cyan));
-      opacity: 0.6;
+      background: linear-gradient(to bottom, var(--neon-cyan), transparent 40%, transparent 60%, var(--neon-cyan));
+      opacity: 0.5;
     }
 
     .lane-hover {
-      box-shadow: 0 0 0 1px var(--neon-cyan), 0 0 18px rgba(110,246,255,0.6);
+      box-shadow: 0 0 0 1px var(--neon-cyan), 0 0 16px rgba(110,246,255,0.6);
       border-color: var(--neon-cyan);
-    }
-
-    .bug {
-      position: absolute;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(15,25,55,0.95);
-      border: 1px solid rgba(110,246,255,0.7);
-      font-size: 11px;
-      white-space: nowrap;
-      box-shadow:
-        0 0 12px rgba(110,246,255,0.6),
-        0 0 0 1px rgba(0,0,0,0.8);
-    }
-
-    .bug .icon {
-      font-size: 14px;
     }
 
     .prod-column {
@@ -322,43 +225,32 @@
       right: 16px;
       width: 120px;
       border-radius: 14px;
-      padding: 10px 10px 12px;
+      padding: 8px 8px 10px;
       background: radial-gradient(circle at top, #1f2a46, #050814);
       border: 1px solid rgba(255,255,255,0.25);
-      z-index: 4;
       text-align: center;
-      transition: box-shadow 0.12s ease, transform 0.12s ease;
+      z-index: 4;
     }
 
     .prod-icon {
-      font-size: 24px;
+      font-size: 22px;
     }
 
     .prod-label {
       margin-top: 2px;
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.14em;
       color: var(--muted);
     }
 
-    .prod-crack {
-      position: absolute;
-      inset: 0;
-      background-image: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18), transparent 55%),
-                        radial-gradient(circle at 70% 70%, rgba(255,255,255,0.12), transparent 55%);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.15s ease;
-    }
-
     .health {
-      margin-top: 8px;
-      height: 12px;
+      margin-top: 6px;
+      height: 10px;
       border-radius: 999px;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid rgba(255,255,255,0.25);
       overflow: hidden;
-      background: rgba(0,0,0,0.6);
-      border: 1px solid rgba(255,255,255,0.2);
     }
 
     .health-inner {
@@ -369,80 +261,45 @@
       transition: width 0.2s ease-out, background 0.2s ease-out;
     }
 
-    .prod-column.healthy {
-      box-shadow: 0 0 18px rgba(122,255,180,0.4);
-    }
-
-    .prod-column.damaged {
-      box-shadow: 0 0 16px rgba(255,179,107,0.6);
-    }
-
-    .prod-column.critical {
-      box-shadow: 0 0 20px rgba(255,107,107,0.9);
-    }
-
-    .prod-column.broken .prod-crack {
-      opacity: 0.5;
-    }
-
     .prod-column.hit {
       animation: prod-hit 0.25s ease-out;
     }
 
     @keyframes prod-hit {
-      0%   { transform: translateY(0); }
-      20%  { transform: translateY(-2px); }
-      60%  { transform: translateY(1px); }
+      0% { transform: translateY(0); }
+      20% { transform: translateY(-2px); }
+      60% { transform: translateY(1px); }
       100% { transform: translateY(0); }
     }
 
-    .gate-bar {
-      margin-top: 10px;
-      display: flex;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: linear-gradient(90deg, rgba(0,0,0,0.9), rgba(17,20,40,0.98));
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .gate-btn {
-      flex: 1;
-      text-align: center;
-      padding: 8px 10px;
+    .bug {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
       border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(0,0,0,0.75);
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.7);
-      touch-action: none;
+      background: rgba(15,25,55,0.95);
+      border: 1px solid rgba(110,246,255,0.7);
+      font-size: 11px;
+      white-space: nowrap;
+      box-shadow: 0 0 12px rgba(110,246,255,0.6), 0 0 0 1px rgba(0,0,0,0.8);
+      z-index: 40;
     }
 
-    .gate-btn.blue {
-      border-color: var(--neon-cyan);
-    }
-    .gate-btn.green {
-      border-color: var(--neon-green);
-    }
-    .gate-btn.orange {
-      border-color: var(--neon-orange);
-    }
-
-    .gate-btn.dragging {
-      opacity: 0.5;
+    .bug .icon {
+      font-size: 13px;
     }
 
     .lane-gate {
       position: absolute;
-      width: 120px;
-      height: 56px;
-      pointer-events: none;
+      width: 110px;
+      height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
+      pointer-events: none;
+      z-index: 60;
     }
 
     .lane-gate-line {
@@ -457,7 +314,7 @@
       position: relative;
       padding: 2px 10px;
       border-radius: 999px;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.12em;
@@ -488,24 +345,38 @@
       color: var(--neon-orange);
     }
 
-    @keyframes pop {
-      0%   { transform: scale(0.82); }
-      50%  { transform: scale(1.04); }
-      100% { transform: scale(1.0); }
+    .gate-bar {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
     }
 
-    .spark {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      font-size: 8px;
+    .gate-btn {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(0,0,0,0.75);
+      touch-action: none;
+    }
+
+    .gate-btn.blue { border-color: var(--neon-cyan); }
+    .gate-btn.green { border-color: var(--neon-green); }
+    .gate-btn.orange { border-color: var(--neon-orange); }
+
+    .gate-btn.dragging {
+      opacity: 0.5;
     }
 
     .end-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(10,12,30,0.9));
+      background: rgba(0,0,0,0.85);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -514,35 +385,21 @@
 
     .end-card {
       min-width: 260px;
-      max-width: 360px;
-      padding: 20px 18px 16px;
+      max-width: 340px;
+      padding: 18px 16px 14px;
       border-radius: 14px;
       background: radial-gradient(circle at top, #202947, #050814);
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.8);
+      border: 1px solid rgba(255,255,255,0.24);
       text-align: center;
     }
 
     .end-title {
-      font-size: 20px;
-      font-weight: 800;
-      margin-bottom: 6px;
-    }
-
-    .end-title.timeup {
-      color: var(--neon-cyan);
-    }
-
-    .end-title.meltdown {
-      color: var(--error-red);
-    }
-
-    .end-title.aborted {
-      color: var(--muted);
+      font-size: 18px;
+      margin-bottom: 4px;
     }
 
     .end-score {
-      font-size: 16px;
+      font-size: 14px;
       margin-bottom: 4px;
     }
 
@@ -553,15 +410,15 @@
     }
 
     .end-actions {
+      margin-top: 10px;
       display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 12px;
       flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
     }
 
     .name-input {
-      margin-top: 10px;
+      margin-top: 8px;
       width: 100%;
       padding: 7px 10px;
       border-radius: 999px;
@@ -572,191 +429,110 @@
       text-align: center;
     }
 
-    .name-input::placeholder {
-      color: rgba(230,235,255,0.5);
-    }
-
-    .muted {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .lb {
-      margin-top: 6px;
-      font-size: 12px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(4,6,16,0.95);
-      max-height: 220px;
-      overflow: auto;
-    }
-
-    .modal-root {
-      position: fixed;
-      inset: 0;
-      z-index: 999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at top, rgba(19,28,55,0.95), rgba(1,3,8,0.96));
-    }
-
-    .modal-content {
-      max-width: 520px;
-      width: 92%;
-      padding: 20px 18px 16px;
-      border-radius: 16px;
-      background: radial-gradient(circle at top, #202947, #050814);
-      border: 1px solid rgba(255,255,255,0.25);
-      color: var(--text-main);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .modal-content h2 {
-      margin-top: 0;
-      font-size: 18px;
-      margin-bottom: 8px;
-    }
-
-    .modal-content ul {
-      padding-left: 18px;
-      margin-top: 4px;
-    }
-
-    .lb-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 6px;
-      font-size: 13px;
-    }
-
-    .lb-table th,
-    .lb-table td {
-      padding: 4px 6px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .lb-table th {
-      text-align: left;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-    }
-
-    .lb-row:nth-child(even) {
-      background: rgba(255,255,255,0.02);
-    }
-
     .footer-tip {
-      margin-top: 10px;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--muted);
     }
 
-    @media (max-width: 900px) {
-      .wrap {
-        margin: 6px;
-        padding: 12px;
-      }
-
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .lanes {
-        margin-right: 140px;
-      }
-
-      .game-area {
-        min-height: 340px;
-      }
+    @keyframes pop {
+      0%   { transform: scale(0.82); }
+      50%  { transform: scale(1.04); }
+      100% { transform: scale(1.0); }
     }
 
+    .floating-text {
+      position: absolute;
+      font-size: 14px;
+      font-weight: 700;
+      pointer-events: none;
+      text-shadow: 0 0 8px rgba(0,0,0,0.7);
+      z-index: 80;
+    }
+
+    /* =============== MOBILE FULLSCREEN MODE ================= */
     @media (max-width: 600px) {
-      body {
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
+      html, body {
+        height: 100%;
+        overflow: hidden !important;
+        touch-action: none;
       }
 
       .wrap {
         margin: 0;
-        padding: 8px;
+        padding: 8px 8px 72px;
         border-radius: 0;
+        border: none;
+        height: 100vh;
+        max-width: 100%;
       }
 
       header {
-        gap: 8px;
+        display: none;
       }
 
-      .controls {
-        gap: 6px;
-      }
-
-      .game-area {
-        min-height: 500px;
-        padding: 10px;
+      .main {
+        flex: 1;
         display: flex;
         flex-direction: column;
       }
 
+      .game-area {
+        flex: 1;
+        padding: 8px;
+        border-radius: 10px;
+        min-height: 0;
+      }
+
       .lanes {
-        margin: 40px 0 8px 0;
-        height: 280px;
+        margin: 32px 4px 6px 4px;
+        height: auto;
+        flex: 1;
         display: flex;
         flex-direction: row;
-        gap: 6px;
+        gap: 4px;
       }
 
       .lane {
-        min-width: 0;
-        width: 0;
         flex: 1;
         height: 100%;
+        min-width: 0;
       }
 
       .line-left {
         display: none;
       }
 
-      .lane::before {
-        content: '';
-        position: absolute;
-        top: 12px;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--neon-cyan), transparent);
-        opacity: 0.8;
-      }
-
       .prod-column {
         position: relative;
         top: 0;
         right: 0;
-        width: 160px;
-        margin: 4px auto 0;
-        transform: scale(0.95);
-        transform-origin: center;
+        margin: 0 auto 4px auto;
       }
 
       .gate-bar {
-        margin-top: 8px;
-        flex-direction: row;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: 0;
+        border-radius: 0;
+        padding: 8px 8px 10px;
+        background: rgba(0,0,0,0.92);
+        border-top: 1px solid rgba(255,255,255,0.2);
+        z-index: 9999;
       }
 
-      .bug {
-        font-size: 10px;
-        padding: 2px 6px;
+      .gate-btn {
+        font-size: 11px;
+        padding: 8px 6px;
       }
-    }
 
-    @media (max-width: 480px) {
-      .gate-bar {
-        flex-direction: column;
+      .footer-tip {
+        display: none;
+      }
+
+      .end-overlay {
+        position: fixed;
       }
     }
   </style>
@@ -764,27 +540,13 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>
-      <span class="title-main">CI/CD</span>
-      <span class="title-sub">Defense Arcade</span>
-    </h1>
+    <h1>CI/CD Defense Arcade</h1>
     <div class="controls">
-      <div class="pill pill-player">
-        <span class="pill-label">Player</span>
-        <span id="playerName" class="pill-value">—</span>
-      </div>
-      <div class="pill pill-score">
-        <span class="pill-label">Score</span>
-        <span id="score" class="pill-value">0</span>
-      </div>
-      <div class="pill pill-combo">
-        <span class="pill-label">Combo</span>
-        <span id="combo" class="pill-value">0</span>
-      </div>
+      <div class="pill">Player: <span id="playerName">—</span></div>
+      <div class="pill">Score: <span id="score">0</span></div>
+      <div class="pill">Combo: <span id="combo">0</span></div>
       <button id="btnStart" class="btn-primary">▶ Start</button>
       <button id="btnAbort" disabled>Abort</button>
-      <button id="btnLB" class="btn-secondary">🏆 Leaderboard</button>
-      <button id="btnTutorial" class="btn-secondary">❓ Tutorial</button>
     </div>
   </header>
 
@@ -792,7 +554,7 @@
     <div class="hud">
       <div class="hud-chip">
         <span class="hud-label">Mode</span>
-        <span class="hud-value" id="modeLabel">Classic (single)</span>
+        <span class="hud-value" id="modeLbl">Classic</span>
       </div>
       <div class="hud-chip">
         <span class="hud-label">Upcoming</span>
@@ -806,26 +568,25 @@
         <span class="hud-label">Speed</span>
         <span class="hud-value" id="speedLbl">1.00x</span>
       </div>
-      <div class="hud-chip hud-chip-timer">
+      <div class="hud-chip">
         <span class="hud-label">Time</span>
         <span class="hud-value" id="timer">90</span><span class="hud-unit">s</span>
       </div>
     </div>
 
     <div class="game-area" id="gameArea">
-      <div class="grid"></div>
       <div class="wave-banner" id="banner">Ready</div>
       <div class="lanes" id="lanes"></div>
 
       <div class="prod-column healthy" id="prodCol">
-        <div class="prod-crack" id="prodCrack"></div>
         <div class="prod-icon">⚙️</div>
         <div class="prod-label">PROD</div>
-        <div class="health" title="Production Stability">
+        <div class="health">
           <div id="healthInner" class="health-inner"></div>
         </div>
       </div>
 
+      <!-- End overlay -->
       <div id="endOverlay" class="end-overlay" style="display:none">
         <div class="end-card">
           <div id="endTitle" class="end-title">Time Up!</div>
@@ -833,29 +594,18 @@
           <div id="endRank" class="end-rank"></div>
           <div class="end-actions">
             <button id="endBtnPlay">Play Again</button>
-            <button id="endBtnLB">View Leaderboard</button>
             <button id="endBtnNew">New Game</button>
           </div>
         </div>
       </div>
 
+      <!-- Start overlay -->
       <div id="startOverlay" class="end-overlay" style="display:flex">
         <div class="end-card">
-          <div id="startTitle" class="end-title timeup">
-            CI/CD Defense Arcade
-          </div>
-          <div id="startSubtitle" class="end-score">
-            Defend PROD from sneaky CI/CD bugs!
-          </div>
-
-          <input id="playerNameInput"
-                 type="text"
-                 class="name-input"
-                 placeholder="Type your hero name here" />
-
-          <div class="end-rank">
-            Drag UNIT / CONTRACT / INTEGRATION gates onto builds to stop bugs early.
-          </div>
+          <div class="end-title">CI/CD Defense Arcade</div>
+          <div class="end-score">Defend PROD from sneaky CI/CD bugs!</div>
+          <input id="playerNameInput" class="name-input" placeholder="Type your hero name here" />
+          <div class="end-rank">Drag UNIT / CONTRACT / INTEGRATION gates onto builds to stop bugs early.</div>
           <div class="end-actions">
             <button id="startOverlayBtn" disabled>Start Game ▶</button>
           </div>
@@ -864,51 +614,24 @@
     </div>
 
     <div class="gate-bar" id="gateBar">
-      <div class="gate-btn blue" draggable="true" data-type="unit">UNIT TEST</div>
-      <div class="gate-btn green" draggable="true" data-type="contract">CONTRACT TEST</div>
-      <div class="gate-btn orange" draggable="true" data-type="integration">INTEGRATION</div>
-    </div>
-
-    <div style="display:flex;gap:12px;align-items:flex-start">
-      <div id="lbPanel" style="flex:1;display:none">
-        <div class="muted">Leaderboard</div>
-        <div class="lb" id="lb"></div>
-      </div>
-
-      <div id="controlsPanel"
-           style="width:260px;margin-left:auto;display:none">
-        <div class="muted">Controls</div>
-        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-          <button id="spawnBtn">Spawn Next Bug</button>
-          <button id="resetBtn">Reset Session</button>
-          <button id="clearLb">Clear Scores</button>
-        </div>
-      </div>
+      <div class="gate-btn blue" data-type="unit">UNIT TEST</div>
+      <div class="gate-btn green" data-type="contract">CONTRACT TEST</div>
+      <div class="gate-btn orange" data-type="integration">INTEGRATION</div>
     </div>
   </div>
 
   <footer class="footer-tip">
-    💡 Tip:
-    Drag a gate up from the bottom bar and drop it onto a lane.
-    Correct gate blocks the bug for <b>+50 to +250 points</b> (earlier in the pipeline = more points).
-    Wrong gate pauses the bug 0.5s and costs −100.
-    Bug reaching PROD costs −500 and damages production. 5 hits = full PROD meltdown.
+    💡 Tip: Drag a gate from the bottom bar and drop it onto a build lane. Earlier, correct gates give more points. Bugs hitting PROD damage stability!
   </footer>
 </div>
 
-<div id="modal" class="modal-root" style="display:none">
-  <div class="modal-content" id="modalContent"></div>
-</div>
-
 <script>
-  /* ---------- Config & State ---------- */
-  let timerInterval = null;
+  /* ================= CONFIG & STATE ================== */
   const GAME_DURATION = 90;
-
   const CONFIG = {
     lanesDesktop: 5,
     lanesMobile: 4,
-    totalBugs: 75,
+    totalBugs: 60,
     bugTravelSeconds: 15,
     prodMax: 100,
     wrongPauseMs: 500,
@@ -923,65 +646,11 @@
   };
 
   function isMobileMode() {
-    return window.innerWidth < 600;
+    return window.innerWidth <= 600;
   }
   function getLaneCount() {
     return isMobileMode() ? CONFIG.lanesMobile : CONFIG.lanesDesktop;
   }
-
-  const FIREBASE_DB_URL = 'https://roadshowgame-default-rtdb.firebaseio.com';
-
-  async function saveScoreToFirebase(name, score, timestamp) {
-    try {
-      const res = await fetch(`${FIREBASE_DB_URL}/scores.json`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, score, timestamp })
-      });
-      const data = await res.json();
-      console.log('Score saved to Firebase:', data);
-      return data && data.name;
-    } catch (err) {
-      console.error('Error saving score to Firebase:', err);
-      return null;
-    }
-  }
-
-  async function fetchLeaderboardFromFirebase() {
-    try {
-      const res = await fetch(`${FIREBASE_DB_URL}/scores.json`);
-      const data = await res.json();
-      if (!data) return [];
-
-      const rows = Object.entries(data).map(([id, entry]) => ({
-        id,
-        name: entry.name || 'Anon',
-        score: typeof entry.score === 'number'
-          ? entry.score
-          : parseInt(entry.score, 10) || 0,
-        timestamp: entry.timestamp || 0
-      }));
-
-      rows.sort((a, b) => b.score - a.score);
-      return rows.slice(0, 20);
-    } catch (err) {
-      console.error('Error loading leaderboard from Firebase:', err);
-      return [];
-    }
-  }
-
-  async function renderLB() {
-    const a = await fetchLeaderboardFromFirebase();
-    const lbBox = document.getElementById('lb');
-    lbBox.innerHTML = a.length
-      ? a.map(r => `
-        <div style="display:flex;justify-content:space-between;padding:6px;border-bottom:1px solid rgba(255,255,255,0.04)">
-          <div>${r.name}</div>
-          <div style="opacity:.85">${r.score}</div>
-        </div>`).join('')
-      : '<div style="opacity:.75;padding:8px">No scores yet</div>';
-  }
-  renderLB();
 
   let state = {
     player: null,
@@ -994,6 +663,9 @@
     running: false
   };
 
+  let timerInterval = null;
+
+  /* ============== DOM REFERENCES ================= */
   const lanesEl        = document.getElementById('lanes');
   const gameArea       = document.getElementById('gameArea');
   const banner         = document.getElementById('banner');
@@ -1003,66 +675,24 @@
   const remainingEl    = document.getElementById('remaining');
   const upcomingEl     = document.getElementById('upcoming');
   const speedLbl       = document.getElementById('speedLbl');
-  const lbBox          = document.getElementById('lb');
-  const playerNameEl   = document.getElementById('playerName');
-  const modeLabel      = document.getElementById('modeLabel');
-
-  const spawnBtn       = document.getElementById('spawnBtn');
-  const resetBtn       = document.getElementById('resetBtn');
-  const clearLbBtn     = document.getElementById('clearLb');
-  const btnStart       = document.getElementById('btnStart');
-  const btnLB          = document.getElementById('btnLB');
-  const btnTutorial    = document.getElementById('btnTutorial');
-  const btnAbort       = document.getElementById('btnAbort');
+  const modeLbl        = document.getElementById('modeLbl');
   const prodCol        = document.getElementById('prodCol');
 
+  const btnStart       = document.getElementById('btnStart');
+  const btnAbort       = document.getElementById('btnAbort');
   const endOverlay     = document.getElementById('endOverlay');
   const endTitleEl     = document.getElementById('endTitle');
   const endScoreEl     = document.getElementById('endScore');
   const endRankEl      = document.getElementById('endRank');
   const endBtnPlay     = document.getElementById('endBtnPlay');
-  const endBtnLB       = document.getElementById('endBtnLB');
   const endBtnNew      = document.getElementById('endBtnNew');
-
   const startOverlay   = document.getElementById('startOverlay');
   const startOverlayBtn= document.getElementById('startOverlayBtn');
   const playerNameInput= document.getElementById('playerNameInput');
+  const playerNameEl   = document.getElementById('playerName');
+  const gateButtons    = Array.from(document.querySelectorAll('.gate-btn'));
 
-  function buildLanes(){
-    lanesEl.innerHTML = '';
-    const count = getLaneCount();
-    for(let i=0;i<count;i++){
-      const lane = document.createElement('div');
-      lane.className='lane';
-      lane.dataset.index = i;
-
-      const label = document.createElement('div');
-      label.className='lane-label';
-      label.textContent = `Build ${i+1}`;
-      lane.appendChild(label);
-
-      const line = document.createElement('div');
-      line.className='line-left';
-      lane.appendChild(line);
-
-      lanesEl.appendChild(lane);
-    }
-
-    modeLabel.textContent = isMobileMode()
-      ? `Mobile (vertical, ${CONFIG.lanesMobile} builds)`
-      : `Classic (single, ${CONFIG.lanesDesktop} builds)`;
-  }
-  buildLanes();
-
-  window.addEventListener('resize', () => {
-    const wasMobile = isMobileMode();
-    buildLanes();
-    if (state.running) {
-      // Reset to avoid weird geometry issues on resize
-      resetSession();
-    }
-  });
-
+  /* ============== BUG POOL =================== */
   const BUG_POOL = (function(){
     const seeds = [
       'Off-by-one error','Wrong variable type','Null pointer in util','GST calc wrong','Rounding mismatch',
@@ -1074,12 +704,9 @@
       'Unexpected null in response','Header missing','Wrong content-type','Response shape changed','Deprecated field used',
       'Payload key typo','Missing required param','Extra field in response','Versioning mismatch','Incorrect enum value',
       'Invalid JSON format','Missing validation in schema','Query param name typo','Incorrect date format','Wrong pagination format',
-      'Incorrect status code mapping','Auth header name mismatch','Field maxLength exceeded','Wrong field encoding','Trailing comma in response',
-      'DB query fails intermittently','Config missing in CI','Container env mismatch','Service timeout in cluster','Race condition across services',
+      'DB query fails intermittently','Config missing in CI','Container env mismatch','Service timeout','Race condition across services',
       'Circuit breaker not set','Retry logic missing','Downstream API latency','Wrong endpoint routing','Auth token refresh failure',
-      'Network partition issue','Load balancer misroute','Session stickiness lost','Wrong service discovery','SSL cert mismatch',
-      'Timeout too low','Ordering of messages wrong','Transaction not rolled back','Cache invalidation bug','Feature flag not propagated',
-      'Message queue DLQ spike','Throttling misconfigured','Cross-origin blocked','DNS propagation issue','Legacy endpoint hit'
+      'Network partition issue','Load balancer misroute','Session stickiness lost','Wrong service discovery','SSL cert mismatch'
     ];
     return seeds.map((t,idx)=>({
       id:'b'+idx,
@@ -1102,6 +729,7 @@
     return bugQueue.shift();
   }
 
+  /* ============== UTIL: AUDIO BEEP =================== */
   function beep(freq=440,dur=0.06){
     try{
       const Ctx = window.AudioContext || window.webkitAudioContext;
@@ -1117,6 +745,7 @@
     }catch(e){}
   }
 
+  /* ============== UI =================== */
   function updateHUD(){
     scoreEl.textContent = state.score;
     comboEl.textContent = state.combo;
@@ -1124,6 +753,9 @@
     const speedFactor = 1 + (state.spawnedCount*0.12);
     speedLbl.textContent = speedFactor.toFixed(2)+'x';
     upcomingEl.textContent = state.currentBug ? state.currentBug.def.label : '—';
+    modeLbl.textContent = isMobileMode()
+      ? `Mobile (vertical, ${CONFIG.lanesMobile} builds)`
+      : `Desktop (horizontal, ${CONFIG.lanesDesktop} builds)`;
   }
 
   function updateHealth(){
@@ -1133,19 +765,6 @@
       healthInner.style.background = 'linear-gradient(90deg,#ff6b6b,#ff8a3d)';
     else
       healthInner.style.background = 'linear-gradient(90deg,var(--neon-green),var(--neon-cyan))';
-  }
-
-  function updateProdDamageVisual(){
-    prodCol.classList.remove('healthy','damaged','critical','broken');
-    if(state.health <= 0){
-      prodCol.classList.add('broken','critical','damaged');
-    } else if(state.health <= 30){
-      prodCol.classList.add('critical','damaged');
-    } else if(state.health <= 70){
-      prodCol.classList.add('damaged');
-    } else {
-      prodCol.classList.add('healthy');
-    }
   }
 
   function flashBanner(text, ms=900){
@@ -1160,251 +779,49 @@
 
   function showFloatingText(text, x, y, color){
     const node = document.createElement('div');
+    node.className = 'floating-text';
     node.textContent = text;
-    node.style.position = 'absolute';
     node.style.left = x + 'px';
     node.style.top  = y + 'px';
     node.style.color = color || '#fff';
-    node.style.fontWeight = '700';
-    node.style.fontSize = '16px';
-    node.style.textShadow = '0 0 8px rgba(0,0,0,0.7)';
-    node.style.pointerEvents = 'none';
-    node.style.zIndex = 80;
     gameArea.appendChild(node);
-
     node.animate(
-      [
-        { transform:'translateY(0)', opacity:1 },
-        { transform:'translateY(-30px)', opacity:0 }
-      ],
-      { duration:800, easing:'ease-out' }
+      [{transform:'translateY(0)', opacity:1},{transform:'translateY(-32px)', opacity:0}],
+      {duration:750, easing:'ease-out'}
     );
-    setTimeout(()=>{ try{node.remove();}catch(e){} }, 800);
+    setTimeout(()=>{ try{node.remove();}catch(e){} }, 750);
   }
 
-  function showModal(html){
-    document.getElementById('modalContent').innerHTML = html;
-    document.getElementById('modal').style.display='flex';
+  /* ============== LANES BUILD =================== */
+  function buildLanes(){
+    lanesEl.innerHTML = '';
+    const count = getLaneCount();
+    for(let i=0;i<count;i++){
+      const lane = document.createElement('div');
+      lane.className = 'lane';
+      lane.dataset.index = i;
+      const label = document.createElement('div');
+      label.className = 'lane-label';
+      label.textContent = `Build ${i+1}`;
+      lane.appendChild(label);
+      const line = document.createElement('div');
+      line.className = 'line-left';
+      lane.appendChild(line);
+      lanesEl.appendChild(lane);
+    }
+    updateHUD();
   }
-  function hideModal(){
-    document.getElementById('modal').style.display='none';
-  }
+  buildLanes();
 
-  btnTutorial.addEventListener('click', ()=>{
-    showModal(`
-      <h2>How to Play</h2>
-      <p>🐞 One bug at a time spawns on a random build lane. Drag a gate (UNIT / CONTRACT / INTEGRATION) and drop it onto a lane. The gate will snap and block the approaching bug.</p>
-      <ul>
-        <li><b>Correct gate</b> (matches bug type): +${CONFIG.scoring.correctMin} to +${CONFIG.scoring.correctMax} (earlier is better)</li>
-        <li><b>Wrong gate</b>: ${CONFIG.scoring.wrongGate}, bug pauses ${CONFIG.wrongPauseMs}ms</li>
-        <li><b>Bug hits PROD</b>: ${CONFIG.scoring.hitProd} and production health drops by 20% (5 hits = meltdown)</li>
-        <li>Every ${CONFIG.scoring.comboSize} correct in a row gives a combo bonus of +${CONFIG.scoring.comboBonus}</li>
-      </ul>
-      <div style="text-align:right;margin-top:10px">
-        <button onclick="hideModal()">Got it!</button>
-      </div>
-    `);
-  });
-
-  btnLB.addEventListener('click', async () => {
-    const globalRows = await fetchLeaderboardFromFirebase();
-    const localRows = loadLocalScores();
-
-    if (!window._lbMode) window._lbMode = "global";
-
-    function renderTable(mode) {
-      const rows = mode === "global" ? globalRows : localRows;
-      const isGlobal = (mode === "global");
-
-      if (!rows.length) {
-        return `
-          <p style="opacity:.7;margin-top:12px">
-            ${isGlobal ? "No global scores yet." : "No personal scores found on this device."}
-          </p>`;
-      }
-
-      return `
-        <table class="lb-table">
-          <thead>
-            <tr>
-              <th style="width:40px">#</th>
-              <th>Player</th>
-              <th style="text-align:right">Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows.map((r,i)=>`
-              <tr class="lb-row">
-                <td>${i+1}</td>
-                <td>${r.name}</td>
-                <td style="text-align:right">${r.score}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      `;
-    }
-
-    window._renderLBFull = function() {
-      const mode = window._lbMode;
-      return `
-        <h2>🏆 Leaderboard</h2>
-
-        <div style="display:flex;gap:12px;margin-bottom:14px">
-
-          <button class="btn-secondary"
-            style="border:${mode==='global'?'2px solid #6ef6ff':'1px solid rgba(255,255,255,0.2)'}"
-            onclick="window._lbMode='global'; document.getElementById('modalContent').innerHTML = window._renderLBFull()">
-            🌐 Global
-          </button>
-
-          <button class="btn-secondary"
-            style="border:${mode==='local'?'2px solid #6ef6ff':'1px solid rgba(255,255,255,0.2)'}"
-            onclick="window._lbMode='local'; document.getElementById('modalContent').innerHTML = window._renderLBFull()">
-            💾 My Scores
-          </button>
-
-        </div>
-
-        <div id="lbContent">
-          ${renderTable(mode)}
-        </div>
-
-        <div style="text-align:right;margin-top:16px">
-          <button onclick="hideModal()">Close</button>
-        </div>
-      `;
-    };
-
-    showModal(window._renderLBFull());
-  });
-
-  clearLbBtn.addEventListener('click', async ()=>{
-    try{
-      await fetch(`${FIREBASE_DB_URL}/scores.json`, { method:'DELETE' });
-    }catch(e){
-      console.error('Error clearing Firebase leaderboard', e);
-    }
-    renderLB();
-  });
-
-  resetBtn.addEventListener('click', resetSession);
-  spawnBtn.addEventListener('click', ()=>spawnNextBug(true));
-
-  playerNameInput.addEventListener('input', ()=>{
-    const val = playerNameInput.value.trim();
-    startOverlayBtn.disabled = !val;
-  });
-
-  let drag = null;
-  document.querySelectorAll('.gate-btn').forEach(g=>{
-    g.addEventListener('dragstart', (e)=>{
-      drag = {type: g.dataset.type};
-      g.classList.add('dragging');
-      e.dataTransfer.setData('text','gate');
-    });
-    g.addEventListener('dragend', ()=>{
-      drag = null;
-      document.querySelectorAll('.gate-btn').forEach(x=>x.classList.remove('dragging'));
-    });
-
-    // touch support basic
-    g.addEventListener('touchstart', e=>{
-      e.preventDefault();
-      drag = { type: g.dataset.type, touch: true };
-      g.classList.add('dragging');
-    });
-  });
-
-  gameArea.addEventListener('dragover', (e)=>{
-    e.preventDefault();
-    const lanesRect = lanesEl.getBoundingClientRect();
-    const count = getLaneCount();
-
-    if (isMobileMode()) {
-      const x = e.clientX - lanesRect.left + lanesEl.scrollLeft;
-      const laneWidth = lanesRect.width / Math.max(count,1);
-      const idx = Math.max(0, Math.min(count-1, Math.floor(x / laneWidth)));
-      document.querySelectorAll('.lane').forEach((el,i)=> el.classList.toggle('lane-hover', i===idx));
-    } else {
-      const y = e.clientY - lanesRect.top + lanesEl.scrollTop;
-      const laneHeight = lanesRect.height / Math.max(count,1);
-      const idx = Math.max(0, Math.min(count-1, Math.floor(y / laneHeight)));
-      document.querySelectorAll('.lane').forEach((el,i)=> el.classList.toggle('lane-hover', i===idx));
+  window.addEventListener('resize', ()=>{
+    const running = state.running;
+    buildLanes();
+    if(running){
+      resetSession();
     }
   });
 
-  gameArea.addEventListener('drop', (e)=>{
-    e.preventDefault();
-    document.querySelectorAll('.lane').forEach(el=>el.classList.remove('lane-hover'));
-    if(!drag || !state.running || !state.currentBug){
-      drag=null;
-      return;
-    }
-    const lanesRect = lanesEl.getBoundingClientRect();
-    const count = getLaneCount();
-    let chosen;
-
-    if (isMobileMode()) {
-      const x = e.clientX - lanesRect.left + lanesEl.scrollLeft;
-      const laneWidth = lanesRect.width / Math.max(count,1);
-      chosen = Math.max(0, Math.min(count-1, Math.floor(x / laneWidth)));
-    } else {
-      const y = e.clientY - lanesRect.top + lanesEl.scrollTop;
-      const laneHeight = lanesRect.height / Math.max(count,1);
-      chosen = Math.max(0, Math.min(count-1, Math.floor(y / laneHeight)));
-    }
-
-    placeGate(drag.type, chosen, e.clientX, e.clientY);
-    drag = null;
-  });
-
-  gameArea.addEventListener('touchmove', e=>{
-    if (!drag || !drag.touch || !state.running || !state.currentBug) return;
-    const touch = e.touches[0];
-    const lanesRect = lanesEl.getBoundingClientRect();
-    const count = getLaneCount();
-
-    if (isMobileMode()) {
-      const x = touch.clientX - lanesRect.left + lanesEl.scrollLeft;
-      const laneWidth = lanesRect.width / Math.max(count,1);
-      const idx = Math.max(0, Math.min(count-1, Math.floor(x / laneWidth)));
-      document.querySelectorAll('.lane').forEach((el,i)=> el.classList.toggle('lane-hover', i===idx));
-    } else {
-      const y = touch.clientY - lanesRect.top + lanesEl.scrollTop;
-      const laneHeight = lanesRect.height / Math.max(count,1);
-      const idx = Math.max(0, Math.min(count-1, Math.floor(y / laneHeight)));
-      document.querySelectorAll('.lane').forEach((el,i)=> el.classList.toggle('lane-hover', i===idx));
-    }
-  });
-
-  gameArea.addEventListener('touchend', e=>{
-    if (!drag || !drag.touch || !state.running || !state.currentBug) {
-      drag = null;
-      document.querySelectorAll('.gate-btn').forEach(x=>x.classList.remove('dragging'));
-      document.querySelectorAll('.lane').forEach(el=>el.classList.remove('lane-hover'));
-      return;
-    }
-    const touch = e.changedTouches[0];
-    const lanesRect = lanesEl.getBoundingClientRect();
-    const count = getLaneCount();
-    let chosen;
-    if (isMobileMode()) {
-      const x = touch.clientX - lanesRect.left + lanesEl.scrollLeft;
-      const laneWidth = lanesRect.width / Math.max(count,1);
-      chosen = Math.max(0, Math.min(count-1, Math.floor(x / laneWidth)));
-    } else {
-      const y = touch.clientY - lanesRect.top + lanesEl.scrollTop;
-      const laneHeight = lanesRect.height / Math.max(count,1);
-      chosen = Math.max(0, Math.min(count-1, Math.floor(y / laneHeight)));
-    }
-
-    placeGate(drag.type, chosen, touch.clientX, touch.clientY);
-    drag = null;
-    document.querySelectorAll('.gate-btn').forEach(x=>x.classList.remove('dragging'));
-    document.querySelectorAll('.lane').forEach(el=>el.classList.remove('lane-hover'));
-  });
-
+  /* ============== GATE PLACEMENT =================== */
   function placeGate(type, laneIndex, clientX, clientY){
     if(!state.currentBug) return;
 
@@ -1414,93 +831,74 @@
 
     const node = document.createElement('div');
     node.className = 'lane-gate lane-gate-' + type;
-    node.style.zIndex = 60;
-
     const line = document.createElement('div');
     line.className = 'lane-gate-line';
-
     const label = document.createElement('div');
     label.className = 'lane-gate-label';
     label.textContent = type.toUpperCase();
-
     node.appendChild(line);
     node.appendChild(label);
     gameArea.appendChild(node);
 
-    let gateCenterX, gateCenterY;
+    let centerX, centerY;
 
-    if (isMobileMode()) {
-      gateCenterX = (laneRect.left - areaRect.left) + laneRect.width/2;
-      gateCenterY = clientY ? (clientY - areaRect.top) : (laneRect.top - areaRect.top + laneRect.height*0.5);
-
-      const gateHalfW = node.offsetWidth/2 || 60;
-      const gateHalfH = node.offsetHeight/2 || 28;
-
-      gateCenterY = Math.max(
-        (laneRect.top - areaRect.top) + 30,
-        Math.min(gateCenterY, (laneRect.bottom - areaRect.top) - 30)
-      );
-
-      node.style.left = (gateCenterX - gateHalfW) + 'px';
-      node.style.top  = (gateCenterY - gateHalfH) + 'px';
+    if(isMobileMode()){
+      centerX = (laneRect.left - areaRect.left) + laneRect.width/2;
+      centerY = clientY ? (clientY - areaRect.top) : (laneRect.top - areaRect.top + laneRect.height/2);
+      const topLimit = (laneRect.top - areaRect.top) + 30;
+      const bottomLimit = (laneRect.bottom - areaRect.top) - 30;
+      centerY = Math.max(topLimit, Math.min(centerY, bottomLimit));
     } else {
-      const top = laneRect.top - areaRect.top + (laneRect.height/2) - 28;
-
-      let center = clientX - areaRect.left;
-      const halfWidth = 60;
-      center = Math.max(halfWidth, Math.min(center, areaRect.width - halfWidth));
-
-      node.style.left = (center - halfWidth) + 'px';
-      node.style.top  = top + 'px';
-
-      gateCenterX = center;
-      gateCenterY = top + 28;
+      centerY = laneRect.top - areaRect.top + laneRect.height/2;
+      centerX = clientX - areaRect.left;
+      const leftLimit = 50;
+      const rightLimit = areaRect.width - 50;
+      centerX = Math.max(leftLimit, Math.min(centerX, rightLimit));
     }
 
-    if(!window._placedGates) window._placedGates = [];
-    window._placedGates.push({
-      el: node,
-      type,
-      lane: laneIndex,
-      centerX: gateCenterX,
-      centerY: gateCenterY,
-      consumed: false
-    });
+    node.style.left = (centerX - node.offsetWidth/2) + 'px';
+    node.style.top  = (centerY - node.offsetHeight/2) + 'px';
 
     node.animate(
       [{transform:'scale(.86)'},{transform:'scale(1.02)'},{transform:'scale(1)'}],
       {duration:220}
     );
     beep(520,0.06);
+
+    if(!window._placedGates) window._placedGates = [];
+    window._placedGates.push({
+      el: node,
+      type,
+      lane: laneIndex,
+      centerX,
+      centerY,
+      consumed: false
+    });
   }
 
-  function spawnNextBug(manual=false){
+  /* ============== BUG SPAWN / MOVEMENT =================== */
+  function spawnNextBug(){
     if(!state.running) return;
     if(state.currentBug) return;
-    if(state.remaining <= 0){
-      if(manual) flashBanner('No bugs remaining');
-      return;
-    }
+    if(state.remaining <= 0) return;
 
     const def = getNextBugDef();
-    const laneCount = getLaneCount();
-    const row = Math.floor(Math.random()*laneCount);
+    const count = getLaneCount();
+    const row = Math.floor(Math.random()*count);
     const laneEl = lanesEl.children[row];
     const areaRect = gameArea.getBoundingClientRect();
     const laneRect = laneEl.getBoundingClientRect();
-
     const prodRect = prodCol.getBoundingClientRect();
 
-    const el = document.createElement('div');
-    el.className = 'bug';
-    el.innerHTML = `<span class="icon">${def.icon}</span><span>${def.label}</span>`;
-    el.style.zIndex = 40;
-    gameArea.appendChild(el);
+    const bugEl = document.createElement('div');
+    bugEl.className = 'bug';
+    bugEl.innerHTML = `<span class="icon">${def.icon}</span><span>${def.label}</span>`;
+    gameArea.appendChild(bugEl);
 
-    const bug = {
+    let bug = {
       def,
       row,
-      el,
+      el: bugEl,
       x: 0,
       y: 0,
       vx: 0,
@@ -1511,35 +909,30 @@
       thresholdY: null
     };
 
-    if (isMobileMode()) {
-      const startX = (laneRect.left - areaRect.left) + laneRect.width/2 - (el.offsetWidth/2);
-      const startY = (laneRect.top - areaRect.top) + 12;
-      el.style.left = startX + 'px';
-      el.style.top  = startY + 'px';
-
-      const thresholdY = (laneRect.bottom - areaRect.top) - el.offsetHeight - 6;
+    if(isMobileMode()){
+      const startX = (laneRect.left - areaRect.left) + laneRect.width/2 - bugEl.offsetWidth/2;
+      const startY = (laneRect.top - areaRect.top) + 10;
       bug.x = startX;
       bug.y = startY;
+      bugEl.style.left = startX + 'px';
+      bugEl.style.top  = startY + 'px';
+
+      const thresholdY = (laneRect.bottom - areaRect.top) - bugEl.offsetHeight - 6;
       bug.thresholdY = thresholdY;
       bug.vy = (thresholdY - startY) / CONFIG.bugTravelSeconds;
-      bug.vx = 0;
     } else {
-      const y = laneRect.top - areaRect.top + laneRect.height/2 - 16;
+      const y = laneRect.top - areaRect.top + laneRect.height/2 - bugEl.offsetHeight/2;
       const startX = (laneRect.left - areaRect.left) + 10;
-      el.style.left = startX + 'px';
-      el.style.top  = y + 'px';
-
-      const prodThreshold = prodRect.left - areaRect.left - el.offsetWidth;
-      const safeThreshold = Math.max(prodThreshold, startX + 120);
-
-      const distance = safeThreshold - startX;
-      const speed = distance / CONFIG.bugTravelSeconds;
-
       bug.x = startX;
       bug.y = y;
-      bug.vx = speed;
-      bug.vy = 0;
+      bugEl.style.left = startX + 'px';
+      bugEl.style.top  = y + 'px';
+
+      const prodThreshold = prodRect.left - areaRect.left - bugEl.offsetWidth;
+      const safeThreshold = Math.max(prodThreshold, startX + 120);
       bug.thresholdX = safeThreshold;
+      const distance = safeThreshold - startX;
+      bug.vx = distance / CONFIG.bugTravelSeconds;
     }
 
     state.currentBug = bug;
@@ -1554,55 +947,44 @@
       def.right === 'contract'    ? 'CONTRACT TEST' :
       def.right === 'integration' ? 'INTEGRATION' :
       def.right.toUpperCase();
-
     banner.textContent = `Incoming: ${def.label} (${gateName})`;
   }
 
   function computeDynamicScore(gate, bug){
     const maxScore = CONFIG.scoring.correctMax;
     const minScore = CONFIG.scoring.correctMin;
-
-    if (isMobileMode()) {
+    if(isMobileMode()){
       const tRaw = gate.centerY / Math.max(bug.thresholdY || 1, 1);
       const t = Math.min(Math.max(tRaw, 0), 1);
       return Math.round(maxScore - t * (maxScore - minScore));
     } else {
-      const areaRect = gameArea.getBoundingClientRect();
-      const prodRect = prodCol.getBoundingClientRect();
-      const prodThreshold = prodRect.left - areaRect.left - bug.el.offsetWidth;
-      const safeThreshold = Math.max(prodThreshold, 120);
-
-      let t = gate.centerX / Math.max(safeThreshold, 1);
-      t = Math.min(Math.max(t, 0), 1);
+      const tRaw = gate.centerX / Math.max(bug.thresholdX || 1, 1);
+      const t = Math.min(Math.max(tRaw, 0), 1);
       return Math.round(maxScore - t * (maxScore - minScore));
     }
   }
 
   function handleGateHit(bug, gate){
     gate.consumed = true;
-
     const gx = gate.centerX;
-    const gy = gate.centerY - 24;
+    const gy = gate.centerY - 18;
 
     if(gate.type === bug.def.right){
-      const dynamicScore = computeDynamicScore(gate, bug);
-
-      state.score += dynamicScore;
+      const sc = computeDynamicScore(gate, bug);
+      state.score += sc;
       state.combo++;
       beep(800,0.08);
-
-      showFloatingText(`+${dynamicScore}`, gx, gy, '#6effa0');
+      showFloatingText(`+${sc}`, gx, gy, '#7affb4');
 
       if(state.combo>0 && state.combo % CONFIG.scoring.comboSize === 0){
         state.score += CONFIG.scoring.comboBonus;
-        showFloatingText(`+${CONFIG.scoring.comboBonus}`, gx + 10, gy - 26, '#ffd36b');
+        showFloatingText(`+${CONFIG.scoring.comboBonus}`, gx+6, gy-20, '#ffd36b');
         flashBanner(`Combo! +${CONFIG.scoring.comboBonus}`);
       }
 
       bug.active = false;
       try{ bug.el.remove(); }catch(e){}
       try{ gate.el.remove(); }catch(e){}
-
       window._placedGates = (window._placedGates || []).filter(g=>g!==gate);
       state.currentBug = null;
       updateHUD();
@@ -1611,71 +993,35 @@
       state.score += CONFIG.scoring.wrongGate;
       state.combo = 0;
       beep(180,0.08);
-
       showFloatingText(`${CONFIG.scoring.wrongGate}`, gx, gy, '#ff6b6b');
 
       bug.pausedUntil = performance.now() + CONFIG.wrongPauseMs;
-
       gate.el.style.opacity = '0.25';
       setTimeout(()=>{
         try{ gate.el.remove(); }catch(e){}
         window._placedGates = (window._placedGates || []).filter(g=>g!==gate);
       }, 400);
-
       updateHUD();
     }
-  }
-
-  function createSpark(x,y,color){
-    const s = document.createElement('div');
-    s.className = 'spark';
-    s.style.left = x+'px';
-    s.style.top = y+'px';
-    s.style.color = color || '#ffb36b';
-    gameArea.appendChild(s);
-    s.animate(
-      [
-        { transform:'scale(1)', opacity:1 },
-        { transform:'scale(2)', opacity:0 }
-      ],
-      { duration:700, easing:'ease-out' }
-    );
-    setTimeout(()=>{ try{s.remove();}catch(e){} }, 700);
   }
 
   function hitProd(bug){
     state.score += CONFIG.scoring.hitProd;
     state.combo = 0;
-
     state.health -= 20;
     if(state.health < 0) state.health = 0;
 
     updateHealth();
-    updateProdDamageVisual();
     beep(120,0.12);
 
     const areaRect = gameArea.getBoundingClientRect();
     const prodRect = prodCol.getBoundingClientRect();
     const sx = (prodRect.left - areaRect.left) + 20;
-    const sy = (prodRect.top - areaRect.top)+20;
-
-    createSpark(sx, sy, '#ffb36b');
-    showFloatingText(`${CONFIG.scoring.hitProd}`, sx + 10, sy - 18, '#ff6b6b');
+    const sy = (prodRect.top - areaRect.top) + 18;
+    showFloatingText(`${CONFIG.scoring.hitProd}`, sx+10, sy-10, '#ff6b6b');
 
     prodCol.classList.add('hit');
-    setTimeout(()=>prodCol.classList.remove('hit'), 350);
-
-    if(state.health <= 0){
-      for(let i=0;i<4;i++){
-        setTimeout(()=>{
-          createSpark(
-            sx + 10 + (Math.random()*40 - 20),
-            sy + (Math.random()*30 - 15),
-            '#ff6666'
-          );
-        }, i*120);
-      }
-    }
+    setTimeout(()=>prodCol.classList.remove('hit'), 300);
 
     bug.active = false;
     try{ bug.el.remove(); }catch(e){}
@@ -1704,19 +1050,17 @@
       if(now >= bug.pausedUntil){
         const dtSec = dt / 1000;
 
-        if (isMobileMode()) {
+        if(isMobileMode()){
           bug.y += bug.vy * dtSec;
           bug.el.style.top = bug.y + 'px';
 
-          let gates = window._placedGates || [];
+          const gates = (window._placedGates || []);
           for(const gate of gates){
             if(gate.consumed) continue;
             if(gate.lane !== bug.row) continue;
-
             const bugBottom = bug.y + bug.el.offsetHeight;
-            const gateTop = gate.centerY - 12;
-            const gateBottom = gate.centerY + 12;
-
+            const gateTop = gate.centerY - 14;
+            const gateBottom = gate.centerY + 14;
             if(bugBottom >= gateTop && bug.y <= gateBottom){
               handleGateHit(bug, gate);
               break;
@@ -1732,14 +1076,13 @@
           bug.x += bug.vx * dtSec;
           bug.el.style.left = bug.x + 'px';
 
-          let gates = window._placedGates || [];
+          const gates = (window._placedGates || []);
           for(const gate of gates){
             if(gate.consumed) continue;
             if(gate.lane !== bug.row) continue;
             const bugRight = bug.x + bug.el.offsetWidth;
-            const gateHalf = 12;
-            const gateLeft = gate.centerX - gateHalf;
-            const gateRight = gate.centerX + gateHalf;
+            const gateLeft = gate.centerX - 16;
+            const gateRight = gate.centerX + 16;
             if(bugRight >= gateLeft && bug.x <= gateRight){
               handleGateHit(bug, gate);
               break;
@@ -1759,6 +1102,7 @@
   }
   requestAnimationFrame(gameLoop);
 
+  /* ============== GAME CONTROL =================== */
   function resetSession(){
     state.running = false;
     clearInterval(timerInterval);
@@ -1785,85 +1129,37 @@
     document.getElementById('timer').textContent = GAME_DURATION;
     banner.textContent = 'Ready';
     updateHealth();
-    updateProdDamageVisual();
     updateHUD();
   }
 
-  function showEndOverlay(reason, rank){
+  function showEndOverlay(reason){
     let title = 'Game Over';
-    let className = '';
-
     if(reason && reason.toLowerCase().includes('time')){
       title = '⏰ Time Up!';
-      className = 'timeup';
     } else if(reason && reason.toLowerCase().includes('meltdown')){
       title = '🔥 Production Meltdown!';
-      className = 'meltdown';
-    } else {
-      title = reason || 'Game Over';
+    } else if(reason){
+      title = reason;
     }
-
     endTitleEl.textContent = title;
-    endTitleEl.classList.remove('timeup','meltdown','aborted');
-    if(className) endTitleEl.classList.add(className);
-
     endScoreEl.textContent = `Score: ${state.score}`;
-
-    if(rank){
-      if(rank === 1){
-        endRankEl.textContent = `🏆 New High Score! You’re #1`;
-      } else {
-        endRankEl.textContent = `New leaderboard rank: #${rank}`;
-      }
-    } else {
-      endRankEl.textContent = '';
-    }
-
-    endTitleEl.style.animation = 'none';
-    void endTitleEl.offsetWidth;
-    endTitleEl.style.animation = '';
-
+    endRankEl.textContent = '';
     endOverlay.style.display = 'flex';
   }
 
-  async function endGame(reason){
+  function endGame(reason){
     state.running = false;
     clearInterval(timerInterval);
     timerInterval = null;
     banner.textContent = reason || 'Game over';
-
-    let name = state.player;
-    if(!name){
-      showEndOverlay(reason, null);
-      return;
-    }
-
-    const stamp = Date.now();
-    let rank = null;
-
-    try{
-      await saveScoreToFirebase(state.player, state.score, stamp);
-      const rows = await fetchLeaderboardFromFirebase();
-
-      const idx = rows.findIndex(
-        r => r.name === state.player &&
-             r.score === state.score &&
-             r.timestamp === stamp
-      );
-      rank = idx >= 0 ? idx+1 : null;
-    }catch(e){
-      console.error('Error updating Firebase leaderboard', e);
-    }
-    saveLocalScore(state.player, state.score, stamp);
-
-    showEndOverlay(reason, rank);
-    renderLB();
+    showEndOverlay(reason);
   }
 
   function beginGame(){
     resetSession();
     state.running = true;
     lastTime = null;
+    btnAbort.disabled = false;
 
     let timeLeft = GAME_DURATION;
     document.getElementById('timer').textContent = timeLeft;
@@ -1874,48 +1170,24 @@
       if(timeLeft <= 0){
         clearInterval(timerInterval);
         timerInterval = null;
-        if(state.running){
-          endGame('Time up!');
-        }
+        if(state.running) endGame('Time up!');
       }
     }, 1000);
 
     spawnNextBug();
-    btnAbort.disabled = false;
   }
 
-  endBtnPlay.addEventListener('click', ()=>{
-    if(state.player){
-      beginGame();
-    } else {
-      startOverlay.style.display = 'flex';
-    }
-  });
-
-  endBtnLB.addEventListener('click', ()=>{
-    endOverlay.style.display = 'none';
-    btnLB.click();
-  });
-
-  endBtnNew.addEventListener('click', ()=>{
-    endOverlay.style.display = 'none';
-    resetSession();
-
-    state.player = null;
-    playerNameEl.textContent = '—';
-
-    playerNameInput.value = '';
-    startOverlayBtn.disabled = true;
-
-    startOverlay.style.display = 'flex';
-    playerNameInput.focus();
+  /* ============== NAME INPUT & BUTTONS =================== */
+  playerNameInput.addEventListener('input', ()=>{
+    const val = playerNameInput.value.trim();
+    startOverlayBtn.disabled = !val;
   });
 
   startOverlayBtn.addEventListener('click', ()=>{
     const name = playerNameInput.value.trim();
     if(!name) return;
     state.player = name;
-    playerNameEl.textContent = state.player;
+    playerNameEl.textContent = name;
     startOverlay.style.display = 'none';
     beginGame();
   });
@@ -1929,36 +1201,129 @@
     }
   });
 
-  function abortGame() {
-    if (!state.running) return;
+  endBtnPlay.addEventListener('click', ()=>{
+    if(state.player){
+      beginGame();
+    } else {
+      startOverlay.style.display = 'flex';
+    }
+  });
 
+  endBtnNew.addEventListener('click', ()=>{
+    endOverlay.style.display = 'none';
+    resetSession();
+    state.player = null;
+    playerNameEl.textContent = '—';
+    playerNameInput.value = '';
+    startOverlayBtn.disabled = true;
+    startOverlay.style.display = 'flex';
+    playerNameInput.focus();
+  });
+
+  btnAbort.addEventListener('click', ()=>{
+    if(!state.running) return;
     state.running = false;
     clearInterval(timerInterval);
     timerInterval = null;
-
-    endTitleEl.textContent = "⛔ Game Aborted";
-    endTitleEl.className = "end-title aborted";
-
-    endScoreEl.textContent = "Score: " + state.score;
-    endRankEl.textContent = "(Not saved to leaderboard)";
-    endOverlay.style.display = "flex";
-
+    endTitleEl.textContent = '⛔ Game Aborted';
+    endScoreEl.textContent = `Score: ${state.score}`;
+    endRankEl.textContent = '(Not saved)';
+    endOverlay.style.display = 'flex';
     btnAbort.disabled = true;
+  });
+
+  /* ============== DRAG & DROP (MOUSE + TOUCH) =================== */
+  let dragGateType = null;
+  let dragGhost = null;
+
+  function startDragGate(type, clientX, clientY){
+    dragGateType = type;
+
+    dragGhost = document.createElement('div');
+    dragGhost.className = 'gate-btn dragging';
+    dragGhost.style.position = 'fixed';
+    dragGhost.style.left = (clientX - 60) + 'px';
+    dragGhost.style.top  = (clientY - 20) + 'px';
+    dragGhost.style.pointerEvents = 'none';
+    dragGhost.style.opacity = '0.7';
+    dragGhost.style.zIndex = '99999';
+    dragGhost.textContent = type.toUpperCase();
+    document.body.appendChild(dragGhost);
   }
 
-  btnAbort.addEventListener("click", abortGame);
-
-  function saveLocalScore(name, score, timestamp){
-    let list = JSON.parse(localStorage.getItem("localScores") || "[]");
-    list.push({ name, score, timestamp });
-    list.sort((a,b)=>b.score - a.score);
-    list = list.slice(0, 500);
-    localStorage.setItem("localScores", JSON.stringify(list));
+  function moveDragGate(clientX, clientY){
+    if(!dragGhost) return;
+    dragGhost.style.left = (clientX - 60) + 'px';
+    dragGhost.style.top  = (clientY - 20) + 'px';
   }
 
-  function loadLocalScores(){
-    return JSON.parse(localStorage.getItem("localScores") || "[]");
+  function endDragGate(clientX, clientY){
+    if(!dragGateType || !dragGhost){
+      dragGateType = null;
+      return;
+    }
+    dragGhost.remove();
+    dragGhost = null;
+
+    const lanesRect = lanesEl.getBoundingClientRect();
+    const count = getLaneCount();
+    let laneIndex = null;
+
+    if(isMobileMode()){
+      const x = clientX;
+      const laneWidth = lanesRect.width / count;
+      const idx = Math.floor((x - lanesRect.left) / laneWidth);
+      if(idx >= 0 && idx < count) laneIndex = idx;
+    } else {
+      const y = clientY;
+      const laneHeight = lanesRect.height / count;
+      const idx = Math.floor((y - lanesRect.top) / laneHeight);
+      if(idx >= 0 && idx < count) laneIndex = idx;
+    }
+
+    if(laneIndex !== null && state.running && state.currentBug){
+      placeGate(dragGateType, laneIndex, clientX, clientY);
+    }
+    dragGateType = null;
   }
+
+  // Mouse
+  gateButtons.forEach(btn=>{
+    btn.addEventListener('mousedown', e=>{
+      if(isMobileMode()) return; // mouse on mobile not needed
+      e.preventDefault();
+      startDragGate(btn.dataset.type, e.clientX, e.clientY);
+      window.addEventListener('mousemove', mouseMoveDrag);
+      window.addEventListener('mouseup', mouseUpDrag, { once:true });
+    });
+  });
+
+  function mouseMoveDrag(e){
+    moveDragGate(e.clientX, e.clientY);
+  }
+  function mouseUpDrag(e){
+    window.removeEventListener('mousemove', mouseMoveDrag);
+    endDragGate(e.clientX, e.clientY);
+  }
+
+  // Touch
+  gateButtons.forEach(btn=>{
+    btn.addEventListener('touchstart', e=>{
+      e.preventDefault();
+      const t = e.touches[0];
+      startDragGate(btn.dataset.type, t.clientX, t.clientY);
+    });
+    btn.addEventListener('touchmove', e=>{
+      e.preventDefault();
+      const t = e.touches[0];
+      moveDragGate(t.clientX, t.clientY);
+    });
+    btn.addEventListener('touchend', e=>{
+      e.preventDefault();
+      const t = e.changedTouches[0];
+      endDragGate(t.clientX, t.clientY);
+    });
+  });
 </script>
 </body>
 </html>
