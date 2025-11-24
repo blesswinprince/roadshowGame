@@ -818,92 +818,110 @@
     .lane {
       touch-action:none;
     }
+/* ---------- MOBILE MODE: vertical lanes, PROD as horizontal bar, icon-only bug ---------- */
+@media (max-width: 600px) {
 
-    /* ---------- MOBILE MODE: vertical lanes, PROD as horizontal bar, icon-only bug ---------- */
-    @media (max-width: 600px) {
-      .game-area{
-        display:flex;
-        flex-direction:column;
-        padding-bottom:0;
-        height:auto;
-        min-height:480px;
-      }
+  html,body{
+    height:100%;
+    overflow:hidden;        /* no vertical scroll */
+  }
 
-      .lanes{
-        position:static;
-        order:1;
-        display:flex;
-        flex-direction:row;
-        height:320px;
-        width:100%;
-        margin:20px 0 8px 0;
-        gap:6px;
-      }
+  .wrap{
+    height:100%;
+    padding:8px;
+    box-sizing:border-box;
+  }
 
-      .lane{
-        flex:1;
-        height:100%;
-        min-width:60px;
-        margin:0 4px;
-      }
+  .main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
 
-      .lane .line-left{
-        display:none;
-      }
+  .game-area{
+    flex:1;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    padding-bottom:0;
+  }
 
-      .lane::before{
-        content:'';
-        position:absolute;
-        top:10px;
-        left:0;
-        right:0;
-        height:3px;
-        background:linear-gradient(90deg, var(--neon-cyan), transparent);
-        opacity:0.8;
-        border:none;
-        box-shadow:none;
-      }
+  .lanes{
+    position:static;
+    order:1;
+    display:flex;
+    flex-direction:row;
+    flex:1;
+    width:100%;
+    margin:32px 0 4px 0;    /* space under banner */
+    gap:6px;
+  }
 
-      /* PROD becomes a horizontal pill under the lanes */
-      .prod-column{
-        position:relative;
-        order:2;
-        top:0;
-        right:0;
-        margin:4px auto 0;
-        width:220px;
-        height:72px;
-        flex-direction:row;
-        justify-content:space-between;
-        align-items:center;
-        padding:10px 14px;
-      }
-      .prod-icon{
-        font-size:26px;
-        margin-bottom:0;
-      }
-      .prod-label{
-        font-size:11px;
-      }
-      .health{
-        width:110px;
-      }
+  .lane{
+    flex:1;
+    min-width:60px;
+    margin:0 4px;
+  }
 
-      .wave-banner{
-        order:0;
-        top:4px;
-      }
+  .lane .line-left{
+    display:none;
+  }
 
-      .gate-bar{
-        order:3;
-        border-radius:0 0 20px 20px;
-      }
+  .lane::before{
+    content:'';
+    position:absolute;
+    top:10px;
+    left:0;
+    right:0;
+    height:3px;
+    background:linear-gradient(90deg, var(--neon-cyan), transparent);
+    opacity:0.8;
+    border:none;
+    box-shadow:none;
+  }
 
-      /* BUG: icon only on mobile */
-      .bug span:last-child{
-        display:none;
-      }
-    }
+  /* PROD becomes a horizontal pill under the lanes */
+  .prod-column{
+    position:relative;
+    order:2;
+    top:0;
+    right:0;
+    margin:4px auto 0;
+    width:220px;
+    height:72px;
+    flex-direction:row;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 14px;
+  }
+  .prod-icon{
+    font-size:26px;
+    margin-bottom:0;
+  }
+  .prod-label{
+    font-size:11px;
+  }
+  .health{
+    width:110px;
+  }
+
+  .wave-banner{
+    top:4px;
+  }
+
+  .gate-bar{
+    order:3;
+    border-radius:0 0 20px 20px;
+    flex-wrap:wrap;
+  }
+
+  /* BUG: icon only on mobile */
+  .bug span:last-child{
+    display:none;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -2035,34 +2053,42 @@ function saveLocalScore(name, score, timestamp) {
 function loadLocalScores() {
   return JSON.parse(localStorage.getItem("localScores") || "[]");
 }
-
 /* --- Mobile touch drag support --- */
 let touchGate = null;
 
+// start drag from gate bar
 document.querySelectorAll('.gate-btn').forEach(btn => {
   btn.addEventListener('touchstart', e => {
-    e.preventDefault();
+    e.preventDefault();                 // stop scroll
     const touch = e.touches[0];
-    touchGate = { type: btn.dataset.type };
+    touchGate = { type: btn.dataset.type, id: touch.identifier };
     btn.classList.add('dragging');
-  });
+  }, { passive:false });
 });
 
-gameArea.addEventListener('touchmove', e => {
+// move while finger is anywhere on the screen
+document.addEventListener('touchmove', e => {
   if (!touchGate || !state.running || !state.currentBug) return;
 
   const touch = e.touches[0];
   const lanesRect = lanesEl.getBoundingClientRect();
-  const mainAxis = isMobileMode() ? (touch.clientX - lanesRect.left) : (touch.clientY - lanesRect.top);
+  const mainAxis = isMobileMode()
+    ? (touch.clientX - lanesRect.left)
+    : (touch.clientY - lanesRect.top);
+
   const laneSize = (isMobileMode() ? lanesRect.width : lanesRect.height) / CONFIG.lanes;
   const idx = Math.max(0, Math.min(CONFIG.lanes - 1, Math.floor(mainAxis / laneSize)));
 
   document.querySelectorAll('.lane')
     .forEach((el, i) => el.classList.toggle('lane-hover', i === idx));
-});
 
-gameArea.addEventListener('touchend', e => {
+  e.preventDefault(); // keep page from scrolling while dragging
+}, { passive:false });
+
+// drop when finger lifts anywhere
+document.addEventListener('touchend', e => {
   document.querySelectorAll('.lane').forEach(el => el.classList.remove('lane-hover'));
+
   if (!touchGate || !state.running || !state.currentBug) {
     touchGate = null;
     document.querySelectorAll('.gate-btn').forEach(x => x.classList.remove('dragging'));
@@ -2071,7 +2097,10 @@ gameArea.addEventListener('touchend', e => {
 
   const touch = e.changedTouches[0];
   const lanesRect = lanesEl.getBoundingClientRect();
-  const mainAxis = isMobileMode() ? (touch.clientX - lanesRect.left) : (touch.clientY - lanesRect.top);
+  const mainAxis = isMobileMode()
+    ? (touch.clientX - lanesRect.left)
+    : (touch.clientY - lanesRect.top);
+
   const laneSize = (isMobileMode() ? lanesRect.width : lanesRect.height) / CONFIG.lanes;
   const chosen = Math.max(0, Math.min(CONFIG.lanes - 1, Math.floor(mainAxis / laneSize)));
 
@@ -2089,3 +2118,4 @@ window.addEventListener('resize', () => {
 </script>
 </body>
 </html>
+
