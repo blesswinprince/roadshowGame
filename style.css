@@ -816,3 +816,45 @@ button:active{
 .lane {
   touch-action: none;
 }
+
+@media (max-width: 600px) {
+
+  /* Game becomes vertical */
+  .lanes {
+    flex-direction: row;
+    height: auto;
+    width: 100%;
+    margin: 20px 0;
+  }
+
+  .lane {
+    flex: 1;
+    height: 320px;
+    min-width: 60px;
+    margin: 0 4px;
+  }
+
+  .line-left {
+    display: none; /* not needed vertically */
+  }
+
+  /* Starting line becomes TOP line */
+  .lane::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--neon-cyan), transparent);
+    opacity: 0.8;
+  }
+
+  .prod-column {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin: 8px auto;
+    width: 160px;
+  }
+}
