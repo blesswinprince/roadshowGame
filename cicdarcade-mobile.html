@@ -1,0 +1,1803 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>CI/CD Defense Arcade – Mobile</title>
+
+  <style>
+    :root{
+      --bg:#040611;
+      --bg-soft:#071327;
+      --neon-cyan:#6ef6ff;
+      --neon-green:#6effa0;
+      --neon-orange:#ffb36b;
+      --panel: rgba(255,255,255,0.05);
+      --white-soft:#e8f7ff;
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 500px at 10% 6%, rgba(110,246,255,0.08), transparent),
+        radial-gradient(900px 500px at 80% 100%, rgba(255,179,107,0.08), transparent),
+        linear-gradient(180deg,#02030a,var(--bg));
+      color:var(--white-soft);
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      min-height:100vh;
+      padding:8px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:8px;
+      box-sizing:border-box;
+    }
+
+    /* ---------- HEADER / TITLE ---------- */
+
+    header{
+      width:100%;
+      max-width:480px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .title-row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:8px;
+    }
+
+    h1{
+      margin:0;
+      display:flex;
+      flex-direction:column;
+      font-weight:900;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+    }
+
+    .title-main{
+      font-size:24px;
+      color:#fefefe;
+      text-shadow:0 2px 0 #18202f,
+                  0 0 18px rgba(110,246,255,0.6);
+    }
+
+    .title-sub{
+      font-size:13px;
+      color:var(--neon-cyan);
+      text-shadow:0 0 12px rgba(110,246,255,0.5);
+    }
+
+    .header-actions{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      align-items:center;
+    }
+
+    .pill{
+      display:flex;
+      flex-direction:column;
+      padding:3px 8px;
+      border-radius:999px;
+      background:radial-gradient(circle at 0% 0%, rgba(255,255,255,0.14), transparent 50%),
+                 linear-gradient(135deg, rgba(2,8,23,0.9), rgba(9,16,36,0.95));
+      border:1px solid rgba(255,255,255,0.18);
+      box-shadow:0 3px 8px rgba(0,0,0,0.5);
+      min-width:64px;
+    }
+
+    .pill-label{
+      font-size:9px;
+      text-transform:uppercase;
+      opacity:0.7;
+    }
+
+    .pill-value{
+      font-size:12px;
+      font-weight:800;
+      margin-top:1px;
+    }
+
+    .pill-player .pill-value{ color:var(--neon-cyan);}
+    .pill-score  .pill-value{ color:var(--neon-orange);}
+    .pill-combo  .pill-value{ color:var(--neon-green);}
+
+    button{
+      background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,0.18);
+      padding:6px 10px;
+      border-radius:999px;
+      color:#f7fcff;
+      cursor:pointer;
+      font-weight:600;
+      font-size:11px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.4);
+      touch-action:manipulation;
+    }
+    button:hover{
+      transform:translateY(-1px);
+      box-shadow:0 7px 18px rgba(0,0,0,0.6);
+    }
+    button:active{
+      transform:translateY(0);
+      box-shadow:0 2px 6px rgba(0,0,0,0.6);
+    }
+    button[disabled]{
+      opacity:0.45;
+      cursor:not-allowed;
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg,#4cffb7,#58c1ff);
+      border-color:rgba(255,255,255,0.3);
+      color:#041018;
+    }
+
+    .btn-secondary{
+      background:linear-gradient(135deg,#19263c,#101829);
+    }
+
+    .btn-icon{
+      padding:4px 8px;
+      width:32px;
+      justify-content:center;
+      font-size:16px;
+    }
+
+    /* ---------- MAIN LAYOUT ---------- */
+
+    .main{
+      width:100%;
+      max-width:480px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      flex:1;
+    }
+
+    .hud{
+      display:flex;
+      gap:6px;
+      align-items:center;
+      justify-content:space-between;
+      padding:6px 8px;
+      background:linear-gradient(135deg, rgba(9,16,36,0.9), rgba(5,15,27,0.95));
+      border-radius:14px;
+      border:1px solid rgba(110,246,255,0.18);
+      box-shadow:0 10px 25px rgba(0,0,0,0.6);
+      flex-wrap:wrap;
+    }
+
+    .hud-chip{
+      display:flex;
+      align-items:center;
+      gap:4px;
+      padding:3px 8px;
+      border-radius:999px;
+      background:rgba(3,15,30,0.9);
+      border:1px solid rgba(255,255,255,0.06);
+    }
+
+    .hud-label{
+      font-size:10px;
+      text-transform:uppercase;
+      opacity:0.75;
+    }
+    .hud-value{
+      font-size:12px;
+      font-weight:700;
+    }
+    .hud-unit{
+      font-size:10px;
+      opacity:0.75;
+      margin-left:2px;
+    }
+    .hud-chip-timer{
+      background:radial-gradient(circle at 0 0, rgba(255,255,255,0.12), transparent 55%),
+                 linear-gradient(135deg,rgba(255,188,120,0.12),rgba(255,164,90,0.3));
+    }
+
+    /* ---------- GAME AREA ---------- */
+
+    .game-area{
+      position:relative;
+      background:radial-gradient(circle at 50% 0%, rgba(110,246,255,0.12), transparent 55%),
+                 linear-gradient(180deg, rgba(24,40,80,0.8), rgba(4,6,17,0.98));
+      border-radius:20px 20px 16px 16px;
+      overflow:hidden;
+      border:1px solid rgba(110,246,255,0.28);
+      box-shadow:0 18px 40px rgba(0,0,0,0.7);
+      padding:36px 8px 8px;
+      box-sizing:border-box;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-height:400px;
+    }
+
+    .grid{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(110,246,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(110,246,255,0.02) 1px, transparent 1px);
+      background-size:60px 60px;
+      opacity:0.7;
+    }
+
+    .lanes{
+      position:relative;
+      display:flex;
+      flex-direction:row;
+      height:280px; /* longer lanes */
+      width:100%;
+      margin-top:4px;
+      gap:4px;
+      z-index:1;
+      touch-action:none;
+    }
+
+    .lane{
+      flex:1;
+      height:100%;
+      border-radius:10px;
+      position:relative;
+      overflow:visible;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      border:1px solid rgba(255,255,255,0.05);
+      touch-action:none;
+    }
+
+    .lane::before{
+      content:'';
+      position:absolute;
+      top:8px;
+      left:0;
+      right:0;
+      height:3px;
+      background:linear-gradient(90deg, var(--neon-cyan), transparent);
+      opacity:0.8;
+    }
+
+    .lane-label{
+      position:absolute;
+      top:18px;
+      left:50%;
+      transform:translateX(-50%);
+      color:rgba(255,255,255,0.9);
+      font-size:9px;
+      font-weight:700;
+      text-transform:uppercase;
+      text-align:center;
+    }
+
+    .lane-hover{
+      box-shadow:0 0 0 1px rgba(110,246,255,0.7);
+      border-color:rgba(110,246,255,0.7);
+    }
+
+    /* PROD area */
+
+    .prod-column{
+      position:relative;
+      margin:6px auto 0;
+      width:220px;
+      height:72px;
+      border-radius:18px;
+      background:radial-gradient(circle at 50% 0%, rgba(255,224,151,0.12), transparent 55%),
+                 linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.4));
+      border:2px solid rgba(110,246,255,0.8);
+      display:flex;
+      flex-direction:row;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 14px;
+      gap:10px;
+      box-sizing:border-box;
+      box-shadow:0 10px 25px rgba(0,0,0,0.6);
+      z-index:1;
+    }
+
+    .prod-crack{
+      position:absolute;
+      inset:4px;
+      border-radius:inherit;
+      border:2px dashed rgba(255,200,120,0);
+      pointer-events:none;
+      box-shadow:none;
+      transition:border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    .prod-icon{
+      font-size:26px;
+      color:var(--neon-orange);
+      text-shadow:0 0 18px rgba(255,140,60,0.5);
+    }
+
+    .prod-label{
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:0.09em;
+      text-transform:uppercase;
+      opacity:0.95;
+    }
+
+    .health{
+      flex:1;
+      height:14px;
+      background:rgba(0,0,0,0.55);
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.2);
+      margin-left:6px;
+    }
+
+    .health-inner{
+      height:100%;
+      background:linear-gradient(90deg,var(--neon-green),var(--neon-cyan));
+      width:100%;
+      transition:width 0.18s ease;
+    }
+
+    /* Bugs */
+
+    .bug{
+      position:absolute;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:4px 6px;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(110,246,255,0.16), rgba(110,246,255,0.04));
+      box-shadow:0 10px 30px rgba(0,0,0,0.6);
+      color:#fff;
+      font-weight:700;
+      pointer-events:none;
+      white-space:nowrap;
+      font-size:14px;
+      z-index:2;
+    }
+    .bug .label{display:none;}
+    .bug .icon{font-size:20px;}
+
+    .spark{
+      position:absolute;
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      pointer-events:none;
+      box-shadow:0 0 12px currentColor;
+      z-index:3;
+    }
+
+    .wave-banner{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      top:6px;
+      background:rgba(0,0,0,0.55);
+      padding:6px 12px;
+      border-radius:999px;
+      color:#e9ffff;
+      font-weight:700;
+      border:1px solid rgba(110,246,255,0.25);
+      font-size:11px;
+      z-index:2;
+    }
+
+    /* Gate bar */
+
+    .gate-bar{
+      display:flex;
+      flex-direction:row;
+      gap:6px;
+      align-items:center;
+      justify-content:center;
+      padding:8px 8px 10px;
+      background:linear-gradient(180deg, rgba(18,30,62,0.96), rgba(2,5,13,0.98));
+      border-radius:0 0 20px 20px;
+      border-top:1px solid rgba(110,246,255,0.25);
+      width:100%;
+      max-width:480px;
+      box-shadow:0 8px 18px rgba(0,0,0,0.7);
+    }
+
+    .gate-btn{
+      flex:1;
+      height:40px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      cursor:grab;
+      border:1px solid rgba(255,255,255,0.18);
+      user-select:none;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:0.06em;
+      touch-action:none;
+    }
+
+    .gate-btn.blue{
+      background:linear-gradient(135deg,#3fb3ff,#6ef6ff);
+      color:#001;
+    }
+    .gate-btn.green{
+      background:linear-gradient(135deg,#b7ffdf,#9cffb6);
+      color:#001;
+    }
+    .gate-btn.orange{
+      background:linear-gradient(135deg,#ffc88f,#ffb36b);
+      color:#001;
+    }
+
+    .gate-btn.dragging{
+      box-shadow:0 0 16px rgba(110,246,255,0.9);
+      transform:scale(1.02);
+    }
+
+    /* Horizontal gate marker on lane */
+
+    .lane-gate {
+  position:absolute;
+  width:40px;        /* smaller */
+  height:28px;       /* smaller */
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:transparent;
+  border:none;
+  pointer-events:none;
+  z-index:2;
+}
+
+.lane-gate-line {
+  width:100%;
+  height:6px; 
+  border-radius:999px;
+  box-shadow:0 0 10px rgba(110,246,255,0.4);
+}
+
+.lane-gate-unit .lane-gate-line {
+  background:linear-gradient(90deg,#3fb3ff,#6ef6ff);
+}
+.lane-gate-contract .lane-gate-line {
+  background:linear-gradient(90deg,#b7ffdf,#9cffb6);
+}
+.lane-gate-integration .lane-gate-line {
+  background:linear-gradient(90deg,#ffc88f,#ffb36b);
+}
+
+.lane-gate-label {
+  margin-top:2px;
+  font-size:7px;     /* smaller text */
+  letter-spacing:0.03em;
+  text-transform:uppercase;
+  opacity:0.85;
+}
+    .lb{ display:none; }
+
+    .muted{opacity:0.8;}
+
+    /* PROD health / damage states */
+
+    .prod-column.healthy .prod-crack{
+      border-color: rgba(110,246,255,0.6);
+      box-shadow:0 0 14px rgba(110,246,255,0.65) inset;
+    }
+    .prod-column.healthy{
+      animation:prod-pulse 2.5s ease-in-out infinite;
+    }
+
+    .prod-column.hit{
+      animation: prod-hit 0.35s ease-out;
+    }
+
+    .prod-column.damaged .prod-crack{
+      border-color: rgba(255,200,120,0.7);
+      box-shadow:0 0 14px rgba(255,140,60,0.5) inset;
+    }
+
+    .prod-column.critical .prod-crack{
+      border-color: rgba(255,80,80,0.95);
+      box-shadow:0 0 16px rgba(255,80,80,0.7) inset;
+    }
+
+    .prod-column.broken{
+      animation: prod-break 0.6s ease-out forwards;
+      filter:grayscale(1) brightness(0.6);
+    }
+
+    @keyframes prod-pulse{
+      0%,100% { box-shadow:0 10px 25px rgba(0,0,0,0.6); }
+      50% { box-shadow:0 18px 35px rgba(0,0,0,0.8); }
+    }
+
+    @keyframes prod-hit{
+      0%  { transform:translateX(0); }
+      20% { transform:translateX(-3px); }
+      40% { transform:translateX(4px); }
+      60% { transform:translateX(-2px); }
+      80% { transform:translateX(2px); }
+      100%{ transform:translateX(0); }
+    }
+
+    @keyframes prod-break{
+      0%  { transform:scale(1);   opacity:1;   }
+      40% { transform:scale(1.04) rotate(1deg);  opacity:0.8; }
+      70% { transform:scale(0.98) rotate(-2deg); opacity:0.5; }
+      100%{ transform:scale(0.96) rotate(-4deg); opacity:0.3; }
+    }
+
+    @keyframes pop {
+      0%{transform:scale(.9)}
+      50%{transform:scale(1.06)}
+      100%{transform:scale(1)}
+    }
+
+    /* Overlays */
+
+    .end-overlay{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(255,255,255,0.12), transparent 55%),
+        linear-gradient(180deg,rgba(0,0,0,0.85),rgba(0,0,0,0.95));
+      z-index:120;
+    }
+
+    .end-card{
+      background:linear-gradient(180deg,#071022,#030712);
+      border-radius:24px;
+      border:1px solid rgba(110,246,255,0.6);
+      padding:20px 22px 18px;
+      min-width:260px;
+      max-width:320px;
+      text-align:center;
+      box-shadow:0 20px 60px rgba(0,0,0,0.8);
+    }
+
+    .end-title{
+      font-size:22px;
+      font-weight:900;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+      text-shadow:0 0 18px rgba(255,255,255,0.6);
+      animation:end-title-pop 0.7s ease-out;
+    }
+
+    .end-score{
+      font-size:18px;
+      margin-bottom:4px;
+    }
+
+    .end-rank{
+      font-size:14px;
+      opacity:0.9;
+      margin-bottom:12px;
+    }
+
+    .end-actions{
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      margin-top:4px;
+      flex-wrap:wrap;
+    }
+
+    .name-input{
+      width:100%;
+      margin:10px 0 6px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(110,246,255,0.6);
+      background:rgba(0,0,0,0.55);
+      color:#e8f7ff;
+      outline:none;
+      font-family:inherit;
+      font-size:14px;
+    }
+    .name-input::placeholder{ color:rgba(232,247,255,0.55);}
+    .name-input:focus{
+      border-color:rgba(110,246,255,0.95);
+      box-shadow:0 0 0 2px rgba(110,246,255,0.5);
+    }
+
+    .end-title.meltdown{ color:#ff8a6b;}
+    .end-title.timeup{   color:#6ef6ff;}
+
+    @keyframes end-title-pop{
+      0%   { transform:scale(0.6) rotate(-4deg); opacity:0; }
+      40%  { transform:scale(1.1) rotate(2deg);  opacity:1; }
+      70%  { transform:scale(0.96) rotate(-2deg);}
+      100% { transform:scale(1)   rotate(0deg); }
+    }
+
+    /* Modal */
+
+    .modal-root{
+	  position:fixed;
+	  inset:0;
+	  display:none;
+	  align-items:flex-start;            /* instead of center – better on mobile */
+	  justify-content:center;
+	  padding:16px;                      /* space around card */
+	  background:linear-gradient(180deg,rgba(0,0,0,0.65),rgba(0,0,0,0.9));
+	  z-index:110;
+	  overflow-y:auto;                   /* 🔥 allow scrolling whole overlay */
+	  -webkit-overflow-scrolling:touch;  /* smooth iOS scroll */
+	}
+
+	.modal-content{
+	  background:linear-gradient(180deg,#071022,#04101a);
+	  padding:16px;
+	  border-radius:16px;
+	  border:1px solid rgba(110,246,255,0.4);
+	  width:90vw;
+	  max-width:420px;
+	  max-height:80vh;                   /* 🔥 card itself scrolls if too tall */
+	  overflow-y:auto;                   /* content scroll inside */
+	  color:#dff;
+	  box-shadow:0 18px 50px rgba(0,0,0,0.9);
+	  font-size:13px;
+	}
+
+    .lb-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:8px;
+      font-size:13px;
+    }
+    .lb-table th,
+    .lb-table td{
+      padding:6px 8px;
+    }
+    .lb-table th{
+      text-align:left;
+      font-size:11px;
+      text-transform:uppercase;
+      opacity:0.7;
+      border-bottom:1px solid rgba(255,255,255,0.2);
+    }
+    .lb-row{
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+    .lb-row:nth-child(even){
+      background:rgba(255,255,255,0.01);
+    }
+
+    /* hide tip section entirely */
+    .footer-tip{ display:none; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="title-row">
+      <h1>
+        <span class="title-main">CI/CD</span>
+        <span class="title-sub">Defense Arcade</span>
+      </h1>
+      <div class="header-actions">
+        <button id="btnLB" class="btn-secondary btn-icon" aria-label="Leaderboard">🏆</button>
+        <button id="btnTutorial" class="btn-secondary btn-icon" aria-label="Tutorial">❓</button>
+        <button id="btnStartAbort" class="btn-primary">▶ Start</button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="pill pill-player">
+        <span class="pill-label">Player</span>
+        <span id="playerName" class="pill-value">—</span>
+      </div>
+      <div class="pill pill-score">
+        <span class="pill-label">Score</span>
+        <span id="score" class="pill-value">0</span>
+      </div>
+      <div class="pill pill-combo">
+        <span class="pill-label">Combo</span>
+        <span id="combo" class="pill-value">0</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="hud">
+      <div class="hud-chip">
+        <span class="hud-label">Upcoming</span>
+        <span class="hud-value" id="upcoming">—</span>
+      </div>
+      <div class="hud-chip">
+        <span class="hud-label">Remaining</span>
+        <span class="hud-value" id="remaining">—</span>
+      </div>
+      <div class="hud-chip">
+        <span class="hud-label">Speed</span>
+        <span class="hud-value" id="speedLbl">1.00x</span>
+      </div>
+      <div class="hud-chip hud-chip-timer">
+        <span class="hud-label">Time</span>
+        <span class="hud-value" id="timer">90</span><span class="hud-unit">s</span>
+      </div>
+    </div>
+
+    <div class="game-area" id="gameArea">
+      <div class="grid"></div>
+      <div class="wave-banner" id="banner">Ready</div>
+
+      <div class="lanes" id="lanes"></div>
+
+      <div class="prod-column healthy" id="prodCol">
+        <div class="prod-crack" id="prodCrack"></div>
+        <div class="prod-icon">⚙️</div>
+        <div class="prod-label">PROD</div>
+        <div class="health" title="Production Stability">
+          <div id="healthInner" class="health-inner"></div>
+        </div>
+      </div>
+
+      <!-- End-of-game overlay -->
+      <div id="endOverlay" class="end-overlay" style="display:none">
+        <div class="end-card">
+          <div id="endTitle" class="end-title">Time Up!</div>
+          <div id="endScore" class="end-score">Score: 0</div>
+          <div id="endRank" class="end-rank"></div>
+          <div class="end-actions">
+            <button id="endBtnPlay">Play Again</button>
+            <button id="endBtnLB">Leaderboard</button>
+            <button id="endBtnNew">New Game</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Start-of-game overlay -->
+      <div id="startOverlay" class="end-overlay" style="display:flex">
+        <div class="end-card">
+          <div id="startTitle" class="end-title timeup">
+            CI/CD Defense Arcade
+          </div>
+          <div id="startSubtitle" class="end-score">
+            Defend PROD from sneaky CI/CD bugs!
+          </div>
+
+          <input id="playerNameInput"
+                 type="text"
+                 class="name-input"
+                 placeholder="Type your hero name here" />
+
+          <div class="end-rank">
+            Drag UNIT / CONTRACT / INTEGRATION gates up into lanes to block bugs early.
+          </div>
+          <div class="end-actions">
+            <button id="startOverlayBtn">Start Game ▶</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gate bar -->
+    <div class="gate-bar" id="gateBar">
+      <div class="gate-btn blue" data-type="unit">UNIT</div>
+      <div class="gate-btn green" data-type="contract">CONTRACT</div>
+      <div class="gate-btn orange" data-type="integration">INTEGRATION</div>
+    </div>
+  </div>
+
+  <!-- Tip hidden via CSS, kept here if you want later -->
+  <footer class="footer-tip">
+    💡 Tip:
+    Drag a gate up from the bottom bar and drop it onto a lane to block bugs.
+  </footer>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal-root">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<script>
+/* ---------- Config & State ---------- */
+let timerInterval = null;
+const GAME_DURATION = 90; // seconds
+
+const CONFIG = {
+  lanes: 5,
+  totalBugs: 75,
+  bugTravelSeconds: 15,
+  prodMax: 100,
+  wrongPauseMs: 500,
+  scoring: {
+    correctMax: 250,
+    correctMin: 50,
+    wrongGate: -100,
+    hitProd: -500,
+    comboBonus: 1000,
+    comboSize: 3
+  }
+};
+
+/* ---------- Firebase base URL ---------- */
+const FIREBASE_DB_URL = 'https://roadshowgame-default-rtdb.firebaseio.com';
+
+async function saveScoreToFirebase(name, score, timestamp) {
+  try {
+    const res = await fetch(`${FIREBASE_DB_URL}/scores.json`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, score, timestamp })
+    });
+    const data = await res.json();
+    console.log('Score saved to Firebase:', data);
+    return data && data.name;
+  } catch (err) {
+    console.error('Error saving score to Firebase:', err);
+    return null;
+  }
+}
+
+async function fetchLeaderboardFromFirebase() {
+  try {
+    const res = await fetch(`${FIREBASE_DB_URL}/scores.json`);
+    const data = await res.json();
+    if (!data) return [];
+
+    const rows = Object.entries(data).map(([id, entry]) => ({
+      id,
+      name: entry.name || 'Anon',
+      score: typeof entry.score === 'number'
+        ? entry.score
+        : parseInt(entry.score, 10) || 0,
+      timestamp: entry.timestamp || 0
+    }));
+
+    rows.sort((a, b) => b.score - a.score);
+    return rows.slice(0, 20);
+  } catch (err) {
+    console.error('Error loading leaderboard from Firebase:', err);
+    return [];
+  }
+}
+
+/* ---------- State ---------- */
+let state = {
+  player: null,
+  score: 0,
+  combo: 0,
+  health: CONFIG.prodMax,
+  currentBug: null,
+  remaining: CONFIG.totalBugs,
+  spawnedCount: 0,
+  running: false
+};
+
+/* ---------- DOM refs ---------- */
+const lanesEl        = document.getElementById('lanes');
+const gameArea       = document.getElementById('gameArea');
+const banner         = document.getElementById('banner');
+const healthInner    = document.getElementById('healthInner');
+const scoreEl        = document.getElementById('score');
+const comboEl        = document.getElementById('combo');
+const remainingEl    = document.getElementById('remaining');
+const upcomingEl     = document.getElementById('upcoming');
+const speedLbl       = document.getElementById('speedLbl');
+const playerNameEl   = document.getElementById('playerName');
+
+const btnLB          = document.getElementById('btnLB');
+const btnTutorial    = document.getElementById('btnTutorial');
+const btnStartAbort  = document.getElementById('btnStartAbort');
+const prodCol        = document.getElementById('prodCol');
+
+const endOverlay     = document.getElementById('endOverlay');
+const endTitleEl     = document.getElementById('endTitle');
+const endScoreEl     = document.getElementById('endScore');
+const endRankEl      = document.getElementById('endRank');
+const endBtnPlay     = document.getElementById('endBtnPlay');
+const endBtnLB       = document.getElementById('endBtnLB');
+const endBtnNew      = document.getElementById('endBtnNew');
+
+const startOverlay    = document.getElementById('startOverlay');
+const startOverlayBtn = document.getElementById('startOverlayBtn');
+const playerNameInput = document.getElementById('playerNameInput');
+
+const modal           = document.getElementById('modal');
+const modalContent    = document.getElementById('modalContent');
+
+/* ---------- Build lanes ---------- */
+function buildLanes() {
+  lanesEl.innerHTML = '';
+  for (let i = 0; i < CONFIG.lanes; i++) {
+    const lane = document.createElement('div');
+    lane.className = 'lane';
+    lane.dataset.index = i;
+
+    const label = document.createElement('div');
+    label.className = 'lane-label';
+    label.textContent = `BUILD ${i + 1}`;
+    lane.appendChild(label);
+
+    lanesEl.appendChild(lane);
+  }
+}
+buildLanes();
+
+/* ---------- Bug pool ---------- */
+const BUG_POOL = (function () {
+  const seeds = [
+    // unit-ish
+    'Off-by-one error','Wrong variable type','Null pointer in util','GST calc wrong','Rounding mismatch',
+    'Missing validation','Incorrect loop bound','Uninitialized var','Edge-case divide by zero','Wrong default value',
+    'Wrong comparator','Floating precision bug','Wrong sign on calculation','Index out of range','Incorrect accumulator',
+    'Wrong math formula','Missing unit test','Order of operations bug','Bad regex logic','Wrong constant used',
+    'Locale number parse bug','Time-zone handling bug','Incorrect flag check','State mutation bug','Callback misuse',
+    // contract-ish
+    'API contract mismatch','Missing response field','Wrong HTTP status','Schema version mismatch','Field type mismatch',
+    'Unexpected null in response','Header missing','Wrong content-type','Response shape changed','Deprecated field used',
+    'Payload key typo','Missing required param','Extra field in response','Versioning mismatch','Incorrect enum value',
+    'Invalid JSON format','Missing validation in schema','Query param name typo','Incorrect date format','Wrong pagination format',
+    // integration-ish
+    'DB query fails intermittently','Config missing in CI','Container env mismatch','Service timeout in cluster','Race condition across services',
+    'Circuit breaker not set','Retry logic missing','Downstream API latency','Wrong endpoint routing','Auth token refresh failure',
+    'Network partition issue','Load balancer misroute','Session stickiness lost','Wrong service discovery','SSL cert mismatch',
+    'Timeout too low','Ordering of messages wrong','Transaction not rolled back','Cache invalidation bug','Feature flag not propagated',
+    'Message queue DLQ spike','Throttling misconfigured','Cross-origin blocked','DNS propagation issue','Legacy endpoint hit'
+  ];
+  return seeds.map((t, idx) => ({
+    id: 'b' + idx,
+    label: t,
+    right: idx < 25 ? 'unit' : idx < 50 ? 'contract' : 'integration',
+    icon: '🐞'
+  }));
+})();
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let bugQueue = shuffle([...BUG_POOL]);
+function getNextBugDef() {
+  if (bugQueue.length === 0) bugQueue = shuffle([...BUG_POOL]);
+  return bugQueue.shift();
+}
+
+/* ---------- Audio helper ---------- */
+function beep(freq = 440, dur = 0.06) {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = freq;
+    o.start();
+    g.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+    o.stop(ctx.currentTime + dur + 0.02);
+  } catch (e) {}
+}
+
+/* ---------- UI helpers ---------- */
+function updateHUD() {
+  scoreEl.textContent = state.score;
+  comboEl.textContent = state.combo;
+  remainingEl.textContent = state.remaining;
+  const speedFactor = 1 + (state.spawnedCount * 0.12);
+  speedLbl.textContent = speedFactor.toFixed(2) + 'x';
+  upcomingEl.textContent = state.currentBug ? state.currentBug.def.label : '—';
+}
+
+function updateHealth() {
+  const pct = Math.max(0, Math.floor((state.health / CONFIG.prodMax) * 100));
+  healthInner.style.width = pct + '%';
+  if (pct < 30) {
+    healthInner.style.background = 'linear-gradient(90deg,#ff6b6b,#ff8a3d)';
+  } else {
+    healthInner.style.background = 'linear-gradient(90deg,var(--neon-green),var(--neon-cyan))';
+  }
+}
+
+function updateProdDamageVisual() {
+  prodCol.classList.remove('healthy', 'damaged', 'critical', 'broken');
+  if (state.health <= 0) {
+    prodCol.classList.add('broken', 'critical', 'damaged');
+  } else if (state.health <= 30) {
+    prodCol.classList.add('critical', 'damaged');
+  } else if (state.health <= 70) {
+    prodCol.classList.add('damaged');
+  } else {
+    prodCol.classList.add('healthy');
+  }
+}
+function flashBanner(text, ms = 900) {
+  banner.textContent = text;
+  banner.style.animation = 'pop 0.4s ease-out';
+  setTimeout(() => {
+    // just end the animation; DON'T restore old text
+    banner.style.animation = '';
+    // banner text will be updated by spawnNextBug() / hitProd() etc.
+  }, ms);
+}
+
+function showFloatingText(text, x, y, color) {
+  const node = document.createElement('div');
+  node.textContent = text;
+  node.style.position = 'absolute';
+  node.style.left = x + 'px';
+  node.style.top = y + 'px';
+  node.style.color = color || '#fff';
+  node.style.fontWeight = '700';
+  node.style.fontSize = '14px';
+  node.style.textShadow = '0 0 8px rgba(0,0,0,0.7)';
+  node.style.pointerEvents = 'none';
+  node.style.zIndex = 80;
+  gameArea.appendChild(node);
+
+  node.animate(
+    [
+      { transform: 'translateY(0)', opacity: 1 },
+      { transform: 'translateY(-26px)', opacity: 0 }
+    ],
+    { duration: 800, easing: 'ease-out' }
+  );
+  setTimeout(() => { try { node.remove(); } catch (e) {} }, 800);
+}
+
+/* ---------- Modal ---------- */
+function showModal(html) {
+  modalContent.innerHTML = html;
+  modal.style.display = 'flex';
+}
+function hideModal() {
+  modal.style.display = 'none';
+}
+if (btnTutorial) {
+  btnTutorial.addEventListener('click', () => {
+    const html =
+      '<h2>How to Play</h2>' +
+      '<p>🐞 One bug at a time spawns on a build lane. <b>Press a gate and drag it up</b> into a lane to drop it.</p>' +
+      '<ul>' +
+        '<li><b>Correct gate</b> (matches bug type): +' + CONFIG.scoring.correctMin +
+        ' to +' + CONFIG.scoring.correctMax + ' (earlier is better)</li>' +
+        '<li><b>Wrong gate</b>: ' + CONFIG.scoring.wrongGate +
+        ', bug pauses ' + CONFIG.wrongPauseMs + 'ms</li>' +
+        '<li><b>Bug hits PROD</b>: ' + CONFIG.scoring.hitProd +
+        ' and production health drops by 20% (5 hits = meltdown)</li>' +
+        '<li>Every ' + CONFIG.scoring.comboSize + ' correct in a row gives a combo bonus of +' +
+           CONFIG.scoring.comboBonus + '</li>' +
+      '</ul>' +
+      '<div style="text-align:right;margin-top:10px">' +
+        '<button onclick="hideModal()">Got it!</button>' +
+      '</div>';
+
+    showModal(html);
+  });
+}
+
+
+/* ---------- Leaderboard modal ---------- */
+// ----- Leaderboard modal (Global / Local with scrollable modal) -----
+async function openLeaderboardModal() {
+  const globalRows = await fetchLeaderboardFromFirebase();
+  const localRows = loadLocalScores();
+  if (!window._lbMode) window._lbMode = 'global';
+
+  function renderTable(mode) {
+    var rows = mode === 'global' ? globalRows : localRows;
+    var isGlobal = (mode === 'global');
+    var html = '';
+
+    if (!rows || rows.length === 0) {
+      html += '<p style="opacity:.7;margin-top:12px">';
+      html += isGlobal ? 'No global scores yet.' : 'No personal scores found on this device.';
+      html += '</p>';
+      return html;
+    }
+
+    html += '<table class="lb-table">';
+    html +=   '<thead>';
+    html +=     '<tr>';
+    html +=       '<th style="width:40px">#</th>';
+    html +=       '<th>Player</th>';
+    html +=       '<th style="text-align:right">Score</th>';
+    html +=     '</tr>';
+    html +=   '</thead>';
+    html +=   '<tbody>';
+
+    rows.forEach(function (r, i) {
+      html += '<tr class="lb-row">';
+      html +=   '<td>' + (i + 1) + '</td>';
+      html +=   '<td>' + r.name + '</td>';
+      html +=   '<td style="text-align:right">' + r.score + '</td>';
+      html += '</tr>';
+    });
+
+    html +=   '</tbody>';
+    html += '</table>';
+    return html;
+  }
+
+  function render(mode) {
+    window._lbMode = mode;
+    var tableHtml = renderTable(mode);
+
+    var html = '';
+    html += '<h2>🏆 Leaderboard</h2>';
+
+    html += '<div style="display:flex;gap:8px;margin-bottom:10px">';
+    html +=   '<button id="lbBtnGlobal" class="btn-secondary" ';
+    html +=           'style="border:' + (mode === 'global'
+                  ? '2px solid #6ef6ff'
+                  : '1px solid rgba(255,255,255,0.2)') + ';">';
+    html +=     '🌐 Global';
+    html +=   '</button>';
+
+    html +=   '<button id="lbBtnLocal" class="btn-secondary" ';
+    html +=           'style="border:' + (mode === 'local'
+                  ? '2px solid #6ef6ff'
+                  : '1px solid rgba(255,255,255,0.2)') + ';">';
+    html +=     '💾 My Scores';
+    html +=   '</button>';
+    html += '</div>';
+
+    html += '<div id="lbContent">' + tableHtml + '</div>';
+
+    html += '<div style="text-align:right;margin-top:12px">';
+    html +=   '<button id="lbBtnClose">Close</button>';
+    html += '</div>';
+
+    modalContent.innerHTML = html;
+    modal.style.display = 'flex';
+
+    // wire up buttons AFTER inserting HTML
+    var btnGlobal = document.getElementById('lbBtnGlobal');
+    var btnLocal  = document.getElementById('lbBtnLocal');
+    var btnClose  = document.getElementById('lbBtnClose');
+
+    if (btnGlobal) {
+      btnGlobal.addEventListener('click', function () {
+        render('global');
+      });
+    }
+    if (btnLocal) {
+      btnLocal.addEventListener('click', function () {
+        render('local');
+      });
+    }
+    if (btnClose) {
+      btnClose.addEventListener('click', function () {
+        hideModal();
+      });
+    }
+  }
+
+  render(window._lbMode || 'global');
+}
+
+// hook 🏆 button to modal
+if (btnLB) {
+  btnLB.addEventListener('click', openLeaderboardModal);
+}
+
+
+/* ---------- Gate placement ---------- */
+function placeGate(type, laneIndex, clientY) {
+  if (!state.currentBug) return;
+
+  const areaRect = gameArea.getBoundingClientRect();
+  const laneEl = lanesEl.children[laneIndex];
+  const laneRect = laneEl.getBoundingClientRect();
+
+  const node = document.createElement('div');
+  node.className = 'lane-gate lane-gate-' + type;
+  node.style.zIndex = 60;
+
+  const line = document.createElement('div');
+  line.className = 'lane-gate-line';
+  const label = document.createElement('div');
+  label.className = 'lane-gate-label';
+  label.textContent = type.toUpperCase();
+  node.appendChild(line);
+  node.appendChild(label);
+
+  gameArea.appendChild(node);
+
+  const gateH = node.offsetHeight || 18;
+  const laneCenterX = laneRect.left - areaRect.left + laneRect.width / 2;
+
+  const minY = laneRect.top - areaRect.top + 30;    // just below cyan line
+  const maxY = laneRect.bottom - areaRect.top - 34; // above PROD
+  let gateCenterY = clientY - areaRect.top;
+  gateCenterY = Math.max(minY, Math.min(maxY, gateCenterY));
+
+  const left = laneCenterX - (laneRect.width * 0.45); // 90% width centered
+  const top  = gateCenterY - gateH / 2;
+
+  node.style.left = left + 'px';
+  node.style.top  = top  + 'px';
+
+  if (!window._placedGates) window._placedGates = [];
+  window._placedGates.push({
+    el: node,
+    type,
+    lane: laneIndex,
+    pathPos: gateCenterY,
+    consumed: false
+  });
+
+  node.animate(
+  [
+    { transform:'scale(0.8)', opacity:0.6 },
+    { transform:'scale(1.05)', opacity:1 },
+    { transform:'scale(1)' }
+  ],
+  { duration:180, easing:'ease-out' }
+);
+  beep(520, 0.06);
+}
+
+/* ---------- Bug spawn / movement ---------- */
+function spawnNextBug() {
+  if (!state.running) return;
+  if (state.currentBug) return;
+  if (state.remaining <= 0) return;
+
+  const def = getNextBugDef();
+  const laneIndex = Math.floor(Math.random() * CONFIG.lanes);
+  const laneEl = lanesEl.children[laneIndex];
+  const areaRect = gameArea.getBoundingClientRect();
+  const laneRect = laneEl.getBoundingClientRect();
+
+  const el = document.createElement('div');
+  el.className = 'bug';
+  el.innerHTML = `<span class="icon">${def.icon}</span><span class="label">${def.label}</span>`;
+  el.style.left = '0px';
+  el.style.top = '0px';
+  el.style.zIndex = 40;
+  gameArea.appendChild(el);
+
+  const bugW = el.offsetWidth;
+  const bugH = el.offsetHeight;
+
+  const startY = (laneRect.top - areaRect.top) + 14;
+  const x = laneRect.left - areaRect.left + laneRect.width / 2 - bugW / 2;
+
+  const prodRect = prodCol.getBoundingClientRect();
+  const prodThreshold = prodRect.top - areaRect.top - bugH - 6;
+  const distance = prodThreshold - startY;
+  const speed = distance / CONFIG.bugTravelSeconds;
+
+  el.style.left = x + 'px';
+  el.style.top  = startY + 'px';
+
+  const bug = {
+    def,
+    row: laneIndex,
+    el,
+    x,
+    y: startY,
+    vy: speed,
+    pausedUntil: 0,
+    active: true,
+    pathStart: startY,
+    pathEnd: prodThreshold
+  };
+
+  state.currentBug = bug;
+  state.spawnedCount++;
+  state.remaining--;
+
+  upcomingEl.textContent = def.label;
+  updateHUD();
+
+  const gateName =
+    def.right === 'unit'        ? 'UNIT TEST' :
+    def.right === 'contract'    ? 'CONTRACT TEST' :
+    def.right === 'integration' ? 'INTEGRATION' :
+    def.right.toUpperCase();
+
+  banner.textContent = `Incoming: ${def.label}`;
+  //(${gateName})
+}
+
+function computeDynamicScore(gatePos, bug) {
+  const maxScore = CONFIG.scoring.correctMax;
+  const minScore = CONFIG.scoring.correctMin;
+  const start = bug.pathStart;
+  const end   = bug.pathEnd;
+  const span  = Math.max(end - start, 1);
+
+  let t = (gatePos - start) / span;
+  t = Math.min(Math.max(t, 0), 1);
+  const score = Math.round(maxScore - t * (maxScore - minScore));
+  return score;
+}
+
+function handleGateHit(bug, gate) {
+  gate.consumed = true;
+
+  const gx = gate.el.offsetLeft + 40;
+  const gy = gate.el.offsetTop - 12;
+
+  if (gate.type === bug.def.right) {
+    const dynamicScore = computeDynamicScore(gate.pathPos, bug);
+
+    state.score += dynamicScore;
+    state.combo++;
+    beep(800, 0.08);
+
+    showFloatingText(`+${dynamicScore}`, gx, gy, '#6effa0');
+
+    if (state.combo > 0 && state.combo % CONFIG.scoring.comboSize === 0) {
+      state.score += CONFIG.scoring.comboBonus;
+      showFloatingText(`+${CONFIG.scoring.comboBonus}`, gx + 10, gy - 22, '#ffd36b');
+      flashBanner(`Combo! +${CONFIG.scoring.comboBonus}`);
+    }
+
+    bug.active = false;
+    try { bug.el.remove(); } catch (e) {}
+    try { gate.el.remove(); } catch (e) {}
+
+    window._placedGates = (window._placedGates || []).filter(g => g !== gate);
+    state.currentBug = null;
+    updateHUD();
+
+    spawnNextBug();
+  } else {
+    state.score += CONFIG.scoring.wrongGate;
+    state.combo = 0;
+    beep(180, 0.08);
+
+    showFloatingText(`${CONFIG.scoring.wrongGate}`, gx, gy, '#ff6b6b');
+
+    bug.pausedUntil = performance.now() + CONFIG.wrongPauseMs;
+
+    gate.el.style.opacity = '0.25';
+    setTimeout(() => {
+      try { gate.el.remove(); } catch (e) {}
+      window._placedGates = (window._placedGates || []).filter(g => g !== gate);
+    }, 400);
+
+    updateHUD();
+  }
+}
+
+function createSpark(x, y, color) {
+  const s = document.createElement('div');
+  s.className = 'spark';
+  s.style.left = x + 'px';
+  s.style.top = y + 'px';
+  s.style.color = color || '#ffb36b';
+  gameArea.appendChild(s);
+  s.animate(
+    [
+      { transform: 'scale(1)', opacity: 1 },
+      { transform: 'scale(2)', opacity: 0 }
+    ],
+    { duration: 700, easing: 'ease-out' }
+  );
+  setTimeout(() => { try { s.remove(); } catch (e) {} }, 700);
+}
+
+function hitProd(bug) {
+  state.score += CONFIG.scoring.hitProd;
+  state.combo = 0;
+
+  state.health -= 20;
+  if (state.health < 0) state.health = 0;
+
+  updateHealth();
+  updateProdDamageVisual();
+  beep(120, 0.12);
+
+  const areaRect = gameArea.getBoundingClientRect();
+  const prodRect = prodCol.getBoundingClientRect();
+  const sx = prodRect.left - areaRect.left + prodRect.width / 2 - 10;
+  const sy = (prodRect.top - areaRect.top) + 20;
+
+  createSpark(sx, sy, '#ffb36b');
+  showFloatingText(`${CONFIG.scoring.hitProd}`, sx + 4, sy - 18, '#ff6b6b');
+
+  prodCol.classList.add('hit');
+  setTimeout(() => prodCol.classList.remove('hit'), 350);
+
+  if (state.health <= 0) {
+    for (let i = 0; i < 4; i++) {
+      setTimeout(() => {
+        createSpark(
+          sx + 10 + (Math.random() * 40 - 20),
+          sy + (Math.random() * 30 - 15),
+          '#ff6666'
+        );
+      }, i * 120);
+    }
+  }
+
+  bug.active = false;
+  try { bug.el.remove(); } catch (e) {}
+  state.currentBug = null;
+  updateHUD();
+
+  if (state.health <= 0) {
+    endGame('Production meltdown!');
+  } else if (state.remaining <= 0) {
+    endGame('All bugs processed.');
+  } else {
+    spawnNextBug();
+  }
+}
+
+/* ---------- movement loop ---------- */
+let lastTime = null;
+function gameLoop(ts) {
+  if (!lastTime) lastTime = ts;
+  const dt = ts - lastTime;
+  lastTime = ts;
+
+  if (state.running && state.currentBug && state.currentBug.active) {
+    const bug = state.currentBug;
+    const now = performance.now();
+
+    if (now >= bug.pausedUntil) {
+      const dtSec = dt / 1000;
+
+      bug.y += bug.vy * dtSec;
+      bug.el.style.top = bug.y + 'px';
+
+      const head = bug.y;
+      const tail = bug.y + bug.el.offsetHeight;
+
+      let gates = window._placedGates || [];
+      for (const gate of gates) {
+        if (gate.consumed) continue;
+        if (gate.lane !== bug.row) continue;
+        const gateHalf = 12;
+        const gateStart = gate.pathPos - gateHalf;
+        const gateEnd   = gate.pathPos + gateHalf;
+        if (tail >= gateStart && head <= gateEnd) {
+          handleGateHit(bug, gate);
+          break;
+        }
+      }
+
+      if (bug.active && head >= bug.pathEnd) {
+        hitProd(bug);
+      }
+    }
+  }
+
+  requestAnimationFrame(gameLoop);
+}
+requestAnimationFrame(gameLoop);
+
+/* ---------- Start/Abort button state ---------- */
+function setStartAbortButton(running) {
+  if (!btnStartAbort) return;
+  if (running) {
+    btnStartAbort.textContent = '⛔ Abort';
+    btnStartAbort.classList.remove('btn-primary');
+    if (!btnStartAbort.classList.contains('btn-secondary')) {
+      btnStartAbort.classList.add('btn-secondary');
+    }
+  } else {
+    btnStartAbort.textContent = '▶ Start';
+    btnStartAbort.classList.add('btn-primary');
+    btnStartAbort.classList.remove('btn-secondary');
+  }
+}
+
+/* ---------- Game control ---------- */
+function resetSession() {
+  state.running = false;
+  clearInterval(timerInterval);
+  timerInterval = null;
+
+  endOverlay.style.display = 'none';
+
+  if (state.currentBug && state.currentBug.el) {
+    try { state.currentBug.el.remove(); } catch (e) {}
+  }
+  state.currentBug = null;
+
+  (window._placedGates || []).forEach(g => {
+    try { g.el.remove(); } catch (e) {}
+  });
+  window._placedGates = [];
+
+  state.score = 0;
+  state.combo = 0;
+  state.health = CONFIG.prodMax;
+  state.remaining = CONFIG.totalBugs;
+  state.spawnedCount = 0;
+
+  document.getElementById('timer').textContent = GAME_DURATION;
+  banner.textContent = 'Ready';
+  updateHealth();
+  updateProdDamageVisual();
+  updateHUD();
+  setStartAbortButton(false);
+}
+
+function showEndOverlay(reason, rank) {
+  let title = 'Game Over';
+  let className = '';
+
+  if (reason && reason.toLowerCase().includes('time')) {
+    title = '⏰ Time Up!';
+    className = 'timeup';
+  } else if (reason && reason.toLowerCase().includes('meltdown')) {
+    title = '🔥 Production Meltdown!';
+    className = 'meltdown';
+  } else if (reason) {
+    title = reason;
+  }
+
+  endTitleEl.textContent = title;
+  endTitleEl.classList.remove('timeup', 'meltdown');
+  if (className) endTitleEl.classList.add(className);
+
+  endScoreEl.textContent = `Score: ${state.score}`;
+
+  if (rank) {
+    if (rank === 1) {
+      endRankEl.textContent = `🏆 New High Score! You’re #1`;
+    } else {
+      endRankEl.textContent = `New leaderboard rank: #${rank}`;
+    }
+  } else {
+    endRankEl.textContent = '';
+  }
+
+  endTitleEl.style.animation = 'none';
+  void endTitleEl.offsetWidth;
+  endTitleEl.style.animation = '';
+
+  endOverlay.style.display = 'flex';
+}
+
+async function endGame(reason) {
+  state.running = false;
+  clearInterval(timerInterval);
+  timerInterval = null;
+  banner.textContent = reason || 'Game over';
+  setStartAbortButton(false);
+
+  let name = state.player;
+  if (!name) {
+    showEndOverlay(reason, null);
+    return;
+  }
+
+  const stamp = Date.now();
+  let rank = null;
+
+  try {
+    await saveScoreToFirebase(state.player, state.score, stamp);
+    const rows = await fetchLeaderboardFromFirebase();
+
+    const idx = rows.findIndex(
+      r => r.name === state.player &&
+           r.score === state.score &&
+           r.timestamp === stamp
+    );
+    rank = idx >= 0 ? idx + 1 : null;
+  } catch (e) {
+    console.error('Error updating Firebase leaderboard', e);
+  }
+  saveLocalScore(state.player, state.score, stamp);
+
+  showEndOverlay(reason, rank);
+}
+
+function beginGame() {
+  resetSession();
+  state.running = true;
+  lastTime = null;
+  setStartAbortButton(true);
+
+  let timeLeft = GAME_DURATION;
+  document.getElementById('timer').textContent = timeLeft;
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    if (timeLeft < 0) timeLeft = 0;
+    document.getElementById('timer').textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      if (state.running) {
+        endGame('Time up!');
+      }
+    }
+  }, 1000);
+
+  spawnNextBug();
+}
+
+/* ---------- End overlay buttons ---------- */
+if (endBtnPlay) {
+  endBtnPlay.addEventListener('click', () => {
+    if (state.player) {
+      beginGame();
+    } else {
+      startOverlay.style.display = 'flex';
+      if (playerNameInput) playerNameInput.focus();
+    }
+  });
+}
+
+if (endBtnLB) {
+  endBtnLB.addEventListener('click', () => {
+    endOverlay.style.display = 'none';
+    openLeaderboardModal();
+  });
+}
+
+if (endBtnNew) {
+  endBtnNew.addEventListener('click', () => {
+    endOverlay.style.display = 'none';
+    resetSession();
+
+    state.player = null;
+    playerNameEl.textContent = '—';
+
+    if (playerNameInput) playerNameInput.value = '';
+
+    startOverlay.style.display = 'flex';
+    if (playerNameInput) playerNameInput.focus();
+  });
+}
+
+/* ---------- Start overlay button ---------- */
+if (startOverlayBtn) {
+  startOverlayBtn.addEventListener('click', () => {
+    const name = (playerNameInput && playerNameInput.value || '').trim();
+    if (!name) {
+      alert('Please enter your hero name to start!');
+      if (playerNameInput) playerNameInput.focus();
+      return;
+    }
+    state.player = name;
+    playerNameEl.textContent = state.player;
+    startOverlay.style.display = 'none';
+    beginGame();
+  });
+}
+
+/* ---------- Start/Abort header button ---------- */
+if (btnStartAbort) {
+  btnStartAbort.addEventListener('click', () => {
+    if (!state.player) {
+      startOverlay.style.display = 'flex';
+      if (playerNameInput) playerNameInput.focus();
+    } else if (!state.running) {
+      beginGame();
+    } else {
+      abortGame();
+    }
+  });
+}
+
+function abortGame() {
+  if (!state.running) return;
+
+  state.running = false;
+  clearInterval(timerInterval);
+  timerInterval = null;
+
+  endTitleEl.textContent = "⛔ Game Aborted";
+  endTitleEl.className = "end-title";
+  endScoreEl.textContent = "Score: " + state.score;
+  endRankEl.textContent = "(Not saved to leaderboard)";
+  endOverlay.style.display = "flex";
+
+  setStartAbortButton(false);
+}
+
+/* ---------- Local scores ---------- */
+function saveLocalScore(name, score, timestamp) {
+  let list = JSON.parse(localStorage.getItem("localScores") || "[]");
+  list.push({ name, score, timestamp });
+  list.sort((a, b) => b.score - a.score);
+  list = list.slice(0, 500);
+  localStorage.setItem("localScores", JSON.stringify(list));
+}
+
+function loadLocalScores() {
+  return JSON.parse(localStorage.getItem("localScores") || "[]");
+}
+
+/* ---------- Drag & drop via pointer events (mobile-friendly) ---------- */
+let dragGate = null;
+let dragPointerId = null;
+
+const gateButtons = document.querySelectorAll('.gate-btn');
+
+gateButtons.forEach(btn => {
+  btn.addEventListener('pointerdown', e => {
+    if (!state.running || !state.currentBug) return;
+    dragGate = { type: btn.dataset.type };
+    dragPointerId = e.pointerId;
+    btn.setPointerCapture(e.pointerId);
+    btn.classList.add('dragging');
+  });
+});
+
+document.addEventListener('pointermove', e => {
+  if (!dragGate || e.pointerId !== dragPointerId || !state.running || !state.currentBug) return;
+
+  const lanesRect = lanesEl.getBoundingClientRect();
+  const x = e.clientX - lanesRect.left;
+  const laneWidth = lanesRect.width / CONFIG.lanes;
+  const idx = Math.max(0, Math.min(CONFIG.lanes - 1, Math.floor(x / laneWidth)));
+
+  document.querySelectorAll('.lane')
+    .forEach((el, i) => el.classList.toggle('lane-hover', i === idx));
+});
+
+document.addEventListener('pointerup', e => {
+  if (!dragGate || e.pointerId !== dragPointerId) return;
+
+  document.querySelectorAll('.lane').forEach(el => el.classList.remove('lane-hover'));
+  gateButtons.forEach(btn => btn.classList.remove('dragging'));
+
+  if (state.running && state.currentBug) {
+    const lanesRect = lanesEl.getBoundingClientRect();
+    const x = e.clientX - lanesRect.left;
+    const y = e.clientY;
+
+    if (x >= 0 && x <= lanesRect.width &&
+        y >= lanesRect.top && y <= lanesRect.bottom) {
+
+      const laneWidth = lanesRect.width / CONFIG.lanes;
+      const chosen = Math.max(0, Math.min(CONFIG.lanes - 1, Math.floor(x / laneWidth)));
+
+      placeGate(dragGate.type, chosen, e.clientY);
+    }
+  }
+
+  dragGate = null;
+  dragPointerId = null;
+});
+
+
+if (modal) {
+  modal.addEventListener('click', function (e) {
+    // close if user taps on dark backdrop, not on the card
+    if (e.target === modal) {
+      hideModal();
+    }
+  });
+}
+
+</script>
+</body>
+</html>
