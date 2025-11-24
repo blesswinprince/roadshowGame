@@ -930,6 +930,50 @@ function loadLocalScores(){
   return JSON.parse(localStorage.getItem("localScores") || "[]");
 }
 
+/* --- Mobile touch drag support --- */
+let touchGate = null;
+
+document.querySelectorAll('.gate-btn').forEach(btn => {
+  btn.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchGate = { type: btn.dataset.type };
+    btn.classList.add('dragging');
+  });
+});
+
+gameArea.addEventListener('touchmove', e => {
+  if (!touchGate || !state.running || !state.currentBug) return;
+
+  const touch = e.touches[0];
+  const lanesRect = lanesEl.getBoundingClientRect();
+  const y = touch.clientY - lanesRect.top + lanesEl.scrollTop;
+  const laneHeight = lanesRect.height / CONFIG.lanes;
+  const idx = Math.max(0, Math.min(CONFIG.lanes - 1, Math.floor(y / laneHeight)));
+
+  document.querySelectorAll('.lane')
+    .forEach((el,i)=> el.classList.toggle('lane-hover', i===idx));
+});
+
+gameArea.addEventListener('touchend', e => {
+  document.querySelectorAll('.lane').forEach(el=>el.classList.remove('lane-hover'));
+  if (!touchGate || !state.running || !state.currentBug) {
+    touchGate = null;
+    return;
+  }
+
+  const touch = e.changedTouches[0];
+  const lanesRect = lanesEl.getBoundingClientRect();
+  const y = touch.clientY - lanesRect.top + lanesEl.scrollTop;
+  const laneHeight = lanesRect.height / CONFIG.lanes;
+  const chosen = Math.max(0, Math.min(CONFIG.lanes-1, Math.floor(y / laneHeight)));
+
+  placeGate(touchGate.type, chosen, touch.clientX);
+  touchGate = null;
+
+  document.querySelectorAll('.gate-btn').forEach(x=>x.classList.remove('dragging'));
+});
+
 
 
 
