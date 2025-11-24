@@ -236,15 +236,16 @@ function updateProdDamageVisual(){
   }
 }
 
-function flashBanner(text, ms=900){
-  const old = banner.textContent;
+function flashBanner(text, ms = 900) {
   banner.textContent = text;
   banner.style.animation = 'pop 0.4s ease-out';
-  setTimeout(()=>{
-    banner.textContent = old;
+  setTimeout(() => {
+    // just end the animation; DON'T restore old text
     banner.style.animation = '';
+    // banner text will be updated by spawnNextBug() / hitProd() etc.
   }, ms);
 }
+
 
 /* Floating score text */
 function showFloatingText(text, x, y, color){
@@ -540,7 +541,7 @@ function spawnNextBug(manual=false){
     def.right === 'integration' ? 'INTEGRATION' :
     def.right.toUpperCase();
 
-  banner.textContent = `Incoming: ${def.label} (${gateName})`;
+  banner.textContent = `Incoming: ${def.label}`;
 }
 
 /* Dynamic score based on gate position */
@@ -979,4 +980,5 @@ gameArea.addEventListener('touchend', e => {
 function isMobileMode() {
   return window.innerWidth < 600;
 }
+
 
