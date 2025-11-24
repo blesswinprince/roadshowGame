@@ -58,10 +58,25 @@
 
     header h1 {
       margin: 0;
-      font-size: 22px;
-      letter-spacing: 0.1em;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.05;
+    }
+
+    .title-main {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--neon-cyan);
+      text-shadow: 0 0 14px rgba(110,246,255,0.6);
+    }
+
+    .title-sub {
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
     }
 
     .controls {
@@ -72,13 +87,23 @@
     }
 
     .pill {
-      padding: 6px 10px;
+      padding: 5px 10px;
       border-radius: 999px;
       background: rgba(255,255,255,0.05);
       font-size: 12px;
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
     }
 
-    .pill span {
+    .pill-label {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .pill-value {
       font-weight: 600;
     }
 
@@ -117,11 +142,14 @@
       font-weight: 700;
     }
 
+    .btn-secondary {
+      background: rgba(15,25,45,0.9);
+    }
+
     .main {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      flex: 1;
     }
 
     .hud {
@@ -135,6 +163,9 @@
       border-radius: 999px;
       background: rgba(0,0,0,0.7);
       font-size: 11px;
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
     }
 
     .hud-label {
@@ -142,11 +173,16 @@
       letter-spacing: 0.08em;
       font-size: 10px;
       color: var(--muted);
-      margin-right: 4px;
     }
 
     .hud-value {
       font-weight: 600;
+    }
+
+    .hud-unit {
+      font-size: 10px;
+      opacity: 0.7;
+      margin-left: 2px;
     }
 
     .game-area {
@@ -154,9 +190,8 @@
       border-radius: 14px;
       background: radial-gradient(circle at top, #19243d 0, #050814 55%, #01020a 100%);
       border: 1px solid rgba(255,255,255,0.1);
-      min-height: 340px;
+      min-height: 360px;
       overflow: hidden;
-      flex: 1;
       padding: 16px;
     }
 
@@ -178,7 +213,7 @@
 
     .lanes {
       position: relative;
-      margin: 38px 160px 32px 12px;
+      margin: 38px 180px 32px 12px;
       height: 260px;
       display: flex;
       flex-direction: column;
@@ -192,6 +227,7 @@
       border-radius: 10px;
       background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(0,0,0,0.7));
       border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
     }
 
     .lane-label {
@@ -376,7 +412,7 @@
     .end-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.8);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -385,7 +421,7 @@
 
     .end-card {
       min-width: 260px;
-      max-width: 340px;
+      max-width: 360px;
       padding: 18px 16px 14px;
       border-radius: 14px;
       background: radial-gradient(circle at top, #202947, #050814);
@@ -434,12 +470,6 @@
       color: var(--muted);
     }
 
-    @keyframes pop {
-      0%   { transform: scale(0.82); }
-      50%  { transform: scale(1.04); }
-      100% { transform: scale(1.0); }
-    }
-
     .floating-text {
       position: absolute;
       font-size: 14px;
@@ -449,7 +479,69 @@
       z-index: 80;
     }
 
-    /* =============== MOBILE FULLSCREEN MODE ================= */
+    .lb {
+      margin-top: 6px;
+      font-size: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(4,6,16,0.95);
+      max-height: 220px;
+      overflow: auto;
+    }
+
+    .modal-root {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, rgba(19,28,55,0.95), rgba(1,3,8,0.96));
+      z-index: 999;
+    }
+
+    .modal-content {
+      max-width: 520px;
+      width: 92%;
+      padding: 20px 18px 16px;
+      border-radius: 16px;
+      background: radial-gradient(circle at top, #202947, #050814);
+      border: 1px solid rgba(255,255,255,0.25);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .lb-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .lb-table th,
+    .lb-table td {
+      padding: 4px 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .lb-row:nth-child(even) {
+      background: rgba(255,255,255,0.02);
+    }
+
+    @media (max-width: 900px) {
+      .wrap {
+        margin: 8px;
+        padding: 10px;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .lanes {
+        margin-right: 160px;
+      }
+    }
+
+    /* MOBILE FULLSCREEN / VERTICAL LANES */
     @media (max-width: 600px) {
       html, body {
         height: 100%;
@@ -459,15 +551,18 @@
 
       .wrap {
         margin: 0;
-        padding: 8px 8px 72px;
+        padding: 8px;
         border-radius: 0;
         border: none;
         height: 100vh;
         max-width: 100%;
+        display: flex;
+        flex-direction: column;
       }
 
       header {
-        display: none;
+        flex-direction: column;
+        gap: 6px;
       }
 
       .main {
@@ -484,12 +579,16 @@
       }
 
       .lanes {
-        margin: 32px 4px 6px 4px;
+        position: absolute;
+        top: 32px;
+        left: 4px;
+        right: 4px;
+        bottom: 150px; /* space for PROD above gate bar */
         height: auto;
-        flex: 1;
         display: flex;
         flex-direction: row;
         gap: 4px;
+        margin: 0;
       }
 
       .lane {
@@ -503,10 +602,12 @@
       }
 
       .prod-column {
-        position: relative;
-        top: 0;
-        right: 0;
-        margin: 0 auto 4px auto;
+        position: absolute;
+        bottom: 86px; /* just above gate bar */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140px;
+        margin: 0;
       }
 
       .gate-bar {
@@ -515,7 +616,6 @@
         right: 0;
         bottom: 0;
         margin: 0;
-        border-radius: 0;
         padding: 8px 8px 10px;
         background: rgba(0,0,0,0.92);
         border-top: 1px solid rgba(255,255,255,0.2);
@@ -540,13 +640,27 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>CI/CD Defense Arcade</h1>
+    <h1>
+      <span class="title-main">CI/CD</span>
+      <span class="title-sub">Defense Arcade</span>
+    </h1>
     <div class="controls">
-      <div class="pill">Player: <span id="playerName">—</span></div>
-      <div class="pill">Score: <span id="score">0</span></div>
-      <div class="pill">Combo: <span id="combo">0</span></div>
+      <div class="pill">
+        <span class="pill-label">Player</span>
+        <span id="playerName" class="pill-value">—</span>
+      </div>
+      <div class="pill">
+        <span class="pill-label">Score</span>
+        <span id="score" class="pill-value">0</span>
+      </div>
+      <div class="pill">
+        <span class="pill-label">Combo</span>
+        <span id="combo" class="pill-value">0</span>
+      </div>
       <button id="btnStart" class="btn-primary">▶ Start</button>
       <button id="btnAbort" disabled>Abort</button>
+      <button id="btnLB" class="btn-secondary">🏆 Leaderboard</button>
+      <button id="btnTutorial" class="btn-secondary">❓ Tutorial</button>
     </div>
   </header>
 
@@ -586,7 +700,7 @@
         </div>
       </div>
 
-      <!-- End overlay -->
+      <!-- End-of-game overlay -->
       <div id="endOverlay" class="end-overlay" style="display:none">
         <div class="end-card">
           <div id="endTitle" class="end-title">Time Up!</div>
@@ -599,13 +713,24 @@
         </div>
       </div>
 
-      <!-- Start overlay -->
+      <!-- Start-of-game overlay -->
       <div id="startOverlay" class="end-overlay" style="display:flex">
         <div class="end-card">
-          <div class="end-title">CI/CD Defense Arcade</div>
-          <div class="end-score">Defend PROD from sneaky CI/CD bugs!</div>
-          <input id="playerNameInput" class="name-input" placeholder="Type your hero name here" />
-          <div class="end-rank">Drag UNIT / CONTRACT / INTEGRATION gates onto builds to stop bugs early.</div>
+          <div id="startTitle" class="end-title">
+            CI/CD Defense Arcade
+          </div>
+          <div id="startSubtitle" class="end-score">
+            Defend PROD from sneaky CI/CD bugs!
+          </div>
+
+          <input id="playerNameInput"
+                 type="text"
+                 class="name-input"
+                 placeholder="Type your hero name here" />
+
+          <div class="end-rank">
+            Drag UNIT / CONTRACT / INTEGRATION gates onto builds to stop bugs early.
+          </div>
           <div class="end-actions">
             <button id="startOverlayBtn" disabled>Start Game ▶</button>
           </div>
@@ -613,25 +738,55 @@
       </div>
     </div>
 
+    <!-- Gate bar -->
     <div class="gate-bar" id="gateBar">
       <div class="gate-btn blue" data-type="unit">UNIT TEST</div>
       <div class="gate-btn green" data-type="contract">CONTRACT TEST</div>
       <div class="gate-btn orange" data-type="integration">INTEGRATION</div>
     </div>
+
+    <!-- Leaderboard + controls -->
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-top:6px;">
+      <div id="lbPanel" style="flex:1;display:none">
+        <div style="font-size:12px;color:var(--muted)">Leaderboard</div>
+        <div class="lb" id="lb"></div>
+      </div>
+
+      <div id="controlsPanel"
+           style="width:260px;margin-left:auto;display:none">
+        <div style="font-size:12px;color:var(--muted)">Controls</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <button id="spawnBtn">Spawn Next Bug</button>
+          <button id="resetBtn">Reset Session</button>
+          <button id="clearLb">Clear Scores</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <footer class="footer-tip">
-    💡 Tip: Drag a gate from the bottom bar and drop it onto a build lane. Earlier, correct gates give more points. Bugs hitting PROD damage stability!
+    💡 Tip:
+    Drag a gate up from the bottom bar and drop it onto a lane.
+    Correct gate blocks the bug for <b>+50 to +250 points</b> (earlier in the pipeline = more points).
+    Wrong gate pauses the bug 0.5s and costs −100.
+    Bug reaching PROD costs −500 and damages production. 5 hits = full PROD meltdown.
   </footer>
 </div>
 
+<!-- Modal (for tutorial + leaderboard) -->
+<div id="modal" class="modal-root" style="display:none">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
 <script>
-  /* ================= CONFIG & STATE ================== */
+  /* ---------- Config & State ---------- */
+  let timerInterval = null;
   const GAME_DURATION = 90;
+
   const CONFIG = {
     lanesDesktop: 5,
     lanesMobile: 4,
-    totalBugs: 60,
+    totalBugs: 75,
     bugTravelSeconds: 15,
     prodMax: 100,
     wrongPauseMs: 500,
@@ -652,6 +807,59 @@
     return isMobileMode() ? CONFIG.lanesMobile : CONFIG.lanesDesktop;
   }
 
+  /* ---------- Firebase base URL (Realtime DB REST) ---------- */
+  const FIREBASE_DB_URL = 'https://roadshowgame-default-rtdb.firebaseio.com';
+
+  async function saveScoreToFirebase(name, score, timestamp) {
+    try {
+      const res = await fetch(`${FIREBASE_DB_URL}/scores.json`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, score, timestamp })
+      });
+      const data = await res.json();
+      console.log('Score saved to Firebase:', data);
+      return data && data.name;
+    } catch (err) {
+      console.error('Error saving score to Firebase:', err);
+      return null;
+    }
+  }
+
+  async function fetchLeaderboardFromFirebase() {
+    try {
+      const res = await fetch(`${FIREBASE_DB_URL}/scores.json`);
+      const data = await res.json();
+      if (!data) return [];
+      const rows = Object.entries(data).map(([id, entry]) => ({
+        id,
+        name: entry.name || 'Anon',
+        score: typeof entry.score === 'number'
+          ? entry.score
+          : parseInt(entry.score, 10) || 0,
+        timestamp: entry.timestamp || 0
+      }));
+      rows.sort((a, b) => b.score - a.score);
+      return rows.slice(0, 20);
+    } catch (err) {
+      console.error('Error loading leaderboard from Firebase:', err);
+      return [];
+    }
+  }
+
+  async function renderLB() {
+    const a = await fetchLeaderboardFromFirebase();
+    const lbBox = document.getElementById('lb');
+    lbBox.innerHTML = a.length
+      ? a.map(r => `
+        <div style="display:flex;justify-content:space-between;padding:6px;border-bottom:1px solid rgba(255,255,255,0.04)">
+          <div>${r.name}</div>
+          <div style="opacity:.85">${r.score}</div>
+        </div>`).join('')
+      : '<div style="opacity:.75;padding:8px">No scores yet</div>';
+  }
+  renderLB();
+
   let state = {
     player: null,
     score: 0,
@@ -663,9 +871,7 @@
     running: false
   };
 
-  let timerInterval = null;
-
-  /* ============== DOM REFERENCES ================= */
+  /* ---------- DOM refs ---------- */
   const lanesEl        = document.getElementById('lanes');
   const gameArea       = document.getElementById('gameArea');
   const banner         = document.getElementById('banner');
@@ -676,23 +882,64 @@
   const upcomingEl     = document.getElementById('upcoming');
   const speedLbl       = document.getElementById('speedLbl');
   const modeLbl        = document.getElementById('modeLbl');
+  const lbBox          = document.getElementById('lb');
+  const playerNameEl   = document.getElementById('playerName');
+
+  const spawnBtn       = document.getElementById('spawnBtn');
+  const resetBtn       = document.getElementById('resetBtn');
+  const clearLbBtn     = document.getElementById('clearLb');
+  const btnStart       = document.getElementById('btnStart');
+  const btnLB          = document.getElementById('btnLB');
+  const btnTutorial    = document.getElementById('btnTutorial');
+  const btnAbort       = document.getElementById('btnAbort');
   const prodCol        = document.getElementById('prodCol');
 
-  const btnStart       = document.getElementById('btnStart');
-  const btnAbort       = document.getElementById('btnAbort');
   const endOverlay     = document.getElementById('endOverlay');
   const endTitleEl     = document.getElementById('endTitle');
   const endScoreEl     = document.getElementById('endScore');
   const endRankEl      = document.getElementById('endRank');
   const endBtnPlay     = document.getElementById('endBtnPlay');
   const endBtnNew      = document.getElementById('endBtnNew');
+
   const startOverlay   = document.getElementById('startOverlay');
   const startOverlayBtn= document.getElementById('startOverlayBtn');
   const playerNameInput= document.getElementById('playerNameInput');
-  const playerNameEl   = document.getElementById('playerName');
-  const gateButtons    = Array.from(document.querySelectorAll('.gate-btn'));
 
-  /* ============== BUG POOL =================== */
+  /* ---------- Build lanes ---------- */
+  function buildLanes(){
+    lanesEl.innerHTML = '';
+    const count = getLaneCount();
+    for(let i=0;i<count;i++){
+      const lane = document.createElement('div');
+      lane.className='lane';
+      lane.dataset.index = i;
+
+      const label = document.createElement('div');
+      label.className='lane-label';
+      label.textContent = `Build ${i+1}`;
+      lane.appendChild(label);
+
+      const line = document.createElement('div');
+      line.className='line-left';
+      lane.appendChild(line);
+
+      lanesEl.appendChild(lane);
+    }
+    modeLbl.textContent = isMobileMode()
+      ? `Mobile (vertical, ${CONFIG.lanesMobile} builds)`
+      : `Desktop (horizontal, ${CONFIG.lanesDesktop} builds)`;
+  }
+  buildLanes();
+
+  window.addEventListener('resize', ()=>{
+    const running = state.running;
+    buildLanes();
+    if(running){
+      resetSession();
+    }
+  });
+
+  /* ---------- Bug pool ---------- */
   const BUG_POOL = (function(){
     const seeds = [
       'Off-by-one error','Wrong variable type','Null pointer in util','GST calc wrong','Rounding mismatch',
@@ -704,9 +951,11 @@
       'Unexpected null in response','Header missing','Wrong content-type','Response shape changed','Deprecated field used',
       'Payload key typo','Missing required param','Extra field in response','Versioning mismatch','Incorrect enum value',
       'Invalid JSON format','Missing validation in schema','Query param name typo','Incorrect date format','Wrong pagination format',
-      'DB query fails intermittently','Config missing in CI','Container env mismatch','Service timeout','Race condition across services',
+      'DB query fails intermittently','Config missing in CI','Container env mismatch','Service timeout in cluster','Race condition across services',
       'Circuit breaker not set','Retry logic missing','Downstream API latency','Wrong endpoint routing','Auth token refresh failure',
-      'Network partition issue','Load balancer misroute','Session stickiness lost','Wrong service discovery','SSL cert mismatch'
+      'Network partition issue','Load balancer misroute','Session stickiness lost','Wrong service discovery','SSL cert mismatch',
+      'Timeout too low','Ordering of messages wrong','Transaction not rolled back','Cache invalidation bug','Feature flag not propagated',
+      'Message queue DLQ spike','Throttling misconfigured','Cross-origin blocked','DNS propagation issue','Legacy endpoint hit'
     ];
     return seeds.map((t,idx)=>({
       id:'b'+idx,
@@ -729,7 +978,7 @@
     return bugQueue.shift();
   }
 
-  /* ============== UTIL: AUDIO BEEP =================== */
+  /* ---------- Audio ---------- */
   function beep(freq=440,dur=0.06){
     try{
       const Ctx = window.AudioContext || window.webkitAudioContext;
@@ -745,7 +994,7 @@
     }catch(e){}
   }
 
-  /* ============== UI =================== */
+  /* ---------- UI helpers ---------- */
   function updateHUD(){
     scoreEl.textContent = state.score;
     comboEl.textContent = state.combo;
@@ -753,9 +1002,6 @@
     const speedFactor = 1 + (state.spawnedCount*0.12);
     speedLbl.textContent = speedFactor.toFixed(2)+'x';
     upcomingEl.textContent = state.currentBug ? state.currentBug.def.label : '—';
-    modeLbl.textContent = isMobileMode()
-      ? `Mobile (vertical, ${CONFIG.lanesMobile} builds)`
-      : `Desktop (horizontal, ${CONFIG.lanesDesktop} builds)`;
   }
 
   function updateHealth(){
@@ -792,36 +1038,215 @@
     setTimeout(()=>{ try{node.remove();}catch(e){} }, 750);
   }
 
-  /* ============== LANES BUILD =================== */
-  function buildLanes(){
-    lanesEl.innerHTML = '';
-    const count = getLaneCount();
-    for(let i=0;i<count;i++){
-      const lane = document.createElement('div');
-      lane.className = 'lane';
-      lane.dataset.index = i;
-      const label = document.createElement('div');
-      label.className = 'lane-label';
-      label.textContent = `Build ${i+1}`;
-      lane.appendChild(label);
-      const line = document.createElement('div');
-      line.className = 'line-left';
-      lane.appendChild(line);
-      lanesEl.appendChild(lane);
-    }
-    updateHUD();
+  /* ---------- Modal ---------- */
+  function showModal(html){
+    document.getElementById('modalContent').innerHTML = html;
+    document.getElementById('modal').style.display='flex';
   }
-  buildLanes();
+  function hideModal(){
+    document.getElementById('modal').style.display='none';
+  }
 
-  window.addEventListener('resize', ()=>{
-    const running = state.running;
-    buildLanes();
-    if(running){
-      resetSession();
-    }
+  btnTutorial.addEventListener('click', ()=>{
+    showModal(`
+      <h2>How to Play</h2>
+      <p>🐞 One bug at a time spawns on a random build lane. Drag a gate (UNIT / CONTRACT / INTEGRATION) and drop it onto a lane. The gate will snap and block the approaching bug.</p>
+      <ul>
+        <li><b>Correct gate</b> (matches bug type): +${CONFIG.scoring.correctMin} to +${CONFIG.scoring.correctMax} (earlier is better)</li>
+        <li><b>Wrong gate</b>: ${CONFIG.scoring.wrongGate}, bug pauses ${CONFIG.wrongPauseMs}ms</li>
+        <li><b>Bug hits PROD</b>: ${CONFIG.scoring.hitProd} and production health drops by 20% (5 hits = meltdown)</li>
+        <li>Every ${CONFIG.scoring.comboSize} correct in a row gives a combo bonus of +${CONFIG.scoring.comboBonus}</li>
+      </ul>
+      <div style="text-align:right;margin-top:10px">
+        <button onclick="hideModal()">Got it!</button>
+      </div>
+    `);
   });
 
-  /* ============== GATE PLACEMENT =================== */
+  btnLB.addEventListener('click', async () => {
+    const globalRows = await fetchLeaderboardFromFirebase();
+    const localRows = loadLocalScores();
+
+    if (!window._lbMode) window._lbMode = "global";
+
+    function renderTable(mode) {
+      const rows = mode === "global" ? globalRows : localRows;
+      const isGlobal = (mode === "global");
+
+      if (!rows.length) {
+        return `
+          <p style="opacity:.7;margin-top:12px">
+            ${isGlobal ? "No global scores yet." : "No personal scores found on this device."}
+          </p>`;
+      }
+
+      return `
+        <table class="lb-table">
+          <thead>
+            <tr>
+              <th style="width:40px">#</th>
+              <th>Player</th>
+              <th style="text-align:right">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((r,i)=>`
+              <tr class="lb-row">
+                <td>${i+1}</td>
+                <td>${r.name}</td>
+                <td style="text-align:right">${r.score}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    window._renderLBFull = function() {
+      const mode = window._lbMode;
+      return `
+        <h2>🏆 Leaderboard</h2>
+
+        <div style="display:flex;gap:12px;margin-bottom:14px">
+
+          <button class="btn-secondary"
+            style="border:${mode==='global'?'2px solid #6ef6ff':'1px solid rgba(255,255,255,0.2)'}"
+            onclick="window._lbMode='global'; document.getElementById('modalContent').innerHTML = window._renderLBFull()">
+            🌐 Global
+          </button>
+
+          <button class="btn-secondary"
+            style="border:${mode==='local'?'2px solid #6ef6ff':'1px solid rgba(255,255,255,0.2)'}"
+            onclick="window._lbMode='local'; document.getElementById('modalContent').innerHTML = window._renderLBFull()">
+            💾 My Scores
+          </button>
+
+        </div>
+
+        <div id="lbContent">
+          ${renderTable(mode)}
+        </div>
+
+        <div style="text-align:right;margin-top:16px">
+          <button onclick="hideModal()">Close</button>
+        </div>
+      `;
+    };
+
+    showModal(window._renderLBFull());
+  });
+
+  clearLbBtn.addEventListener('click', async ()=>{
+    try{
+      await fetch(`${FIREBASE_DB_URL}/scores.json`, { method:'DELETE' });
+    }catch(e){
+      console.error('Error clearing Firebase leaderboard', e);
+    }
+    renderLB();
+  });
+
+  resetBtn.addEventListener('click', resetSession);
+  spawnBtn.addEventListener('click', ()=>spawnNextBug(true));
+
+  /* ---------- Name input ---------- */
+  playerNameInput.addEventListener('input', ()=>{
+    const val = playerNameInput.value.trim();
+    startOverlayBtn.disabled = !val;
+  });
+
+  /* ---------- Drag & Drop (mouse + touch) ---------- */
+  let dragGateType = null;
+  let dragGhost = null;
+
+  function startDragGate(type, clientX, clientY){
+    dragGateType = type;
+    dragGhost = document.createElement('div');
+    dragGhost.className = 'gate-btn dragging';
+    dragGhost.textContent = type.toUpperCase();
+    dragGhost.style.position = 'fixed';
+    dragGhost.style.left = (clientX - 60) + 'px';
+    dragGhost.style.top  = (clientY - 20) + 'px';
+    dragGhost.style.opacity = '0.7';
+    dragGhost.style.pointerEvents = 'none';
+    dragGhost.style.zIndex = '99999';
+    document.body.appendChild(dragGhost);
+  }
+
+  function moveDragGate(clientX, clientY){
+    if(!dragGhost) return;
+    dragGhost.style.left = (clientX - 60) + 'px';
+    dragGhost.style.top  = (clientY - 20) + 'px';
+  }
+
+  function endDragGate(clientX, clientY){
+    if(!dragGateType || !dragGhost){
+      dragGateType = null;
+      return;
+    }
+    dragGhost.remove();
+    dragGhost = null;
+
+    const lanesRect = lanesEl.getBoundingClientRect();
+    const count = getLaneCount();
+    let laneIndex = null;
+
+    if(isMobileMode()){
+      const x = clientX;
+      const laneWidth = lanesRect.width / count;
+      const idx = Math.floor((x - lanesRect.left) / laneWidth);
+      if(idx >= 0 && idx < count) laneIndex = idx;
+    } else {
+      const y = clientY;
+      const laneHeight = lanesRect.height / count;
+      const idx = Math.floor((y - lanesRect.top) / laneHeight);
+      if(idx >= 0 && idx < count) laneIndex = idx;
+    }
+
+    if(laneIndex !== null && state.running && state.currentBug){
+      placeGate(dragGateType, laneIndex, clientX, clientY);
+    }
+    dragGateType = null;
+  }
+
+  const gateButtons = Array.from(document.querySelectorAll('.gate-btn'));
+
+  // Mouse
+  gateButtons.forEach(btn=>{
+    btn.addEventListener('mousedown', e=>{
+      if(isMobileMode()) return;
+      e.preventDefault();
+      startDragGate(btn.dataset.type, e.clientX, e.clientY);
+      window.addEventListener('mousemove', mouseMoveDrag);
+      window.addEventListener('mouseup', mouseUpDrag, { once:true });
+    });
+  });
+
+  function mouseMoveDrag(e){ moveDragGate(e.clientX, e.clientY); }
+  function mouseUpDrag(e){
+    window.removeEventListener('mousemove', mouseMoveDrag);
+    endDragGate(e.clientX, e.clientY);
+  }
+
+  // Touch
+  gateButtons.forEach(btn=>{
+    btn.addEventListener('touchstart', e=>{
+      e.preventDefault();
+      const t = e.touches[0];
+      startDragGate(btn.dataset.type, t.clientX, t.clientY);
+    });
+    btn.addEventListener('touchmove', e=>{
+      e.preventDefault();
+      const t = e.touches[0];
+      moveDragGate(t.clientX, t.clientY);
+    });
+    btn.addEventListener('touchend', e=>{
+      e.preventDefault();
+      const t = e.changedTouches[0];
+      endDragGate(t.clientX, t.clientY);
+    });
+  });
+
+  /* ---------- Place gate ---------- */
   function placeGate(type, laneIndex, clientX, clientY){
     if(!state.currentBug) return;
 
@@ -876,29 +1301,32 @@
     });
   }
 
-  /* ============== BUG SPAWN / MOVEMENT =================== */
-  function spawnNextBug(){
+  /* ---------- Spawn / movement ---------- */
+  function spawnNextBug(manual=false){
     if(!state.running) return;
     if(state.currentBug) return;
-    if(state.remaining <= 0) return;
+    if(state.remaining <= 0){
+      if(manual) flashBanner('No bugs remaining');
+      return;
+    }
 
     const def = getNextBugDef();
-    const count = getLaneCount();
-    const row = Math.floor(Math.random()*count);
+    const laneCount = getLaneCount();
+    const row = Math.floor(Math.random()*laneCount);
     const laneEl = lanesEl.children[row];
     const areaRect = gameArea.getBoundingClientRect();
     const laneRect = laneEl.getBoundingClientRect();
     const prodRect = prodCol.getBoundingClientRect();
 
-    const bugEl = document.createElement('div');
-    bugEl.className = 'bug';
-    bugEl.innerHTML = `<span class="icon">${def.icon}</span><span>${def.label}</span>`;
-    gameArea.appendChild(bugEl);
+    const el = document.createElement('div');
+    el.className = 'bug';
+    el.innerHTML = `<span class="icon">${def.icon}</span><span>${def.label}</span>`;
+    gameArea.appendChild(el);
 
-    let bug = {
+    const bug = {
       def,
       row,
-      el: bugEl,
+      el,
       x: 0,
       y: 0,
       vx: 0,
@@ -910,25 +1338,25 @@
     };
 
     if(isMobileMode()){
-      const startX = (laneRect.left - areaRect.left) + laneRect.width/2 - bugEl.offsetWidth/2;
-      const startY = (laneRect.top - areaRect.top) + 10;
+      const startY = 24;  // near top
+      const startX = (laneRect.left - areaRect.left) + laneRect.width/2 - el.offsetWidth/2;
       bug.x = startX;
       bug.y = startY;
-      bugEl.style.left = startX + 'px';
-      bugEl.style.top  = startY + 'px';
+      el.style.left = startX + 'px';
+      el.style.top  = startY + 'px';
 
-      const thresholdY = (laneRect.bottom - areaRect.top) - bugEl.offsetHeight - 6;
+      const thresholdY = gameArea.getBoundingClientRect().height - 160;  // near PROD
       bug.thresholdY = thresholdY;
       bug.vy = (thresholdY - startY) / CONFIG.bugTravelSeconds;
     } else {
-      const y = laneRect.top - areaRect.top + laneRect.height/2 - bugEl.offsetHeight/2;
+      const y = laneRect.top - areaRect.top + laneRect.height/2 - el.offsetHeight/2;
       const startX = (laneRect.left - areaRect.left) + 10;
       bug.x = startX;
       bug.y = y;
-      bugEl.style.left = startX + 'px';
-      bugEl.style.top  = y + 'px';
+      el.style.left = startX + 'px';
+      el.style.top  = y + 'px';
 
-      const prodThreshold = prodRect.left - areaRect.left - bugEl.offsetWidth;
+      const prodThreshold = prodRect.left - areaRect.left - el.offsetWidth;
       const safeThreshold = Math.max(prodThreshold, startX + 120);
       bug.thresholdX = safeThreshold;
       const distance = safeThreshold - startX;
@@ -1008,9 +1436,9 @@
   function hitProd(bug){
     state.score += CONFIG.scoring.hitProd;
     state.combo = 0;
+
     state.health -= 20;
     if(state.health < 0) state.health = 0;
-
     updateHealth();
     beep(120,0.12);
 
@@ -1102,7 +1530,7 @@
   }
   requestAnimationFrame(gameLoop);
 
-  /* ============== GAME CONTROL =================== */
+  /* ---------- Game control ---------- */
   function resetSession(){
     state.running = false;
     clearInterval(timerInterval);
@@ -1147,11 +1575,43 @@
     endOverlay.style.display = 'flex';
   }
 
-  function endGame(reason){
+  async function endGame(reason){
     state.running = false;
     clearInterval(timerInterval);
     timerInterval = null;
     banner.textContent = reason || 'Game over';
+
+    let name = state.player;
+    let rank = null;
+    const stamp = Date.now();
+
+    if(name){
+      try{
+        await saveScoreToFirebase(state.player, state.score, stamp);
+        const rows = await fetchLeaderboardFromFirebase();
+        const idx = rows.findIndex(
+          r => r.name === state.player &&
+               r.score === state.score &&
+               r.timestamp === stamp
+        );
+        rank = idx >= 0 ? idx+1 : null;
+      }catch(e){
+        console.error('Error updating Firebase leaderboard', e);
+      }
+      saveLocalScore(state.player, state.score, stamp);
+      renderLB();
+    }
+
+    if(rank){
+      if(rank === 1){
+        endRankEl.textContent = `🏆 New High Score! You’re #1`;
+      } else {
+        endRankEl.textContent = `New leaderboard rank: #${rank}`;
+      }
+    } else {
+      endRankEl.textContent = '';
+    }
+
     showEndOverlay(reason);
   }
 
@@ -1177,12 +1637,7 @@
     spawnNextBug();
   }
 
-  /* ============== NAME INPUT & BUTTONS =================== */
-  playerNameInput.addEventListener('input', ()=>{
-    const val = playerNameInput.value.trim();
-    startOverlayBtn.disabled = !val;
-  });
-
+  /* ---------- Start / End buttons ---------- */
   startOverlayBtn.addEventListener('click', ()=>{
     const name = playerNameInput.value.trim();
     if(!name) return;
@@ -1203,8 +1658,10 @@
 
   endBtnPlay.addEventListener('click', ()=>{
     if(state.player){
+      endOverlay.style.display = 'none';
       beginGame();
     } else {
+      endOverlay.style.display = 'none';
       startOverlay.style.display = 'flex';
     }
   });
@@ -1220,110 +1677,29 @@
     playerNameInput.focus();
   });
 
-  btnAbort.addEventListener('click', ()=>{
-    if(!state.running) return;
+  function abortGame() {
+    if (!state.running) return;
     state.running = false;
     clearInterval(timerInterval);
     timerInterval = null;
-    endTitleEl.textContent = '⛔ Game Aborted';
-    endScoreEl.textContent = `Score: ${state.score}`;
-    endRankEl.textContent = '(Not saved)';
-    endOverlay.style.display = 'flex';
+    endTitleEl.textContent = "⛔ Game Aborted";
+    endScoreEl.textContent = "Score: " + state.score;
+    endRankEl.textContent = "(Not saved to leaderboard)";
+    endOverlay.style.display = "flex";
     btnAbort.disabled = true;
-  });
-
-  /* ============== DRAG & DROP (MOUSE + TOUCH) =================== */
-  let dragGateType = null;
-  let dragGhost = null;
-
-  function startDragGate(type, clientX, clientY){
-    dragGateType = type;
-
-    dragGhost = document.createElement('div');
-    dragGhost.className = 'gate-btn dragging';
-    dragGhost.style.position = 'fixed';
-    dragGhost.style.left = (clientX - 60) + 'px';
-    dragGhost.style.top  = (clientY - 20) + 'px';
-    dragGhost.style.pointerEvents = 'none';
-    dragGhost.style.opacity = '0.7';
-    dragGhost.style.zIndex = '99999';
-    dragGhost.textContent = type.toUpperCase();
-    document.body.appendChild(dragGhost);
   }
+  btnAbort.addEventListener("click", abortGame);
 
-  function moveDragGate(clientX, clientY){
-    if(!dragGhost) return;
-    dragGhost.style.left = (clientX - 60) + 'px';
-    dragGhost.style.top  = (clientY - 20) + 'px';
+  function saveLocalScore(name, score, timestamp){
+    let list = JSON.parse(localStorage.getItem("localScores") || "[]");
+    list.push({ name, score, timestamp });
+    list.sort((a,b)=>b.score - a.score);
+    list = list.slice(0, 500);
+    localStorage.setItem("localScores", JSON.stringify(list));
   }
-
-  function endDragGate(clientX, clientY){
-    if(!dragGateType || !dragGhost){
-      dragGateType = null;
-      return;
-    }
-    dragGhost.remove();
-    dragGhost = null;
-
-    const lanesRect = lanesEl.getBoundingClientRect();
-    const count = getLaneCount();
-    let laneIndex = null;
-
-    if(isMobileMode()){
-      const x = clientX;
-      const laneWidth = lanesRect.width / count;
-      const idx = Math.floor((x - lanesRect.left) / laneWidth);
-      if(idx >= 0 && idx < count) laneIndex = idx;
-    } else {
-      const y = clientY;
-      const laneHeight = lanesRect.height / count;
-      const idx = Math.floor((y - lanesRect.top) / laneHeight);
-      if(idx >= 0 && idx < count) laneIndex = idx;
-    }
-
-    if(laneIndex !== null && state.running && state.currentBug){
-      placeGate(dragGateType, laneIndex, clientX, clientY);
-    }
-    dragGateType = null;
+  function loadLocalScores(){
+    return JSON.parse(localStorage.getItem("localScores") || "[]");
   }
-
-  // Mouse
-  gateButtons.forEach(btn=>{
-    btn.addEventListener('mousedown', e=>{
-      if(isMobileMode()) return; // mouse on mobile not needed
-      e.preventDefault();
-      startDragGate(btn.dataset.type, e.clientX, e.clientY);
-      window.addEventListener('mousemove', mouseMoveDrag);
-      window.addEventListener('mouseup', mouseUpDrag, { once:true });
-    });
-  });
-
-  function mouseMoveDrag(e){
-    moveDragGate(e.clientX, e.clientY);
-  }
-  function mouseUpDrag(e){
-    window.removeEventListener('mousemove', mouseMoveDrag);
-    endDragGate(e.clientX, e.clientY);
-  }
-
-  // Touch
-  gateButtons.forEach(btn=>{
-    btn.addEventListener('touchstart', e=>{
-      e.preventDefault();
-      const t = e.touches[0];
-      startDragGate(btn.dataset.type, t.clientX, t.clientY);
-    });
-    btn.addEventListener('touchmove', e=>{
-      e.preventDefault();
-      const t = e.touches[0];
-      moveDragGate(t.clientX, t.clientY);
-    });
-    btn.addEventListener('touchend', e=>{
-      e.preventDefault();
-      const t = e.changedTouches[0];
-      endDragGate(t.clientX, t.clientY);
-    });
-  });
 </script>
 </body>
 </html>
