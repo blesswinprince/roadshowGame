@@ -1602,32 +1602,38 @@ function spawnNextBug(manual = false) {
 
   let bug;
   if (isMobileMode()) {
-    const lineOffsetY = 10;
-    const startY = (laneRect.top - areaRect.top) + lineOffsetY;
+    const laneTop = laneRect.top - areaRect.top;
+    const laneHeight = laneRect.height;
+
+    // TOP of lane line — consistent across screens
+    const startY = laneTop + 30;   // 🔥 always inside lane
     const x = laneRect.left - areaRect.left + laneRect.width / 2 - bugW / 2;
 
+    // PROD threshold — subtract bug height to stop overlap
     const prodRect = prodCol.getBoundingClientRect();
-    const prodThreshold = prodRect.top - areaRect.top - bugH;
+    const prodThreshold = (prodRect.top - areaRect.top) - bugH - 5;
+
+    // Travel distance & speed
     const distance = prodThreshold - startY;
     const speed = distance / CONFIG.bugTravelSeconds;
 
     el.style.left = x + 'px';
-    el.style.top  = startY + 'px';
+    el.style.top = startY + 'px';
 
     bug = {
-      def,
-      row: laneIndex,
-      el,
-      x,
-      y: startY,
-      vx: 0,
-      vy: speed,
-      pausedUntil: 0,
-      active: true,
-      pathStart: startY,
-      pathEnd: prodThreshold
+        def,
+        row: laneIndex,
+        el,
+        x,
+        y: startY,
+        vx: 0,
+        vy: speed,
+        pausedUntil: 0,
+        active: true,
+        pathStart: startY,
+        pathEnd: prodThreshold
     };
-  } else {
+} else {
     const lineOffset = 10;
     const startX = (laneRect.left - areaRect.left) + lineOffset;
     const y = laneRect.top - areaRect.top + laneRect.height / 2 - bugH / 2;
@@ -2121,5 +2127,6 @@ window.addEventListener('resize', () => {
 </script>
 </body>
 </html>
+
 
 
