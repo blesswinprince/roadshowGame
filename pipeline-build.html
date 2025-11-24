@@ -2,666 +2,892 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
   <title>CI/CD Defense Arcade</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
   <style>
-    @media (max-width: 600px) {
-  .prod-column {
-    position: absolute !important;
-    bottom: 80px !important;    /* ABOVE gate bar */
-    top: auto !important;
-  }
-}
-    
-    :root {
-      --bg-main: #050814;
-      --bg-panel: #0b1020;
-      --text-main: #f7f9ff;
-      --muted: rgba(230,235,255,0.65);
-      --neon-cyan: #6ef6ff;
-      --neon-green: #7affb4;
-      --neon-orange: #ffb36b;
-      --error-red: #ff6b6b;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: radial-gradient(circle at top, #18243a 0, #050814 50%, #02030a 100%);
-      color: var(--text-main);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      overscroll-behavior: none;
-    }
-
-    body {
-      user-select: none;
-    }
-
-    .wrap {
-      max-width: 1200px;
-      margin: 16px auto;
-      padding: 16px 18px 22px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(0,0,0,0.7));
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow:
-        0 18px 40px rgba(0,0,0,0.6),
-        0 0 0 1px rgba(255,255,255,0.02);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    :root{
+      --bg:#040611;
+      --bg-soft:#071327;
+      --neon-cyan:#6ef6ff;
+      --neon-green:#6effa0;
+      --neon-orange:#ffb36b;
+      --panel: rgba(255,255,255,0.05);
+      --white-soft:#e8f7ff;
     }
 
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+    html,body{
+      height:100%;
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 500px at 10% 6%, rgba(110,246,255,0.08), transparent),
+        radial-gradient(900px 500px at 80% 100%, rgba(255,179,107,0.08), transparent),
+        linear-gradient(180deg,#02030a,var(--bg));
+      color:var(--white-soft);
     }
 
-    header h1 {
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      line-height: 1.05;
+    .wrap{
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:12px;
     }
 
-    .title-main {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--neon-cyan);
-      text-shadow: 0 0 14px rgba(110,246,255,0.6);
-    }
-
-    .title-sub {
-      font-size: 18px;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--muted);
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .pill {
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.05);
-      font-size: 12px;
-      display: inline-flex;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .pill-label {
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-size: 10px;
-      color: var(--muted);
-    }
-
-    .pill-value {
-      font-weight: 600;
-    }
-
-    button {
-      font-family: inherit;
-      cursor: pointer;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.2);
-      padding: 6px 12px;
-      font-size: 12px;
-      background: rgba(255,255,255,0.02);
-      color: var(--text-main);
-      transition: background 0.15s ease, transform 0.07s ease, box-shadow 0.15s ease;
-    }
-
-    button:hover:not(:disabled) {
-      background: rgba(255,255,255,0.08);
-      transform: translateY(-1px);
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.1);
-    }
-
-    button:active:not(:disabled) {
-      transform: translateY(1px) scale(0.98);
-      box-shadow: none;
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: default;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-green));
-      border-color: rgba(0,0,0,0.4);
-      color: #051018;
-      font-weight: 700;
-    }
-
-    .btn-secondary {
-      background: rgba(15,25,45,0.9);
-    }
-
-    .main {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .hud {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .hud-chip {
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: rgba(0,0,0,0.7);
-      font-size: 11px;
-      display: inline-flex;
-      gap: 4px;
-      align-items: center;
-    }
-
-    .hud-label {
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-size: 10px;
-      color: var(--muted);
-    }
-
-    .hud-value {
-      font-weight: 600;
-    }
-
-    .hud-unit {
-      font-size: 10px;
-      opacity: 0.7;
-      margin-left: 2px;
-    }
-
-    .game-area {
-      position: relative;
-      border-radius: 14px;
-      background: radial-gradient(circle at top, #19243d 0, #050814 55%, #01020a 100%);
-      border: 1px solid rgba(255,255,255,0.1);
-      min-height: 360px;
-      overflow: hidden;
-      padding: 16px;
-    }
-
-    .wave-banner {
-      position: absolute;
-      top: 8px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 3px 10px;
-      border-radius: 999px;
-      background: rgba(5,10,25,0.9);
-      border: 1px solid var(--neon-cyan);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--neon-cyan);
-      z-index: 5;
-    }
-
-    .lanes {
-      position: relative;
-      margin: 38px 180px 32px 12px;
-      height: 260px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 2;
-    }
-
-    .lane {
-      position: relative;
-      flex: 1;
-      border-radius: 10px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(0,0,0,0.7));
-      border: 1px solid rgba(255,255,255,0.1);
-      overflow: hidden;
-    }
-
-    .lane-label {
-      position: absolute;
-      left: 8px;
-      top: 4px;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: rgba(240,245,255,0.6);
-    }
-
-    .line-left {
-      position: absolute;
-      left: 10px;
-      top: 0;
-      bottom: 0;
-      width: 3px;
-      background: linear-gradient(to bottom, var(--neon-cyan), transparent 40%, transparent 60%, var(--neon-cyan));
-      opacity: 0.5;
-    }
-
-    .lane-hover {
-      box-shadow: 0 0 0 1px var(--neon-cyan), 0 0 16px rgba(110,246,255,0.6);
-      border-color: var(--neon-cyan);
-    }
-
-    .prod-column {
-      position: absolute;
-      top: 56px;
-      right: 16px;
-      width: 120px;
-      border-radius: 14px;
-      padding: 8px 8px 10px;
-      background: radial-gradient(circle at top, #1f2a46, #050814);
-      border: 1px solid rgba(255,255,255,0.25);
-      text-align: center;
-      z-index: 4;
-    }
-
-    .prod-icon {
-      font-size: 22px;
-    }
-
-    .prod-label {
-      margin-top: 2px;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-    }
-
-    .health {
-      margin-top: 6px;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,0.7);
-      border: 1px solid rgba(255,255,255,0.25);
-      overflow: hidden;
-    }
-
-    .health-inner {
-      height: 100%;
-      width: 100%;
-      background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
-      box-shadow: 0 0 14px rgba(122,255,180,0.7);
-      transition: width 0.2s ease-out, background 0.2s ease-out;
-    }
-
-    .prod-column.hit {
-      animation: prod-hit 0.25s ease-out;
-    }
-
-    @keyframes prod-hit {
-      0% { transform: translateY(0); }
-      20% { transform: translateY(-2px); }
-      60% { transform: translateY(1px); }
-      100% { transform: translateY(0); }
-    }
-
-    .bug {
-      position: absolute;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 9px;
-      border-radius: 999px;
-      background: rgba(15,25,55,0.95);
-      border: 1px solid rgba(110,246,255,0.7);
-      font-size: 11px;
-      white-space: nowrap;
-      box-shadow: 0 0 12px rgba(110,246,255,0.6), 0 0 0 1px rgba(0,0,0,0.8);
-      z-index: 40;
-    }
-
-    .bug .icon {
-      font-size: 13px;
-    }
-
-    .lane-gate {
-      position: absolute;
-      width: 110px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      z-index: 60;
-    }
+    /* ---------- HEADER / TITLE ---------- */
 
-    .lane-gate-line {
-      position: absolute;
-      height: 2px;
-      width: 90%;
-      background: rgba(255,255,255,0.14);
-      box-shadow: 0 0 10px rgba(255,255,255,0.4);
+    header{
+      width:98%;
+      max-width:1400px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
     }
 
-    .lane-gate-label {
-      position: relative;
-      padding: 2px 10px;
-      border-radius: 999px;
-      font-size: 9px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      border: 1px solid rgba(255,255,255,0.3);
+    h1{
+      margin:0;
+      display:flex;
+      flex-direction:column;
+      font-weight:900;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
     }
 
-    .lane-gate-unit .lane-gate-line {
-      background: rgba(110,246,255,0.8);
+    .title-main{
+      font-size:26px;
+      color:#fefefe;
+      text-shadow:0 2px 0 #18202f,
+                  0 0 18px rgba(110,246,255,0.6);
     }
-    .lane-gate-unit .lane-gate-label {
-      background: rgba(110,246,255,0.15);
-      color: var(--neon-cyan);
-    }
-
-    .lane-gate-contract .lane-gate-line {
-      background: rgba(122,255,180,0.8);
-    }
-    .lane-gate-contract .lane-gate-label {
-      background: rgba(122,255,180,0.16);
-      color: var(--neon-green);
-    }
-
-    .lane-gate-integration .lane-gate-line {
-      background: rgba(255,179,107,0.8);
-    }
-    .lane-gate-integration .lane-gate-label {
-      background: rgba(255,179,107,0.15);
-      color: var(--neon-orange);
-    }
-
-    .gate-bar {
-      margin-top: 10px;
-      display: flex;
-      gap: 8px;
-    }
-
-    .gate-btn {
-      flex: 1;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.2);
-      font-size: 11px;
-      font-weight: 700;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      background: rgba(0,0,0,0.75);
-      touch-action: none;
-    }
 
-    .gate-btn.blue { border-color: var(--neon-cyan); }
-    .gate-btn.green { border-color: var(--neon-green); }
-    .gate-btn.orange { border-color: var(--neon-orange); }
-
-    .gate-btn.dragging {
-      opacity: 0.5;
-    }
-
-    .end-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-    }
-
-    .end-card {
-      min-width: 260px;
-      max-width: 360px;
-      padding: 18px 16px 14px;
-      border-radius: 14px;
-      background: radial-gradient(circle at top, #202947, #050814);
-      border: 1px solid rgba(255,255,255,0.24);
-      text-align: center;
-    }
-
-    .end-title {
-      font-size: 18px;
-      margin-bottom: 4px;
+    .title-sub{
+      font-size:14px;
+      color:var(--neon-cyan);
+      text-shadow:0 0 12px rgba(110,246,255,0.5);
     }
 
-    .end-score {
-      font-size: 14px;
-      margin-bottom: 4px;
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
     }
 
-    .end-rank {
-      font-size: 13px;
-      color: var(--neon-orange);
-      min-height: 18px;
-    }
+    /* Pills for player/score/combo */
 
-    .end-actions {
-      margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      justify-content: center;
+    .pill{
+      display:flex;
+      flex-direction:column;
+      padding:4px 10px;
+      border-radius:999px;
+      background:radial-gradient(circle at 0% 0%, rgba(255,255,255,0.14), transparent 50%),
+                 linear-gradient(135deg, rgba(2,8,23,0.9), rgba(9,16,36,0.95));
+      border:1px solid rgba(255,255,255,0.18);
+      box-shadow:0 3px 8px rgba(0,0,0,0.5);
+      min-width:72px;
     }
 
-    .name-input {
-      margin-top: 8px;
-      width: 100%;
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(0,0,0,0.7);
-      color: var(--text-main);
-      font-size: 13px;
-      text-align: center;
+    .pill-label{
+      font-size:10px;
+      text-transform:uppercase;
+      opacity:0.7;
     }
 
-    .footer-tip {
-      font-size: 11px;
-      color: var(--muted);
+    .pill-value{
+      font-size:14px;
+      font-weight:800;
+      margin-top:1px;
     }
 
-    .floating-text {
-      position: absolute;
-      font-size: 14px;
-      font-weight: 700;
-      pointer-events: none;
-      text-shadow: 0 0 8px rgba(0,0,0,0.7);
-      z-index: 80;
+    .pill-player .pill-value{
+      color:var(--neon-cyan);
     }
-
-    .lb {
-      margin-top: 6px;
-      font-size: 12px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(4,6,16,0.95);
-      max-height: 220px;
-      overflow: auto;
+    .pill-score .pill-value{
+      color:var(--neon-orange);
     }
+    .pill-combo .pill-value{
+      color:var(--neon-green);
+    }
+
+    /* Buttons */
 
-    .modal-root {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at top, rgba(19,28,55,0.95), rgba(1,3,8,0.96));
-      z-index: 999;
-    }
+    button{
+      background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,0.18);
+      padding:8px 12px;
+      border-radius:999px;
+      color:#f7fcff;
+      cursor:pointer;
+      font-weight:600;
+      font-size:13px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.4);
+    }
+    button:hover{
+      transform:translateY(-1px);
+      box-shadow:0 7px 18px rgba(0,0,0,0.6);
+    }
+    button:active{
+      transform:translateY(0);
+      box-shadow:0 2px 6px rgba(0,0,0,0.6);
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg,#4cffb7,#58c1ff);
+      border-color:rgba(255,255,255,0.3);
+      color:#041018;
+    }
+
+    .btn-secondary{
+      background:linear-gradient(135deg,#19263c,#101829);
+    }
+
+    /* ---------- MAIN LAYOUT ---------- */
+
+    .main{
+      width:98%;
+      max-width:1400px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    /* HUD chips */
+
+    .hud{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      padding:8px 10px;
+      background:linear-gradient(135deg, rgba(9,16,36,0.9), rgba(5,15,27,0.95));
+      border-radius:16px;
+      border:1px solid rgba(110,246,255,0.18);
+      box-shadow:0 10px 25px rgba(0,0,0,0.6);
+      flex-wrap:wrap;
+    }
+
+    .hud-chip{
+      display:flex;
+      align-items:center;
+      gap:5px;
+      padding:4px 10px;
+      border-radius:999px;
+      background:rgba(3,15,30,0.9);
+      border:1px solid rgba(255,255,255,0.06);
+    }
+
+    .hud-label{
+      font-size:11px;
+      text-transform:uppercase;
+      opacity:0.75;
+    }
+    .hud-value{
+      font-size:13px;
+      font-weight:700;
+    }
+    .hud-unit{
+      font-size:11px;
+      opacity:0.75;
+      margin-left:2px;
+    }
+    .hud-chip-timer{
+      background:radial-gradient(circle at 0 0, rgba(255,255,255,0.12), transparent 55%),
+                 linear-gradient(135deg,rgba(255,188,120,0.12),rgba(255,164,90,0.3));
+    }
+
+    /* ---------- GAME AREA ---------- */
+
+    .game-area{
+      position:relative;
+      height:460px;
+      background:radial-gradient(circle at 50% 0%, rgba(110,246,255,0.12), transparent 55%),
+                 linear-gradient(180deg, rgba(24,40,80,0.8), rgba(4,6,17,0.98));
+      border-radius:20px;
+      overflow:hidden;
+      border:1px solid rgba(110,246,255,0.28);
+      box-shadow:0 18px 40px rgba(0,0,0,0.7);
+    }
+
+    .grid{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(110,246,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(110,246,255,0.02) 1px, transparent 1px);
+      background-size:60px 60px;
+      opacity:0.7;
+    }
+
+    .lanes{
+      position:absolute;
+      left:8px;
+      right:120px;
+      top:16px;
+      bottom:8px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding-right:8px;
+    }
+
+    .lane{
+      flex:1;
+      background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
+      border-radius:10px;
+      position:relative;
+      overflow:visible;
+    }
+
+    .lane::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      border:1px solid transparent;
+      transition:border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .lane .line-left{
+      position:absolute;
+      left:10px;
+      top:6px;
+      bottom:6px;
+      width:3px;
+      border-radius:999px;
+      background:linear-gradient(180deg, rgba(110,246,255,0.8), transparent);
+    }
+
+    .lane .lane-label{
+      position:absolute;
+      left:22px;
+      top:6px;
+      color:rgba(255,255,255,0.9);
+      font-size:11px;
+      font-weight:700;
+      text-transform:uppercase;
+    }
+
+    .lane-hover::before{
+      border-color:rgba(110,246,255,0.6);
+      box-shadow:0 0 0 1px rgba(110,246,255,0.5);
+    }
+
+    /* PROD column */
+
+    .prod-column{
+      position:absolute;
+      right:10px;
+      top:12px;
+      width:110px;
+      bottom:12px;
+      border-radius:18px;
+      background:radial-gradient(circle at 50% 0%, rgba(255,224,151,0.12), transparent 55%),
+                 linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.4));
+      border:2px solid rgba(110,246,255,0.8); /* healthy default border */
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:10px;
+      gap:8px;
+      box-sizing:border-box;
+      box-shadow:0 10px 25px rgba(0,0,0,0.6);
+    }
+
+    .prod-crack{
+      position:absolute;
+      inset:5px;
+      border-radius:inherit;
+      border:2px dashed rgba(255,200,120,0);
+      pointer-events:none;
+      box-shadow:none;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+    }
+
+    .prod-icon{
+      font-size:30px;
+      color:var(--neon-orange);
+      text-shadow:0 0 18px rgba(255,140,60,0.5);
+    }
+
+    .prod-label{
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:0.09em;
+      text-transform:uppercase;
+      opacity:0.95;
+    }
+
+    .health{
+      width:88px;
+      height:14px;
+      background:rgba(0,0,0,0.55);
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.2);
+    }
+
+    .health-inner{
+      height:100%;
+      background:linear-gradient(90deg,var(--neon-green),var(--neon-cyan));
+      width:100%;
+      transition:width 0.18s ease;
+    }
+
+    /* Bugs */
+
+    .bug{
+      position:absolute;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(110,246,255,0.16), rgba(110,246,255,0.04));
+      box-shadow:0 10px 30px rgba(0,0,0,0.6);
+      color:#fff;
+      font-weight:700;
+      pointer-events:none;
+      white-space:nowrap;
+      font-size:12px;
+    }
+
+    .bug .icon{
+      font-size:16px;
+    }
+
+    .spark{
+      position:absolute;
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      pointer-events:none;
+      box-shadow:0 0 12px currentColor;
+    }
+
+    /* Gate bar */
+
+    .gate-bar{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      justify-content:center;
+      padding:10px 12px 12px;
+      background:linear-gradient(180deg, rgba(18,30,62,0.96), rgba(2,5,13,0.98));
+      border-radius:0 0 20px 20px;
+      border-top:1px solid rgba(110,246,255,0.25);
+    }
+
+    .gate-btn{
+      min-width:160px;
+      height:58px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      cursor:grab;
+      border:1px solid rgba(255,255,255,0.18);
+      user-select:none;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.06em;
+      touch-action:none;
+    }
+
+    .gate-btn.blue{
+      background:linear-gradient(135deg,#3fb3ff,#6ef6ff);
+      color:#001;
+    }
+    .gate-btn.green{
+      background:linear-gradient(135deg,#b7ffdf,#9cffb6);
+      color:#001;
+    }
+    .gate-btn.orange{
+      background:linear-gradient(135deg,#ffc88f,#ffb36b);
+      color:#001;
+    }
+
+    /* Thin vertical gate placed on lanes */
+
+    .lane-gate{
+      position:absolute;
+      width:120px;
+      height:56px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      background:transparent;
+      border:none;
+      pointer-events:none;
+    }
+
+    .lane-gate-line{
+      width:9px;
+      height:100%;
+      border-radius:999px;
+      box-shadow:0 0 18px rgba(110,246,255,0.3);
+    }
+
+    /* Color variants per test type */
+    .lane-gate-unit .lane-gate-line{
+      background:linear-gradient(180deg,#3fb3ff,#6ef6ff);
+    }
+
+    .lane-gate-contract .lane-gate-line{
+      background:linear-gradient(180deg,#b7ffdf,#9cffb6);
+    }
+
+    .lane-gate-integration .lane-gate-line{
+      background:linear-gradient(180deg,#ffc88f,#ffb36b);
+    }
 
-    .modal-content {
-      max-width: 520px;
-      width: 92%;
-      padding: 20px 18px 16px;
-      border-radius: 16px;
-      background: radial-gradient(circle at top, #202947, #050814);
-      border: 1px solid rgba(255,255,255,0.25);
-      font-size: 13px;
-      line-height: 1.5;
-    }
+    .lane-gate-label{
+      margin-top:4px;
+      font-size:9px;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      opacity:0.9;
+    }
+
+    /* Leaderboard container (hidden in main screen) */
+
+    .lb{
+      margin-top:6px;
+      background:rgba(255,255,255,0.03);
+      padding:8px;
+      border-radius:12px;
+      max-height:180px;
+      overflow:auto;
+    }
+
+    .muted{
+      opacity:0.8;
+    }
+
+    .wave-banner{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      top:10px;
+      background:rgba(0,0,0,0.5);
+      padding:6px 12px;
+      border-radius:999px;
+      color:#e9ffff;
+      font-weight:700;
+      border:1px solid rgba(110,246,255,0.25);
+      font-size:12px;
+    }
+
+    /* PROD health / damage states */
+
+    .prod-column.healthy .prod-crack{
+      border-color: rgba(110,246,255,0.6);
+      box-shadow:0 0 14px rgba(110,246,255,0.65) inset;
+    }
+    .prod-column.healthy{
+      animation:prod-pulse 2.5s ease-in-out infinite;
+    }
+
+    .prod-column.hit{
+      animation: prod-hit 0.35s ease-out;
+    }
+
+    .prod-column.damaged .prod-crack{
+      border-color: rgba(255,200,120,0.7);
+      box-shadow:0 0 14px rgba(255,140,60,0.5) inset;
+    }
+
+    .prod-column.critical .prod-crack{
+      border-color: rgba(255,80,80,0.95);
+      box-shadow:0 0 16px rgba(255,80,80,0.7) inset;
+    }
+
+    .prod-column.broken{
+      animation: prod-break 0.6s ease-out forwards;
+      filter:grayscale(1) brightness(0.6);
+    }
+
+    /* subtle healthy pulse */
+    @keyframes prod-pulse{
+      0%,100% { box-shadow:0 10px 25px rgba(0,0,0,0.6); }
+      50% { box-shadow:0 18px 35px rgba(0,0,0,0.8); }
+    }
+
+    /* small shake when PROD is hit */
+    @keyframes prod-hit{
+      0%  { transform:translateX(0); }
+      20% { transform:translateX(-3px); }
+      40% { transform:translateX(4px); }
+      60% { transform:translateX(-2px); }
+      80% { transform:translateX(2px); }
+      100%{ transform:translateX(0); }
+    }
+
+    /* breakdown when health reaches 0 */
+    @keyframes prod-break{
+      0%  { transform:scale(1);   opacity:1;   }
+      40% { transform:scale(1.04) rotate(1deg);  opacity:0.8; }
+      70% { transform:scale(0.98) rotate(-2deg); opacity:0.5; }
+      100%{ transform:scale(0.96) rotate(-4deg); opacity:0.3; }
+    }
+
+    /* Misc */
+    @keyframes pop {
+      0%{transform:scale(.9)}
+      50%{transform:scale(1.06)}
+      100%{transform:scale(1)}
+    }
+
+    /* End-of-game / start overlay */
 
-    .lb-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      margin-top: 6px;
+    .end-overlay{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(255,255,255,0.12), transparent 55%),
+        linear-gradient(180deg,rgba(0,0,0,0.85),rgba(0,0,0,0.95));
+      z-index:120;
+    }
+
+    .end-card{
+      background:linear-gradient(180deg,#071022,#030712);
+      border-radius:24px;
+      border:1px solid rgba(110,246,255,0.6);
+      padding:24px 28px 20px;
+      min-width:280px;
+      max-width:360px;
+      text-align:center;
+      box-shadow:0 20px 60px rgba(0,0,0,0.8);
+    }
+
+    .end-title{
+      font-size:26px;
+      font-weight:900;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+      text-shadow:0 0 18px rgba(255,255,255,0.6);
+      animation:end-title-pop 0.7s ease-out;
+    }
+
+    .end-score{
+      font-size:18px;
+      margin-bottom:4px;
+    }
+
+    .end-rank{
+      font-size:14px;
+      opacity:0.9;
+      margin-bottom:14px;
+    }
+
+    .end-actions{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      margin-top:4px;
+    }
+
+    .end-actions button{
+      font-size:13px;
+      font-weight:700;
+      padding:8px 14px;
+    }
+
+    /* name input in start overlay */
+    .name-input{
+      width:100%;
+      margin:10px 0 6px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(110,246,255,0.6);
+      background:rgba(0,0,0,0.55);
+      color:#e8f7ff;
+      outline:none;
+      font-family:inherit;
+      font-size:14px;
+    }
+    .name-input::placeholder{
+      color:rgba(232,247,255,0.55);
+    }
+    .name-input:focus{
+      border-color:rgba(110,246,255,0.95);
+      box-shadow:0 0 0 2px rgba(110,246,255,0.5);
+    }
+
+    .end-actions button[disabled]{
+      opacity:0.4;
+      cursor:not-allowed;
+    }
+
+    /* special colors */
+    .end-title.meltdown{
+      color:#ff8a6b;
+    }
+    .end-title.timeup{
+      color:#6ef6ff;
+    }
+
+    /* animated wobble */
+    @keyframes end-title-pop{
+      0%   { transform:scale(0.6) rotate(-4deg); opacity:0; }
+      40%  { transform:scale(1.1) rotate(2deg);  opacity:1; }
+      70%  { transform:scale(0.96) rotate(-2deg);}
+      100% { transform:scale(1)   rotate(0deg); }
+    }
+
+    /* Modal (tutorial / leaderboard) */
+    .modal-root{
+      position:fixed;
+      inset:0;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg,rgba(0,0,0,0.65),rgba(0,0,0,0.9));
+      z-index:110;
+      display:none;
+    }
+
+    .modal-content{
+      background:linear-gradient(180deg,#071022,#04101a);
+      padding:18px;
+      border-radius:16px;
+      border:1px solid rgba(110,246,255,0.4);
+      width:720px;
+      max-width:95vw;
+      color:#dff;
+      box-shadow:0 18px 50px rgba(0,0,0,0.9);
+    }
+
+    /* Leaderboard table styling inside modal */
+    .lb-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:8px;
+      font-size:14px;
     }
-
     .lb-table th,
-    .lb-table td {
-      padding: 4px 6px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+    .lb-table td{
+      padding:6px 8px;
+    }
+    .lb-table th{
+      text-align:left;
+      font-size:12px;
+      text-transform:uppercase;
+      opacity:0.7;
+      border-bottom:1px solid rgba(255,255,255,0.2);
+    }
+    .lb-row{
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+    .lb-row:nth-child(even){
+      background:rgba(255,255,255,0.01);
+    }
+    .lb-row.me{
+      background:rgba(110,246,255,0.09);
+    }
+    .lb-row.top1 td{
+      color:#ffd86b;
+    }
+    .lb-row.top2 td{
+      color:#bce3ff;
+    }
+    .lb-row.top3 td{
+      color:#c9ffb0;
     }
 
-    .lb-row:nth-child(even) {
-      background: rgba(255,255,255,0.02);
+    .lb-medal{
+      font-size:16px;
+      width:28px;
     }
 
-    @media (max-width: 900px) {
-      .wrap {
-        margin: 8px;
-        padding: 10px;
+    /* footer tip */
+
+    .footer-tip{
+      width:98%;
+      max-width:1400px;
+      color:#cfffe3;
+      margin-top:6px;
+      font-size:13px;
+      background:linear-gradient(90deg,rgba(2,37,27,0.9),rgba(4,14,25,0.95));
+      border-radius:999px;
+      padding:8px 16px;
+      border:1px solid rgba(110,246,255,0.2);
+      box-shadow:0 8px 18px rgba(0,0,0,0.7);
+    }
+
+    /* Responsive tweaks */
+
+    @media (max-width:900px){
+      .gate-btn {
+        min-width:0 !important;
+        width:auto;
+        height:auto;
+        border-radius:12px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:900;
+        cursor:grab;
+        border:1px solid rgba(255,255,255,0.18);
+        user-select:none;
+        padding:6px 8px;
       }
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .lanes {
-        margin-right: 160px;
+      .game-area{height:420px}
+      header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
       }
     }
 
-    /* MOBILE FULLSCREEN / VERTICAL LANES */
-    @media (max-width: 600px) {
-      html, body {
-        height: 100%;
-        overflow: hidden !important;
-        touch-action: none;
+    /* Smaller type on very small screens */
+    @media (max-width:600px){
+      .title-main{font-size:22px;}
+      .gate-bar{flex-wrap:wrap;}
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden;
       }
 
       .wrap {
         margin: 0;
         padding: 8px;
         border-radius: 0;
-        border: none;
-        height: 100vh;
-        max-width: 100%;
-        display: flex;
-        flex-direction: column;
       }
 
       header {
-        flex-direction: column;
         gap: 6px;
       }
 
-      .main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
+      .controls {
+        flex-wrap: wrap;
+        gap: 6px;
       }
 
       .game-area {
-        flex: 1;
         padding: 8px;
-        border-radius: 10px;
-        min-height: 0;
+        min-height: 420px;
       }
 
       .lanes {
-        position: absolute;
-        top: 32px;
-        left: 4px;
-        right: 4px;
-        bottom: 150px; /* space for PROD above gate bar */
-        height: auto;
-        display: flex;
-        flex-direction: row;
-        gap: 4px;
-        margin: 0;
+        margin: 40px 0 20px 0;
+        gap: 6px;
       }
 
       .lane {
-        flex: 1;
-        height: 100%;
-        min-width: 0;
-      }
-
-      .line-left {
-        display: none;
+        border-width: 1px;
+        min-height: 36px;
       }
 
       .prod-column {
-        position: absolute;
-        bottom: 86px; /* just above gate bar */
-        left: 50%;
-        transform: translateX(-50%);
-        width: 140px;
-        margin: 0;
+        position: static;
+        width: 100%;
+        margin-top: 12px;
       }
 
       .gate-bar {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        margin: 0;
-        padding: 8px 8px 10px;
-        background: rgba(0,0,0,0.92);
-        border-top: 1px solid rgba(255,255,255,0.2);
-        z-index: 9999;
+        flex-direction: column;
       }
 
       .gate-btn {
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      .wave-banner {
         font-size: 11px;
-        padding: 8px 6px;
       }
 
-      .footer-tip {
-        display: none;
-      }
-
-      .end-overlay {
-        position: fixed;
+      .bug {
+        font-size: 10px;
+        padding: 2px 6px;
       }
     }
-    /* --- FINAL FIX FOR MOBILE PROD POSITION (always bottom) --- */
-@media (max-width: 600px) {
 
-  #gameArea {
-    position: relative !important;
-  }
+    .lane {
+      touch-action:none;
+    }
 
-  #prodCol {
-    position: absolute !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+    /* Mobile: vertical lanes, PROD below, gates further below */
+    @media (max-width: 600px) {
+      .game-area{
+        display:flex;
+        flex-direction:column;
+        padding-bottom:0;
+      }
 
-    bottom: 110px !important;  /* final, guaranteed fixed position */
-    top: auto !important;
+      .lanes{
+        position:static;
+        order:1;
+        display:flex;
+        flex-direction:row;
+        height:320px;
+        width:100%;
+        margin:20px 0 8px 0;
+        gap:6px;
+      }
 
-    z-index: 50 !important;
-  }
-}
+      .lane{
+        flex:1;
+        height:100%;
+        min-width:60px;
+        margin:0 4px;
+      }
 
+      .lane .line-left{
+        display:none;
+      }
+
+      .lane::before{
+        content:'';
+        position:absolute;
+        top:10px;
+        left:0;
+        right:0;
+        height:3px;
+        background:linear-gradient(90deg, var(--neon-cyan), transparent);
+        opacity:0.8;
+        border:none;
+        box-shadow:none;
+      }
+
+      .prod-column{
+        position:relative;
+        order:2;
+        top:0;
+        right:0;
+        margin:4px auto 0;
+        width:160px;
+        height:auto;
+      }
+
+      .wave-banner{
+        order:0;
+        top:4px;
+      }
+
+      .gate-bar{
+        order:3;
+        border-radius:0 0 20px 20px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -672,15 +898,15 @@
       <span class="title-sub">Defense Arcade</span>
     </h1>
     <div class="controls">
-      <div class="pill">
+      <div class="pill pill-player">
         <span class="pill-label">Player</span>
         <span id="playerName" class="pill-value">—</span>
       </div>
-      <div class="pill">
+      <div class="pill pill-score">
         <span class="pill-label">Score</span>
         <span id="score" class="pill-value">0</span>
       </div>
-      <div class="pill">
+      <div class="pill pill-combo">
         <span class="pill-label">Combo</span>
         <span id="combo" class="pill-value">0</span>
       </div>
@@ -695,7 +921,7 @@
     <div class="hud">
       <div class="hud-chip">
         <span class="hud-label">Mode</span>
-        <span class="hud-value" id="modeLbl">Classic</span>
+        <span class="hud-value">Classic (single)</span>
       </div>
       <div class="hud-chip">
         <span class="hud-label">Upcoming</span>
@@ -709,20 +935,22 @@
         <span class="hud-label">Speed</span>
         <span class="hud-value" id="speedLbl">1.00x</span>
       </div>
-      <div class="hud-chip">
+      <div class="hud-chip hud-chip-timer">
         <span class="hud-label">Time</span>
         <span class="hud-value" id="timer">90</span><span class="hud-unit">s</span>
       </div>
     </div>
 
     <div class="game-area" id="gameArea">
+      <div class="grid"></div>
       <div class="wave-banner" id="banner">Ready</div>
       <div class="lanes" id="lanes"></div>
 
       <div class="prod-column healthy" id="prodCol">
+        <div class="prod-crack" id="prodCrack"></div>
         <div class="prod-icon">⚙️</div>
         <div class="prod-label">PROD</div>
-        <div class="health">
+        <div class="health" title="Production Stability">
           <div id="healthInner" class="health-inner"></div>
         </div>
       </div>
@@ -735,15 +963,16 @@
           <div id="endRank" class="end-rank"></div>
           <div class="end-actions">
             <button id="endBtnPlay">Play Again</button>
+            <button id="endBtnLB">View Leaderboard</button>
             <button id="endBtnNew">New Game</button>
           </div>
         </div>
       </div>
 
-      <!-- Start-of-game overlay -->
+      <!-- Start-of-game overlay (kids game effect + name input) -->
       <div id="startOverlay" class="end-overlay" style="display:flex">
         <div class="end-card">
-          <div id="startTitle" class="end-title">
+          <div id="startTitle" class="end-title timeup">
             CI/CD Defense Arcade
           </div>
           <div id="startSubtitle" class="end-score">
@@ -767,21 +996,21 @@
 
     <!-- Gate bar -->
     <div class="gate-bar" id="gateBar">
-      <div class="gate-btn blue" data-type="unit">UNIT TEST</div>
-      <div class="gate-btn green" data-type="contract">CONTRACT TEST</div>
-      <div class="gate-btn orange" data-type="integration">INTEGRATION</div>
+      <div class="gate-btn blue" draggable="true" data-type="unit">UNIT TEST</div>
+      <div class="gate-btn green" draggable="true" data-type="contract">CONTRACT TEST</div>
+      <div class="gate-btn orange" draggable="true" data-type="integration">INTEGRATION</div>
     </div>
 
-    <!-- Leaderboard + controls -->
-    <div style="display:flex;gap:12px;align-items:flex-start;margin-top:6px;">
+    <!-- Hidden leaderboard & controls (used only by JS) -->
+    <div style="display:flex;gap:12px;align-items:flex-start">
       <div id="lbPanel" style="flex:1;display:none">
-        <div style="font-size:12px;color:var(--muted)">Leaderboard</div>
+        <div class="muted">Leaderboard</div>
         <div class="lb" id="lb"></div>
       </div>
 
       <div id="controlsPanel"
            style="width:260px;margin-left:auto;display:none">
-        <div style="font-size:12px;color:var(--muted)">Controls</div>
+        <div class="muted">Controls</div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
           <button id="spawnBtn">Spawn Next Bug</button>
           <button id="resetBtn">Reset Session</button>
@@ -801,934 +1030,1045 @@
 </div>
 
 <!-- Modal (for tutorial + leaderboard) -->
-<div id="modal" class="modal-root" style="display:none">
+<div id="modal" class="modal-root">
   <div class="modal-content" id="modalContent"></div>
 </div>
 
 <script>
-  /* ---------- Config & State ---------- */
-  let timerInterval = null;
-  const GAME_DURATION = 90;
+/* ---------- Config & State ---------- */
+let timerInterval = null;
+const GAME_DURATION = 90; // seconds
 
-  const CONFIG = {
-    lanesDesktop: 5,
-    lanesMobile: 4,
-    totalBugs: 75,
-    bugTravelSeconds: 15,
-    prodMax: 100,
-    wrongPauseMs: 500,
-    scoring: {
-      correctMax: 250,
-      correctMin: 50,
-      wrongGate: -100,
-      hitProd: -500,
-      comboBonus: 1000,
-      comboSize: 3
-    }
-  };
+const CONFIG = {
+  lanes: 5,
+  totalBugs: 75,
 
-  function isMobileMode() {
-    return window.innerWidth <= 600;
+  // Bug travel timing (about 15s from start to PROD)
+  bugTravelSeconds: 15,
+
+  prodMax: 100,
+  wrongPauseMs: 500,
+  scoring: {
+    correctMax: 250,
+    correctMin: 50,
+    wrongGate: -100,
+    hitProd: -500,
+    comboBonus: 1000,
+    comboSize: 3
   }
-  function getLaneCount() {
-    return isMobileMode() ? CONFIG.lanesMobile : CONFIG.lanesDesktop;
+};
+
+/* ---------- Firebase base URL (Realtime DB REST) ---------- */
+const FIREBASE_DB_URL = 'https://roadshowgame-default-rtdb.firebaseio.com';
+
+/* Save a score to Firebase (POST to /scores) */
+async function saveScoreToFirebase(name, score, timestamp) {
+  try {
+    const res = await fetch(`${FIREBASE_DB_URL}/scores.json`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, score, timestamp })
+    });
+    const data = await res.json();
+    console.log('Score saved to Firebase:', data);
+    return data && data.name; // key
+  } catch (err) {
+    console.error('Error saving score to Firebase:', err);
+    return null;
   }
+}
 
-  /* ---------- Firebase base URL (Realtime DB REST) ---------- */
-  const FIREBASE_DB_URL = 'https://roadshowgame-default-rtdb.firebaseio.com';
+/* Read leaderboard scores from Firebase */
+async function fetchLeaderboardFromFirebase() {
+  try {
+    const res = await fetch(`${FIREBASE_DB_URL}/scores.json`);
+    const data = await res.json();
+    if (!data) return [];
 
-  async function saveScoreToFirebase(name, score, timestamp) {
-    try {
-      const res = await fetch(`${FIREBASE_DB_URL}/scores.json`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, score, timestamp })
-      });
-      const data = await res.json();
-      console.log('Score saved to Firebase:', data);
-      return data && data.name;
-    } catch (err) {
-      console.error('Error saving score to Firebase:', err);
-      return null;
-    }
+    const rows = Object.entries(data).map(([id, entry]) => ({
+      id,
+      name: entry.name || 'Anon',
+      score: typeof entry.score === 'number'
+        ? entry.score
+        : parseInt(entry.score, 10) || 0,
+      timestamp: entry.timestamp || 0
+    }));
+
+    rows.sort((a, b) => b.score - a.score);
+    return rows.slice(0, 20);
+  } catch (err) {
+    console.error('Error loading leaderboard from Firebase:', err);
+    return [];
   }
+}
 
-  async function fetchLeaderboardFromFirebase() {
-    try {
-      const res = await fetch(`${FIREBASE_DB_URL}/scores.json`);
-      const data = await res.json();
-      if (!data) return [];
-      const rows = Object.entries(data).map(([id, entry]) => ({
-        id,
-        name: entry.name || 'Anon',
-        score: typeof entry.score === 'number'
-          ? entry.score
-          : parseInt(entry.score, 10) || 0,
-        timestamp: entry.timestamp || 0
-      }));
-      rows.sort((a, b) => b.score - a.score);
-      return rows.slice(0, 20);
-    } catch (err) {
-      console.error('Error loading leaderboard from Firebase:', err);
-      return [];
-    }
-  }
-
-  async function renderLB() {
-    const a = await fetchLeaderboardFromFirebase();
-    const lbBox = document.getElementById('lb');
-    lbBox.innerHTML = a.length
-      ? a.map(r => `
+/* Render small leaderboard panel on main screen */
+async function renderLB() {
+  const a = await fetchLeaderboardFromFirebase();
+  const lbBox = document.getElementById('lb');
+  lbBox.innerHTML = a.length
+    ? a.map(r => `
         <div style="display:flex;justify-content:space-between;padding:6px;border-bottom:1px solid rgba(255,255,255,0.04)">
           <div>${r.name}</div>
           <div style="opacity:.85">${r.score}</div>
         </div>`).join('')
-      : '<div style="opacity:.75;padding:8px">No scores yet</div>';
-  }
-  renderLB();
+    : '<div style="opacity:.75;padding:8px">No scores yet</div>';
+}
+renderLB();
 
-  let state = {
-    player: null,
-    score: 0,
-    combo: 0,
-    health: CONFIG.prodMax,
-    currentBug: null,
-    remaining: CONFIG.totalBugs,
-    spawnedCount: 0,
-    running: false
+/* ---------- State ---------- */
+let state = {
+  player: null,
+  score: 0,
+  combo: 0,
+  health: CONFIG.prodMax,
+  currentBug: null,
+  remaining: CONFIG.totalBugs,
+  spawnedCount: 0,
+  running: false
+};
+
+/* ---------- DOM refs ---------- */
+const lanesEl        = document.getElementById('lanes');
+const gameArea       = document.getElementById('gameArea');
+const banner         = document.getElementById('banner');
+const healthInner    = document.getElementById('healthInner');
+const scoreEl        = document.getElementById('score');
+const comboEl        = document.getElementById('combo');
+const remainingEl    = document.getElementById('remaining');
+const upcomingEl     = document.getElementById('upcoming');
+const speedLbl       = document.getElementById('speedLbl');
+const lbBox          = document.getElementById('lb');
+const playerNameEl   = document.getElementById('playerName');
+
+const spawnBtn       = document.getElementById('spawnBtn');
+const resetBtn       = document.getElementById('resetBtn');
+const clearLbBtn     = document.getElementById('clearLb');
+const btnStart       = document.getElementById('btnStart');
+const btnLB          = document.getElementById('btnLB');
+const btnTutorial    = document.getElementById('btnTutorial');
+const prodCol        = document.getElementById('prodCol');
+
+const endOverlay     = document.getElementById('endOverlay');
+const endTitleEl     = document.getElementById('endTitle');
+const endScoreEl     = document.getElementById('endScore');
+const endRankEl      = document.getElementById('endRank');
+const endBtnPlay     = document.getElementById('endBtnPlay');
+const endBtnLB       = document.getElementById('endBtnLB');
+const endBtnNew      = document.getElementById('endBtnNew');
+
+const startOverlay    = document.getElementById('startOverlay');
+const startOverlayBtn = document.getElementById('startOverlayBtn');
+const playerNameInput = document.getElementById('playerNameInput');
+
+/* ---------- Utility: desktop vs mobile ---------- */
+function isMobileMode() {
+  return window.innerWidth < 600;
+}
+
+/* ---------- Build lanes ---------- */
+function buildLanes() {
+  lanesEl.innerHTML = '';
+  for (let i = 0; i < CONFIG.lanes; i++) {
+    const lane = document.createElement('div');
+    lane.className = 'lane';
+    lane.dataset.index = i;
+
+    const label = document.createElement('div');
+    label.className = 'lane-label';
+    label.textContent = `Build ${i + 1}`;
+    lane.appendChild(label);
+
+    lane.innerHTML += `<div class='line-left'></div>`;
+    lanesEl.appendChild(lane);
+  }
+}
+buildLanes();
+
+/* ---------- Bug pool ---------- */
+const BUG_POOL = (function () {
+  const seeds = [
+    // unit-ish
+    'Off-by-one error','Wrong variable type','Null pointer in util','GST calc wrong','Rounding mismatch',
+    'Missing validation','Incorrect loop bound','Uninitialized var','Edge-case divide by zero','Wrong default value',
+    'Wrong comparator','Floating precision bug','Wrong sign on calculation','Index out of range','Incorrect accumulator',
+    'Wrong math formula','Missing unit test','Order of operations bug','Bad regex logic','Wrong constant used',
+    'Locale number parse bug','Time-zone handling bug','Incorrect flag check','State mutation bug','Callback misuse',
+    // contract-ish
+    'API contract mismatch','Missing response field','Wrong HTTP status','Schema version mismatch','Field type mismatch',
+    'Unexpected null in response','Header missing','Wrong content-type','Response shape changed','Deprecated field used',
+    'Payload key typo','Missing required param','Extra field in response','Versioning mismatch','Incorrect enum value',
+    'Invalid JSON format','Missing validation in schema','Query param name typo','Incorrect date format','Wrong pagination format',
+    'Incorrect status code mapping','Auth header name mismatch','Field maxLength exceeded','Wrong field encoding','Trailing comma in response',
+    // integration-ish
+    'DB query fails intermittently','Config missing in CI','Container env mismatch','Service timeout in cluster','Race condition across services',
+    'Circuit breaker not set','Retry logic missing','Downstream API latency','Wrong endpoint routing','Auth token refresh failure',
+    'Network partition issue','Load balancer misroute','Session stickiness lost','Wrong service discovery','SSL cert mismatch',
+    'Timeout too low','Ordering of messages wrong','Transaction not rolled back','Cache invalidation bug','Feature flag not propagated',
+    'Message queue DLQ spike','Throttling misconfigured','Cross-origin blocked','DNS propagation issue','Legacy endpoint hit'
+  ];
+  return seeds.map((t, idx) => ({
+    id: 'b' + idx,
+    label: t,
+    right: idx < 25 ? 'unit' : idx < 50 ? 'contract' : 'integration',
+    icon: '🐞'
+  }));
+})();
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+let bugQueue = shuffle([...BUG_POOL]);
+function getNextBugDef() {
+  if (bugQueue.length === 0) bugQueue = shuffle([...BUG_POOL]);
+  return bugQueue.shift();
+}
+
+/* ---------- Audio helper ---------- */
+function beep(freq = 440, dur = 0.06) {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = freq;
+    o.start();
+    g.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+    o.stop(ctx.currentTime + dur + 0.02);
+  } catch (e) {}
+}
+
+/* ---------- UI helpers ---------- */
+function updateHUD() {
+  scoreEl.textContent = state.score;
+  comboEl.textContent = state.combo;
+  remainingEl.textContent = state.remaining;
+  const speedFactor = 1 + (state.spawnedCount * 0.12);
+  speedLbl.textContent = speedFactor.toFixed(2) + 'x';
+  upcomingEl.textContent = state.currentBug ? state.currentBug.def.label : '—';
+}
+
+function updateHealth() {
+  const pct = Math.max(0, Math.floor((state.health / CONFIG.prodMax) * 100));
+  healthInner.style.width = pct + '%';
+  if (pct < 30) {
+    healthInner.style.background = 'linear-gradient(90deg,#ff6b6b,#ff8a3d)';
+  } else {
+    healthInner.style.background = 'linear-gradient(90deg,var(--neon-green),var(--neon-cyan))';
+  }
+}
+
+function updateProdDamageVisual() {
+  prodCol.classList.remove('healthy', 'damaged', 'critical', 'broken');
+  if (state.health <= 0) {
+    prodCol.classList.add('broken', 'critical', 'damaged');
+  } else if (state.health <= 30) {
+    prodCol.classList.add('critical', 'damaged');
+  } else if (state.health <= 70) {
+    prodCol.classList.add('damaged');
+  } else {
+    prodCol.classList.add('healthy');
+  }
+}
+
+function flashBanner(text, ms = 900) {
+  const old = banner.textContent;
+  banner.textContent = text;
+  banner.style.animation = 'pop 0.4s ease-out';
+  setTimeout(() => {
+    banner.textContent = old;
+    banner.style.animation = '';
+  }, ms);
+}
+
+/* Floating score text */
+function showFloatingText(text, x, y, color) {
+  const node = document.createElement('div');
+  node.textContent = text;
+  node.style.position = 'absolute';
+  node.style.left = x + 'px';
+  node.style.top = y + 'px';
+  node.style.color = color || '#fff';
+  node.style.fontWeight = '700';
+  node.style.fontSize = '16px';
+  node.style.textShadow = '0 0 8px rgba(0,0,0,0.7)';
+  node.style.pointerEvents = 'none';
+  node.style.zIndex = 80;
+  gameArea.appendChild(node);
+
+  node.animate(
+    [
+      { transform: 'translateY(0)', opacity: 1 },
+      { transform: 'translateY(-30px)', opacity: 0 }
+    ],
+    { duration: 800, easing: 'ease-out' }
+  );
+  setTimeout(() => { try { node.remove(); } catch (e) {} }, 800);
+}
+
+/* ---------- Modal ---------- */
+function showModal(html) {
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('modal').style.display = 'flex';
+}
+function hideModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+/* ---------- Tutorial & Buttons ---------- */
+btnTutorial.addEventListener('click', () => {
+  showModal(`
+    <h2>How to Play</h2>
+    <p>🐞 One bug at a time spawns on a build lane. Drag a gate (UNIT / CONTRACT / INTEGRATION) and drop it onto a lane. The gate will snap and block the approaching bug.</p>
+    <ul>
+      <li><b>Correct gate</b> (matches bug type): +${CONFIG.scoring.correctMin} to +${CONFIG.scoring.correctMax} (earlier is better)</li>
+      <li><b>Wrong gate</b>: ${CONFIG.scoring.wrongGate}, bug pauses ${CONFIG.wrongPauseMs}ms</li>
+      <li><b>Bug hits PROD</b>: ${CONFIG.scoring.hitProd} and production health drops by 20% (5 hits = meltdown)</li>
+      <li>Every ${CONFIG.scoring.comboSize} correct in a row gives a combo bonus of +${CONFIG.scoring.comboBonus}</li>
+    </ul>
+    <div style="text-align:right;margin-top:10px">
+      <button onclick="hideModal()">Got it!</button>
+    </div>
+  `);
+});
+
+/* Fancy leaderboard modal – now from Firebase */
+btnLB.addEventListener('click', async () => {
+  const globalRows = await fetchLeaderboardFromFirebase();
+  const localRows = loadLocalScores();
+
+  if (!window._lbMode) window._lbMode = "global";
+
+  function renderTable(mode) {
+    const rows = mode === "global" ? globalRows : localRows;
+    const isGlobal = (mode === "global");
+
+    if (!rows.length) {
+      return `
+        <p style="opacity:.7;margin-top:12px">
+          ${isGlobal ? "No global scores yet." : "No personal scores found on this device."}
+        </p>`;
+    }
+
+    return `
+      <table class="lb-table">
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th>Player</th>
+            <th style="text-align:right">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map((r, i) => `
+            <tr class="lb-row">
+              <td>${i + 1}</td>
+              <td>${r.name}</td>
+              <td style="text-align:right">${r.score}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+  }
+
+  window._renderLBFull = function () {
+    const mode = window._lbMode;
+    return `
+      <h2>🏆 Leaderboard</h2>
+
+      <div style="display:flex;gap:12px;margin-bottom:14px">
+        <button class="btn-secondary"
+          style="border:${mode==='global'?'2px solid #6ef6ff':'1px solid rgba(255,255,255,0.2)'}"
+          onclick="window._lbMode='global'; document.getElementById('modalContent').innerHTML = window._renderLBFull()">
+          🌐 Global
+        </button>
+
+        <button class="btn-secondary"
+          style="border:${mode==='local'?'2px solid #6ef6ff':'1px solid rgba(255,255,255,0.2)'}"
+          onclick="window._lbMode='local'; document.getElementById('modalContent').innerHTML = window._renderLBFull()">
+          💾 My Scores
+        </button>
+      </div>
+
+      <div id="lbContent">
+        ${renderTable(mode)}
+      </div>
+
+      <div style="text-align:right;margin-top:16px">
+        <button onclick="hideModal()">Close</button>
+      </div>
+    `;
   };
 
-  /* ---------- DOM refs ---------- */
-  const lanesEl        = document.getElementById('lanes');
-  const gameArea       = document.getElementById('gameArea');
-  const banner         = document.getElementById('banner');
-  const healthInner    = document.getElementById('healthInner');
-  const scoreEl        = document.getElementById('score');
-  const comboEl        = document.getElementById('combo');
-  const remainingEl    = document.getElementById('remaining');
-  const upcomingEl     = document.getElementById('upcoming');
-  const speedLbl       = document.getElementById('speedLbl');
-  const modeLbl        = document.getElementById('modeLbl');
-  const lbBox          = document.getElementById('lb');
-  const playerNameEl   = document.getElementById('playerName');
+  showModal(window._renderLBFull());
+});
 
-  const spawnBtn       = document.getElementById('spawnBtn');
-  const resetBtn       = document.getElementById('resetBtn');
-  const clearLbBtn     = document.getElementById('clearLb');
-  const btnStart       = document.getElementById('btnStart');
-  const btnLB          = document.getElementById('btnLB');
-  const btnTutorial    = document.getElementById('btnTutorial');
-  const btnAbort       = document.getElementById('btnAbort');
-  const prodCol        = document.getElementById('prodCol');
-
-  const endOverlay     = document.getElementById('endOverlay');
-  const endTitleEl     = document.getElementById('endTitle');
-  const endScoreEl     = document.getElementById('endScore');
-  const endRankEl      = document.getElementById('endRank');
-  const endBtnPlay     = document.getElementById('endBtnPlay');
-  const endBtnNew      = document.getElementById('endBtnNew');
-
-  const startOverlay   = document.getElementById('startOverlay');
-  const startOverlayBtn= document.getElementById('startOverlayBtn');
-  const playerNameInput= document.getElementById('playerNameInput');
-
-  /* ---------- Build lanes ---------- */
-  function buildLanes(){
-    lanesEl.innerHTML = '';
-    const count = getLaneCount();
-    for(let i=0;i<count;i++){
-      const lane = document.createElement('div');
-      lane.className='lane';
-      lane.dataset.index = i;
-
-      const label = document.createElement('div');
-      label.className='lane-label';
-      label.textContent = `Build ${i+1}`;
-      lane.appendChild(label);
-
-      const line = document.createElement('div');
-      line.className='line-left';
-      lane.appendChild(line);
-
-      lanesEl.appendChild(lane);
-    }
-    modeLbl.textContent = isMobileMode()
-      ? `Mobile (vertical, ${CONFIG.lanesMobile} builds)`
-      : `Desktop (horizontal, ${CONFIG.lanesDesktop} builds)`;
+/* Clear leaderboard – deletes /scores in Firebase */
+clearLbBtn.addEventListener('click', async () => {
+  try {
+    await fetch(`${FIREBASE_DB_URL}/scores.json`, { method: 'DELETE' });
+  } catch (e) {
+    console.error('Error clearing Firebase leaderboard', e);
   }
-  buildLanes();
+  renderLB();
+});
 
-  window.addEventListener('resize', ()=>{
-    const running = state.running;
-    buildLanes();
-    if(running){
-      resetSession();
-    }
+resetBtn.addEventListener('click', resetSession);
+spawnBtn.addEventListener('click', () => spawnNextBug(true));
+
+/* ---------- Name input behaviour ---------- */
+playerNameInput.addEventListener('input', () => {
+  const val = playerNameInput.value.trim();
+  startOverlayBtn.disabled = !val;
+});
+
+/* ---------- Drag & Drop (lanes) ---------- */
+let drag = null;
+document.querySelectorAll('.gate-btn').forEach(g => {
+  g.addEventListener('dragstart', (e) => {
+    drag = { type: g.dataset.type };
+    g.classList.add('dragging');
+    e.dataTransfer.setData('text', 'gate');
+  });
+  g.addEventListener('dragend', () => {
+    drag = null;
+    document.querySelectorAll('.gate-btn').forEach(x => x.classList.remove('dragging'));
+  });
+});
+
+gameArea.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  const lanesRect = lanesEl.getBoundingClientRect();
+  const mainAxis = isMobileMode() ? (e.clientX - lanesRect.left) : (e.clientY - lanesRect.top);
+  const laneSize = (isMobileMode() ? lanesRect.width : lanesRect.height) / CONFIG.lanes;
+  const idx = Math.max(0, Math.min(CONFIG.lanes - 1, Math.floor(mainAxis / laneSize)));
+  document.querySelectorAll('.lane').forEach((el, i) => el.classList.toggle('lane-hover', i === idx));
+});
+
+gameArea.addEventListener('drop', (e) => {
+  e.preventDefault();
+  document.querySelectorAll('.lane').forEach(el => el.classList.remove('lane-hover'));
+  if (!drag || !state.running || !state.currentBug) {
+    drag = null;
+    return;
+  }
+  const lanesRect = lanesEl.getBoundingClientRect();
+  const mainAxis = isMobileMode() ? (e.clientX - lanesRect.left) : (e.clientY - lanesRect.top);
+  const laneSize = (isMobileMode() ? lanesRect.width : lanesRect.height) / CONFIG.lanes;
+  const chosen = Math.max(0, Math.min(CONFIG.lanes - 1, Math.floor(mainAxis / laneSize)));
+
+  const coord = isMobileMode() ? e.clientY : e.clientX;
+  placeGate(drag.type, chosen, coord);
+  drag = null;
+});
+
+/* ---------- Gate placement (1D along path) ---------- */
+function placeGate(type, laneIndex, clientPos) {
+  if (!state.currentBug) return;
+
+  const areaRect = gameArea.getBoundingClientRect();
+  const laneEl = lanesEl.children[laneIndex];
+  const laneRect = laneEl.getBoundingClientRect();
+
+  const node = document.createElement('div');
+  node.className = 'lane-gate lane-gate-' + type;
+  node.style.zIndex = 60;
+
+  const line = document.createElement('div');
+  line.className = 'lane-gate-line';
+  const label = document.createElement('div');
+  label.className = 'lane-gate-label';
+  label.textContent = type.toUpperCase();
+  node.appendChild(line);
+  node.appendChild(label);
+
+  gameArea.appendChild(node);
+
+  let pathPos;   // coordinate along bug path (x on desktop, y on mobile)
+  let left, top;
+
+  if (isMobileMode()) {
+    // Vertical movement: gate is positioned by Y within the lane, X is lane center
+    const laneCenterX = laneRect.left - areaRect.left + laneRect.width / 2;
+    const gateWidth = node.offsetWidth || 120;
+    const halfW = gateWidth / 2;
+    left = laneCenterX - halfW;
+
+    const minY = laneRect.top - areaRect.top + 30;
+    const maxY = laneRect.bottom - areaRect.top - 30;
+    pathPos = clientPos - areaRect.top;
+    pathPos = Math.max(minY, Math.min(maxY, pathPos));
+    top = pathPos - (node.offsetHeight || 56) / 2;
+  } else {
+    // Desktop: bug moves left -> right
+    const laneCenterY = laneRect.top - areaRect.top + laneRect.height / 2;
+    const gateWidth = node.offsetWidth || 120;
+    const halfW = gateWidth / 2;
+
+    let gateCenter = clientPos - areaRect.left;
+    gateCenter = Math.max(halfW, Math.min(gateCenter, areaRect.width - halfW));
+    left = gateCenter - halfW;
+    top = laneCenterY - (node.offsetHeight || 56) / 2;
+    pathPos = gateCenter;
+  }
+
+  node.style.left = left + 'px';
+  node.style.top  = top  + 'px';
+
+  if (!window._placedGates) window._placedGates = [];
+  window._placedGates.push({
+    el: node,
+    type,
+    lane: laneIndex,
+    pathPos,
+    consumed: false
   });
 
-  /* ---------- Bug pool ---------- */
-  const BUG_POOL = (function(){
-    const seeds = [
-      'Off-by-one error','Wrong variable type','Null pointer in util','GST calc wrong','Rounding mismatch',
-      'Missing validation','Incorrect loop bound','Uninitialized var','Edge-case divide by zero','Wrong default value',
-      'Wrong comparator','Floating precision bug','Wrong sign on calculation','Index out of range','Incorrect accumulator',
-      'Wrong math formula','Missing unit test','Order of operations bug','Bad regex logic','Wrong constant used',
-      'Locale number parse bug','Time-zone handling bug','Incorrect flag check','State mutation bug','Callback misuse',
-      'API contract mismatch','Missing response field','Wrong HTTP status','Schema version mismatch','Field type mismatch',
-      'Unexpected null in response','Header missing','Wrong content-type','Response shape changed','Deprecated field used',
-      'Payload key typo','Missing required param','Extra field in response','Versioning mismatch','Incorrect enum value',
-      'Invalid JSON format','Missing validation in schema','Query param name typo','Incorrect date format','Wrong pagination format',
-      'DB query fails intermittently','Config missing in CI','Container env mismatch','Service timeout in cluster','Race condition across services',
-      'Circuit breaker not set','Retry logic missing','Downstream API latency','Wrong endpoint routing','Auth token refresh failure',
-      'Network partition issue','Load balancer misroute','Session stickiness lost','Wrong service discovery','SSL cert mismatch',
-      'Timeout too low','Ordering of messages wrong','Transaction not rolled back','Cache invalidation bug','Feature flag not propagated',
-      'Message queue DLQ spike','Throttling misconfigured','Cross-origin blocked','DNS propagation issue','Legacy endpoint hit'
-    ];
-    return seeds.map((t,idx)=>({
-      id:'b'+idx,
-      label:t,
-      right: idx<25? 'unit' : idx<50? 'contract' : 'integration',
-      icon: '🐞'
-    }));
-  })();
+  node.animate(
+    [{ transform: 'scale(.86)' }, { transform: 'scale(1.02)' }, { transform: 'scale(1)' }],
+    { duration: 220 }
+  );
+  beep(520, 0.06);
+}
 
-  function shuffle(a){
-    for(let i=a.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [a[i],a[j]]=[a[j],a[i]];
-    }
-    return a;
-  }
-  let bugQueue = shuffle([...BUG_POOL]);
-  function getNextBugDef(){
-    if(bugQueue.length===0) bugQueue = shuffle([...BUG_POOL]);
-    return bugQueue.shift();
+/* ---------- Bug spawn / movement ---------- */
+function spawnNextBug(manual = false) {
+  if (!state.running) return;
+  if (state.currentBug) return;
+  if (state.remaining <= 0) {
+    if (manual) flashBanner('No bugs remaining');
+    return;
   }
 
-  /* ---------- Audio ---------- */
-  function beep(freq=440,dur=0.06){
-    try{
-      const Ctx = window.AudioContext || window.webkitAudioContext;
-      const ctx = new Ctx();
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.frequency.value=freq;
-      o.start();
-      g.gain.setValueAtTime(0.0001,ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime+0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+dur);
-      o.stop(ctx.currentTime+dur+0.02);
-    }catch(e){}
-  }
+  const def = getNextBugDef();
+  const laneIndex = Math.floor(Math.random() * CONFIG.lanes);
+  const laneEl = lanesEl.children[laneIndex];
+  const areaRect = gameArea.getBoundingClientRect();
+  const laneRect = laneEl.getBoundingClientRect();
 
-  /* ---------- UI helpers ---------- */
-  function updateHUD(){
-    scoreEl.textContent = state.score;
-    comboEl.textContent = state.combo;
-    remainingEl.textContent = state.remaining;
-    const speedFactor = 1 + (state.spawnedCount*0.12);
-    speedLbl.textContent = speedFactor.toFixed(2)+'x';
-    upcomingEl.textContent = state.currentBug ? state.currentBug.def.label : '—';
-  }
+  const el = document.createElement('div');
+  el.className = 'bug';
+  el.innerHTML = `<span class="icon">${def.icon}</span><span>${def.label}</span>`;
+  // temp position so we can measure size
+  el.style.left = '0px';
+  el.style.top = '0px';
+  el.style.zIndex = 40;
+  gameArea.appendChild(el);
 
-  function updateHealth(){
-    const pct = Math.max(0, Math.floor((state.health/CONFIG.prodMax)*100));
-    healthInner.style.width = pct + '%';
-    if(pct < 30)
-      healthInner.style.background = 'linear-gradient(90deg,#ff6b6b,#ff8a3d)';
-    else
-      healthInner.style.background = 'linear-gradient(90deg,var(--neon-green),var(--neon-cyan))';
-  }
+  const bugW = el.offsetWidth;
+  const bugH = el.offsetHeight;
 
-  function flashBanner(text, ms=900){
-    const old = banner.textContent;
-    banner.textContent = text;
-    banner.style.animation = 'pop 0.4s ease-out';
-    setTimeout(()=>{
-      banner.textContent = old;
-      banner.style.animation = '';
-    }, ms);
-  }
+  let bug;
+  if (isMobileMode()) {
+    // Vertical lanes: bug moves top -> bottom
+    const lineOffsetY = 10;
+    const startY = (laneRect.top - areaRect.top) + lineOffsetY;
+    const x = laneRect.left - areaRect.left + laneRect.width / 2 - bugW / 2;
 
-  function showFloatingText(text, x, y, color){
-    const node = document.createElement('div');
-    node.className = 'floating-text';
-    node.textContent = text;
-    node.style.left = x + 'px';
-    node.style.top  = y + 'px';
-    node.style.color = color || '#fff';
-    gameArea.appendChild(node);
-    node.animate(
-      [{transform:'translateY(0)', opacity:1},{transform:'translateY(-32px)', opacity:0}],
-      {duration:750, easing:'ease-out'}
-    );
-    setTimeout(()=>{ try{node.remove();}catch(e){} }, 750);
-  }
-
-  /* ---------- Modal ---------- */
-  function showModal(html){
-    document.getElementById('modalContent').innerHTML = html;
-    document.getElementById('modal').style.display='flex';
-  }
-  function hideModal(){
-    document.getElementById('modal').style.display='none';
-  }
-
-  btnTutorial.addEventListener('click', ()=>{
-    showModal(`
-      <h2>How to Play</h2>
-      <p>🐞 One bug at a time spawns on a random build lane. Drag a gate (UNIT / CONTRACT / INTEGRATION) and drop it onto a lane. The gate will snap and block the approaching bug.</p>
-      <ul>
-        <li><b>Correct gate</b> (matches bug type): +${CONFIG.scoring.correctMin} to +${CONFIG.scoring.correctMax} (earlier is better)</li>
-        <li><b>Wrong gate</b>: ${CONFIG.scoring.wrongGate}, bug pauses ${CONFIG.wrongPauseMs}ms</li>
-        <li><b>Bug hits PROD</b>: ${CONFIG.scoring.hitProd} and production health drops by 20% (5 hits = meltdown)</li>
-        <li>Every ${CONFIG.scoring.comboSize} correct in a row gives a combo bonus of +${CONFIG.scoring.comboBonus}</li>
-      </ul>
-      <div style="text-align:right;margin-top:10px">
-        <button onclick="hideModal()">Got it!</button>
-      </div>
-    `);
-  });
-
-  btnLB.addEventListener('click', async () => {
-    const globalRows = await fetchLeaderboardFromFirebase();
-    const localRows = loadLocalScores();
-
-    if (!window._lbMode) window._lbMode = "global";
-
-    function renderTable(mode) {
-      const rows = mode === "global" ? globalRows : localRows;
-      const isGlobal = (mode === "global");
-
-      if (!rows.length) {
-        return `
-          <p style="opacity:.7;margin-top:12px">
-            ${isGlobal ? "No global scores yet." : "No personal scores found on this device."}
-          </p>`;
-      }
-
-      return `
-        <table class="lb-table">
-          <thead>
-            <tr>
-              <th style="width:40px">#</th>
-              <th>Player</th>
-              <th style="text-align:right">Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows.map((r,i)=>`
-              <tr class="lb-row">
-                <td>${i+1}</td>
-                <td>${r.name}</td>
-                <td style="text-align:right">${r.score}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      `;
-    }
-
-    window._renderLBFull = function() {
-      const mode = window._lbMode;
-      return `
-        <h2>🏆 Leaderboard</h2>
-
-        <div style="display:flex;gap:12px;margin-bottom:14px">
-
-          <button class="btn-secondary"
-            style="border:${mode==='global'?'2px solid #6ef6ff':'1px solid rgba(255,255,255,0.2)'}"
-            onclick="window._lbMode='global'; document.getElementById('modalContent').innerHTML = window._renderLBFull()">
-            🌐 Global
-          </button>
-
-          <button class="btn-secondary"
-            style="border:${mode==='local'?'2px solid #6ef6ff':'1px solid rgba(255,255,255,0.2)'}"
-            onclick="window._lbMode='local'; document.getElementById('modalContent').innerHTML = window._renderLBFull()">
-            💾 My Scores
-          </button>
-
-        </div>
-
-        <div id="lbContent">
-          ${renderTable(mode)}
-        </div>
-
-        <div style="text-align:right;margin-top:16px">
-          <button onclick="hideModal()">Close</button>
-        </div>
-      `;
-    };
-
-    showModal(window._renderLBFull());
-  });
-
-  clearLbBtn.addEventListener('click', async ()=>{
-    try{
-      await fetch(`${FIREBASE_DB_URL}/scores.json`, { method:'DELETE' });
-    }catch(e){
-      console.error('Error clearing Firebase leaderboard', e);
-    }
-    renderLB();
-  });
-
-  resetBtn.addEventListener('click', resetSession);
-  spawnBtn.addEventListener('click', ()=>spawnNextBug(true));
-
-  /* ---------- Name input ---------- */
-  playerNameInput.addEventListener('input', ()=>{
-    const val = playerNameInput.value.trim();
-    startOverlayBtn.disabled = !val;
-  });
-
-  /* ---------- Drag & Drop (mouse + touch) ---------- */
-  let dragGateType = null;
-  let dragGhost = null;
-
-  function startDragGate(type, clientX, clientY){
-    dragGateType = type;
-    dragGhost = document.createElement('div');
-    dragGhost.className = 'gate-btn dragging';
-    dragGhost.textContent = type.toUpperCase();
-    dragGhost.style.position = 'fixed';
-    dragGhost.style.left = (clientX - 60) + 'px';
-    dragGhost.style.top  = (clientY - 20) + 'px';
-    dragGhost.style.opacity = '0.7';
-    dragGhost.style.pointerEvents = 'none';
-    dragGhost.style.zIndex = '99999';
-    document.body.appendChild(dragGhost);
-  }
-
-  function moveDragGate(clientX, clientY){
-    if(!dragGhost) return;
-    dragGhost.style.left = (clientX - 60) + 'px';
-    dragGhost.style.top  = (clientY - 20) + 'px';
-  }
-
-  function endDragGate(clientX, clientY){
-    if(!dragGateType || !dragGhost){
-      dragGateType = null;
-      return;
-    }
-    dragGhost.remove();
-    dragGhost = null;
-
-    const lanesRect = lanesEl.getBoundingClientRect();
-    const count = getLaneCount();
-    let laneIndex = null;
-
-    if(isMobileMode()){
-      const x = clientX;
-      const laneWidth = lanesRect.width / count;
-      const idx = Math.floor((x - lanesRect.left) / laneWidth);
-      if(idx >= 0 && idx < count) laneIndex = idx;
-    } else {
-      const y = clientY;
-      const laneHeight = lanesRect.height / count;
-      const idx = Math.floor((y - lanesRect.top) / laneHeight);
-      if(idx >= 0 && idx < count) laneIndex = idx;
-    }
-
-    if(laneIndex !== null && state.running && state.currentBug){
-      placeGate(dragGateType, laneIndex, clientX, clientY);
-    }
-    dragGateType = null;
-  }
-
-  const gateButtons = Array.from(document.querySelectorAll('.gate-btn'));
-
-  // Mouse
-  gateButtons.forEach(btn=>{
-    btn.addEventListener('mousedown', e=>{
-      if(isMobileMode()) return;
-      e.preventDefault();
-      startDragGate(btn.dataset.type, e.clientX, e.clientY);
-      window.addEventListener('mousemove', mouseMoveDrag);
-      window.addEventListener('mouseup', mouseUpDrag, { once:true });
-    });
-  });
-
-  function mouseMoveDrag(e){ moveDragGate(e.clientX, e.clientY); }
-  function mouseUpDrag(e){
-    window.removeEventListener('mousemove', mouseMoveDrag);
-    endDragGate(e.clientX, e.clientY);
-  }
-
-  // Touch
-  gateButtons.forEach(btn=>{
-    btn.addEventListener('touchstart', e=>{
-      e.preventDefault();
-      const t = e.touches[0];
-      startDragGate(btn.dataset.type, t.clientX, t.clientY);
-    });
-    btn.addEventListener('touchmove', e=>{
-      e.preventDefault();
-      const t = e.touches[0];
-      moveDragGate(t.clientX, t.clientY);
-    });
-    btn.addEventListener('touchend', e=>{
-      e.preventDefault();
-      const t = e.changedTouches[0];
-      endDragGate(t.clientX, t.clientY);
-    });
-  });
-
-  /* ---------- Place gate ---------- */
-  function placeGate(type, laneIndex, clientX, clientY){
-    if(!state.currentBug) return;
-
-    const areaRect = gameArea.getBoundingClientRect();
-    const laneEl = lanesEl.children[laneIndex];
-    const laneRect = laneEl.getBoundingClientRect();
-
-    const node = document.createElement('div');
-    node.className = 'lane-gate lane-gate-' + type;
-    const line = document.createElement('div');
-    line.className = 'lane-gate-line';
-    const label = document.createElement('div');
-    label.className = 'lane-gate-label';
-    label.textContent = type.toUpperCase();
-    node.appendChild(line);
-    node.appendChild(label);
-    gameArea.appendChild(node);
-
-    let centerX, centerY;
-
-    if(isMobileMode()){
-      centerX = (laneRect.left - areaRect.left) + laneRect.width/2;
-      centerY = clientY ? (clientY - areaRect.top) : (laneRect.top - areaRect.top + laneRect.height/2);
-      const topLimit = (laneRect.top - areaRect.top) + 30;
-      const bottomLimit = (laneRect.bottom - areaRect.top) - 30;
-      centerY = Math.max(topLimit, Math.min(centerY, bottomLimit));
-    } else {
-      centerY = laneRect.top - areaRect.top + laneRect.height/2;
-      centerX = clientX - areaRect.left;
-      const leftLimit = 50;
-      const rightLimit = areaRect.width - 50;
-      centerX = Math.max(leftLimit, Math.min(centerX, rightLimit));
-    }
-
-    node.style.left = (centerX - node.offsetWidth/2) + 'px';
-    node.style.top  = (centerY - node.offsetHeight/2) + 'px';
-
-    node.animate(
-      [{transform:'scale(.86)'},{transform:'scale(1.02)'},{transform:'scale(1)'}],
-      {duration:220}
-    );
-    beep(520,0.06);
-
-    if(!window._placedGates) window._placedGates = [];
-    window._placedGates.push({
-      el: node,
-      type,
-      lane: laneIndex,
-      centerX,
-      centerY,
-      consumed: false
-    });
-  }
-
-  /* ---------- Spawn / movement ---------- */
-  function spawnNextBug(manual=false){
-    if(!state.running) return;
-    if(state.currentBug) return;
-    if(state.remaining <= 0){
-      if(manual) flashBanner('No bugs remaining');
-      return;
-    }
-
-    const def = getNextBugDef();
-    const laneCount = getLaneCount();
-    const row = Math.floor(Math.random()*laneCount);
-    const laneEl = lanesEl.children[row];
-    const areaRect = gameArea.getBoundingClientRect();
-    const laneRect = laneEl.getBoundingClientRect();
     const prodRect = prodCol.getBoundingClientRect();
+    const prodThreshold = prodRect.top - areaRect.top - bugH;
+    const distance = prodThreshold - startY;
+    const speed = distance / CONFIG.bugTravelSeconds;
 
-    const el = document.createElement('div');
-    el.className = 'bug';
-    el.innerHTML = `<span class="icon">${def.icon}</span><span>${def.label}</span>`;
-    gameArea.appendChild(el);
+    el.style.left = x + 'px';
+    el.style.top  = startY + 'px';
 
-    const bug = {
+    bug = {
       def,
-      row,
+      row: laneIndex,
       el,
-      x: 0,
-      y: 0,
+      x,
+      y: startY,
       vx: 0,
+      vy: speed,
+      pausedUntil: 0,
+      active: true,
+      pathStart: startY,
+      pathEnd: prodThreshold
+    };
+  } else {
+    // Desktop: bug moves left -> right
+    const lineOffset = 10;
+    const startX = (laneRect.left - areaRect.left) + lineOffset;
+    const y = laneRect.top - areaRect.top + laneRect.height / 2 - bugH / 2;
+
+    const prodRect = prodCol.getBoundingClientRect();
+    const prodThreshold = prodRect.left - areaRect.left - bugW;
+    const distance = prodThreshold - startX;
+    const speed = distance / CONFIG.bugTravelSeconds;
+
+    el.style.left = startX + 'px';
+    el.style.top  = y + 'px';
+
+    bug = {
+      def,
+      row: laneIndex,
+      el,
+      x: startX,
+      y,
+      vx: speed,
       vy: 0,
       pausedUntil: 0,
       active: true,
-      thresholdX: null,
-      thresholdY: null
+      pathStart: startX,
+      pathEnd: prodThreshold
     };
-
-    if(isMobileMode()){
-      const startY = 24;  // near top
-      const startX = (laneRect.left - areaRect.left) + laneRect.width/2 - el.offsetWidth/2;
-      bug.x = startX;
-      bug.y = startY;
-      el.style.left = startX + 'px';
-      el.style.top  = startY + 'px';
-
-      const thresholdY = gameArea.getBoundingClientRect().height - 160;  // near PROD
-      bug.thresholdY = thresholdY;
-      bug.vy = (thresholdY - startY) / CONFIG.bugTravelSeconds;
-    } else {
-      const y = laneRect.top - areaRect.top + laneRect.height/2 - el.offsetHeight/2;
-      const startX = (laneRect.left - areaRect.left) + 10;
-      bug.x = startX;
-      bug.y = y;
-      el.style.left = startX + 'px';
-      el.style.top  = y + 'px';
-
-      const prodThreshold = prodRect.left - areaRect.left - el.offsetWidth;
-      const safeThreshold = Math.max(prodThreshold, startX + 120);
-      bug.thresholdX = safeThreshold;
-      const distance = safeThreshold - startX;
-      bug.vx = distance / CONFIG.bugTravelSeconds;
-    }
-
-    state.currentBug = bug;
-    state.spawnedCount++;
-    state.remaining--;
-
-    upcomingEl.textContent = def.label;
-    updateHUD();
-
-    const gateName =
-      def.right === 'unit'        ? 'UNIT TEST' :
-      def.right === 'contract'    ? 'CONTRACT TEST' :
-      def.right === 'integration' ? 'INTEGRATION' :
-      def.right.toUpperCase();
-    banner.textContent = `Incoming: ${def.label} (${gateName})`;
   }
 
-  function computeDynamicScore(gate, bug){
-    const maxScore = CONFIG.scoring.correctMax;
-    const minScore = CONFIG.scoring.correctMin;
-    if(isMobileMode()){
-      const tRaw = gate.centerY / Math.max(bug.thresholdY || 1, 1);
-      const t = Math.min(Math.max(tRaw, 0), 1);
-      return Math.round(maxScore - t * (maxScore - minScore));
-    } else {
-      const tRaw = gate.centerX / Math.max(bug.thresholdX || 1, 1);
-      const t = Math.min(Math.max(tRaw, 0), 1);
-      return Math.round(maxScore - t * (maxScore - minScore));
+  state.currentBug = bug;
+  state.spawnedCount++;
+  state.remaining--;
+
+  upcomingEl.textContent = def.label;
+  updateHUD();
+
+  const gateName =
+    def.right === 'unit'        ? 'UNIT TEST' :
+    def.right === 'contract'    ? 'CONTRACT TEST' :
+    def.right === 'integration' ? 'INTEGRATION' :
+    def.right.toUpperCase();
+
+  banner.textContent = `Incoming: ${def.label} (${gateName})`;
+}
+
+/* Dynamic score based on gate position along bug path */
+function computeDynamicScore(gatePos, bug) {
+  const maxScore = CONFIG.scoring.correctMax;
+  const minScore = CONFIG.scoring.correctMin;
+  const start = bug.pathStart;
+  const end   = bug.pathEnd;
+  const span  = Math.max(end - start, 1);
+
+  let t = (gatePos - start) / span;
+  t = Math.min(Math.max(t, 0), 1);
+  const score = Math.round(maxScore - t * (maxScore - minScore));
+  return score;
+}
+
+function handleGateHit(bug, gate) {
+  gate.consumed = true;
+
+  const gx = gate.el.offsetLeft + 40;
+  const gy = gate.el.offsetTop - 24;
+
+  if (gate.type === bug.def.right) {
+    const dynamicScore = computeDynamicScore(gate.pathPos, bug);
+
+    state.score += dynamicScore;
+    state.combo++;
+    beep(800, 0.08);
+
+    showFloatingText(`+${dynamicScore}`, gx, gy, '#6effa0');
+
+    if (state.combo > 0 && state.combo % CONFIG.scoring.comboSize === 0) {
+      state.score += CONFIG.scoring.comboBonus;
+      showFloatingText(`+${CONFIG.scoring.comboBonus}`, gx + 10, gy - 26, '#ffd36b');
+      flashBanner(`Combo! +${CONFIG.scoring.comboBonus}`);
     }
-  }
-
-  function handleGateHit(bug, gate){
-    gate.consumed = true;
-    const gx = gate.centerX;
-    const gy = gate.centerY - 18;
-
-    if(gate.type === bug.def.right){
-      const sc = computeDynamicScore(gate, bug);
-      state.score += sc;
-      state.combo++;
-      beep(800,0.08);
-      showFloatingText(`+${sc}`, gx, gy, '#7affb4');
-
-      if(state.combo>0 && state.combo % CONFIG.scoring.comboSize === 0){
-        state.score += CONFIG.scoring.comboBonus;
-        showFloatingText(`+${CONFIG.scoring.comboBonus}`, gx+6, gy-20, '#ffd36b');
-        flashBanner(`Combo! +${CONFIG.scoring.comboBonus}`);
-      }
-
-      bug.active = false;
-      try{ bug.el.remove(); }catch(e){}
-      try{ gate.el.remove(); }catch(e){}
-      window._placedGates = (window._placedGates || []).filter(g=>g!==gate);
-      state.currentBug = null;
-      updateHUD();
-      spawnNextBug();
-    } else {
-      state.score += CONFIG.scoring.wrongGate;
-      state.combo = 0;
-      beep(180,0.08);
-      showFloatingText(`${CONFIG.scoring.wrongGate}`, gx, gy, '#ff6b6b');
-
-      bug.pausedUntil = performance.now() + CONFIG.wrongPauseMs;
-      gate.el.style.opacity = '0.25';
-      setTimeout(()=>{
-        try{ gate.el.remove(); }catch(e){}
-        window._placedGates = (window._placedGates || []).filter(g=>g!==gate);
-      }, 400);
-      updateHUD();
-    }
-  }
-
-  function hitProd(bug){
-    state.score += CONFIG.scoring.hitProd;
-    state.combo = 0;
-
-    state.health -= 20;
-    if(state.health < 0) state.health = 0;
-    updateHealth();
-    beep(120,0.12);
-
-    const areaRect = gameArea.getBoundingClientRect();
-    const prodRect = prodCol.getBoundingClientRect();
-    const sx = (prodRect.left - areaRect.left) + 20;
-    const sy = (prodRect.top - areaRect.top) + 18;
-    showFloatingText(`${CONFIG.scoring.hitProd}`, sx+10, sy-10, '#ff6b6b');
-
-    prodCol.classList.add('hit');
-    setTimeout(()=>prodCol.classList.remove('hit'), 300);
 
     bug.active = false;
-    try{ bug.el.remove(); }catch(e){}
+    try { bug.el.remove(); } catch (e) {}
+    try { gate.el.remove(); } catch (e) {}
+
+    window._placedGates = (window._placedGates || []).filter(g => g !== gate);
     state.currentBug = null;
     updateHUD();
 
-    if(state.health <= 0){
-      endGame('Production meltdown!');
-    } else if(state.remaining <= 0){
-      endGame('All bugs processed.');
-    } else {
-      spawnNextBug();
+    spawnNextBug();
+  } else {
+    state.score += CONFIG.scoring.wrongGate;
+    state.combo = 0;
+    beep(180, 0.08);
+
+    showFloatingText(`${CONFIG.scoring.wrongGate}`, gx, gy, '#ff6b6b');
+
+    bug.pausedUntil = performance.now() + CONFIG.wrongPauseMs;
+
+    gate.el.style.opacity = '0.25';
+    setTimeout(() => {
+      try { gate.el.remove(); } catch (e) {}
+      window._placedGates = (window._placedGates || []).filter(g => g !== gate);
+    }, 400);
+
+    updateHUD();
+  }
+}
+
+function createSpark(x, y, color) {
+  const s = document.createElement('div');
+  s.className = 'spark';
+  s.style.left = x + 'px';
+  s.style.top = y + 'px';
+  s.style.color = color || '#ffb36b';
+  gameArea.appendChild(s);
+  s.animate(
+    [
+      { transform: 'scale(1)', opacity: 1 },
+      { transform: 'scale(2)', opacity: 0 }
+    ],
+    { duration: 700, easing: 'ease-out' }
+  );
+  setTimeout(() => { try { s.remove(); } catch (e) {} }, 700);
+}
+
+function hitProd(bug) {
+  state.score += CONFIG.scoring.hitProd;
+  state.combo = 0;
+
+  state.health -= 20;
+  if (state.health < 0) state.health = 0;
+
+  updateHealth();
+  updateProdDamageVisual();
+  beep(120, 0.12);
+
+  const areaRect = gameArea.getBoundingClientRect();
+  const prodRect = prodCol.getBoundingClientRect();
+  const sx = prodRect.left - areaRect.left;
+  const sy = (prodRect.top - areaRect.top) + 20;
+
+  createSpark(sx, sy, '#ffb36b');
+  showFloatingText(`${CONFIG.scoring.hitProd}`, sx + 10, sy - 18, '#ff6b6b');
+
+  prodCol.classList.add('hit');
+  setTimeout(() => prodCol.classList.remove('hit'), 350);
+
+  if (state.health <= 0) {
+    for (let i = 0; i < 4; i++) {
+      setTimeout(() => {
+        createSpark(
+          sx + 10 + (Math.random() * 40 - 20),
+          sy + (Math.random() * 30 - 15),
+          '#ff6666'
+        );
+      }, i * 120);
     }
   }
 
-  let lastTime = null;
-  function gameLoop(ts){
-    if(!lastTime) lastTime = ts;
-    const dt = ts - lastTime;
-    lastTime = ts;
+  bug.active = false;
+  try { bug.el.remove(); } catch (e) {}
+  state.currentBug = null;
+  updateHUD();
 
-    if(state.running && state.currentBug && state.currentBug.active){
-      const bug = state.currentBug;
-      const now = performance.now();
+  if (state.health <= 0) {
+    endGame('Production meltdown!');
+  } else if (state.remaining <= 0) {
+    endGame('All bugs processed.');
+  } else {
+    spawnNextBug();
+  }
+}
 
-      if(now >= bug.pausedUntil){
-        const dtSec = dt / 1000;
+/* ---------- movement loop ---------- */
+let lastTime = null;
+function gameLoop(ts) {
+  if (!lastTime) lastTime = ts;
+  const dt = ts - lastTime;
+  lastTime = ts;
 
-        if(isMobileMode()){
-          bug.y += bug.vy * dtSec;
-          bug.el.style.top = bug.y + 'px';
+  if (state.running && state.currentBug && state.currentBug.active) {
+    const bug = state.currentBug;
+    const now = performance.now();
 
-          const gates = (window._placedGates || []);
-          for(const gate of gates){
-            if(gate.consumed) continue;
-            if(gate.lane !== bug.row) continue;
-            const bugBottom = bug.y + bug.el.offsetHeight;
-            const gateTop = gate.centerY - 14;
-            const gateBottom = gate.centerY + 14;
-            if(bugBottom >= gateTop && bug.y <= gateBottom){
-              handleGateHit(bug, gate);
-              break;
-            }
-          }
+    if (now >= bug.pausedUntil) {
+      const dtSec = dt / 1000;
 
-          if(bug.active && bug.thresholdY !== null){
-            if(bug.y >= bug.thresholdY){
-              hitProd(bug);
-            }
-          }
-        } else {
-          bug.x += bug.vx * dtSec;
-          bug.el.style.left = bug.x + 'px';
+      if (isMobileMode()) {
+        bug.y += bug.vy * dtSec;
+        bug.el.style.top = bug.y + 'px';
+      } else {
+        bug.x += bug.vx * dtSec;
+        bug.el.style.left = bug.x + 'px';
+      }
 
-          const gates = (window._placedGates || []);
-          for(const gate of gates){
-            if(gate.consumed) continue;
-            if(gate.lane !== bug.row) continue;
-            const bugRight = bug.x + bug.el.offsetWidth;
-            const gateLeft = gate.centerX - 16;
-            const gateRight = gate.centerX + 16;
-            if(bugRight >= gateLeft && bug.x <= gateRight){
-              handleGateHit(bug, gate);
-              break;
-            }
-          }
+      const pathHead = isMobileMode() ? bug.y : bug.x;
+      const pathTail = pathHead + (isMobileMode() ? bug.el.offsetHeight : bug.el.offsetWidth);
 
-          if(bug.active && bug.thresholdX !== null){
-            if(bug.x >= bug.thresholdX){
-              hitProd(bug);
-            }
-          }
+      let gates = window._placedGates || [];
+      for (const gate of gates) {
+        if (gate.consumed) continue;
+        if (gate.lane !== bug.row) continue;
+        const gateHalf = isMobileMode() ? 16 : 12;
+        const gateStart = gate.pathPos - gateHalf;
+        const gateEnd   = gate.pathPos + gateHalf;
+        if (pathTail >= gateStart && pathHead <= gateEnd) {
+          handleGateHit(bug, gate);
+          break;
+        }
+      }
+
+      if (bug.active) {
+        if (pathHead >= bug.pathEnd) {
+          hitProd(bug);
         }
       }
     }
-
-    requestAnimationFrame(gameLoop);
   }
+
   requestAnimationFrame(gameLoop);
+}
+requestAnimationFrame(gameLoop);
 
-  /* ---------- Game control ---------- */
-  function resetSession(){
-    state.running = false;
-    clearInterval(timerInterval);
-    timerInterval = null;
+/* ---------- Game control ---------- */
+function resetSession() {
+  state.running = false;
+  clearInterval(timerInterval);
+  timerInterval = null;
 
-    endOverlay.style.display = 'none';
+  endOverlay.style.display = 'none';
 
-    if(state.currentBug && state.currentBug.el){
-      try{ state.currentBug.el.remove(); }catch(e){}
-    }
-    state.currentBug = null;
+  if (state.currentBug && state.currentBug.el) {
+    try { state.currentBug.el.remove(); } catch (e) {}
+  }
+  state.currentBug = null;
 
-    (window._placedGates || []).forEach(g=>{
-      try{ g.el.remove(); }catch(e){}
-    });
-    window._placedGates = [];
+  (window._placedGates || []).forEach(g => {
+    try { g.el.remove(); } catch (e) {}
+  });
+  window._placedGates = [];
 
-    state.score = 0;
-    state.combo = 0;
-    state.health = CONFIG.prodMax;
-    state.remaining = CONFIG.totalBugs;
-    state.spawnedCount = 0;
+  state.score = 0;
+  state.combo = 0;
+  state.health = CONFIG.prodMax;
+  state.remaining = CONFIG.totalBugs;
+  state.spawnedCount = 0;
 
-    document.getElementById('timer').textContent = GAME_DURATION;
-    banner.textContent = 'Ready';
-    updateHealth();
-    updateHUD();
+  document.getElementById('timer').textContent = GAME_DURATION;
+  banner.textContent = 'Ready';
+  updateHealth();
+  updateProdDamageVisual();
+  updateHUD();
+}
+
+function showEndOverlay(reason, rank) {
+  let title = 'Game Over';
+  let className = '';
+
+  if (reason && reason.toLowerCase().includes('time')) {
+    title = '⏰ Time Up!';
+    className = 'timeup';
+  } else if (reason && reason.toLowerCase().includes('meltdown')) {
+    title = '🔥 Production Meltdown!';
+    className = 'meltdown';
+  } else {
+    title = reason || 'Game Over';
   }
 
-  function showEndOverlay(reason){
-    let title = 'Game Over';
-    if(reason && reason.toLowerCase().includes('time')){
-      title = '⏰ Time Up!';
-    } else if(reason && reason.toLowerCase().includes('meltdown')){
-      title = '🔥 Production Meltdown!';
-    } else if(reason){
-      title = reason;
+  endTitleEl.textContent = title;
+  endTitleEl.classList.remove('timeup', 'meltdown');
+  if (className) endTitleEl.classList.add(className);
+
+  endScoreEl.textContent = `Score: ${state.score}`;
+
+  if (rank) {
+    if (rank === 1) {
+      endRankEl.textContent = `🏆 New High Score! You’re #1`;
+    } else {
+      endRankEl.textContent = `New leaderboard rank: #${rank}`;
     }
-    endTitleEl.textContent = title;
-    endScoreEl.textContent = `Score: ${state.score}`;
+  } else {
     endRankEl.textContent = '';
-    endOverlay.style.display = 'flex';
   }
 
-  async function endGame(reason){
-    state.running = false;
-    clearInterval(timerInterval);
-    timerInterval = null;
-    banner.textContent = reason || 'Game over';
+  endTitleEl.style.animation = 'none';
+  void endTitleEl.offsetWidth;
+  endTitleEl.style.animation = '';
 
-    let name = state.player;
-    let rank = null;
-    const stamp = Date.now();
+  endOverlay.style.display = 'flex';
+}
 
-    if(name){
-      try{
-        await saveScoreToFirebase(state.player, state.score, stamp);
-        const rows = await fetchLeaderboardFromFirebase();
-        const idx = rows.findIndex(
-          r => r.name === state.player &&
-               r.score === state.score &&
-               r.timestamp === stamp
-        );
-        rank = idx >= 0 ? idx+1 : null;
-      }catch(e){
-        console.error('Error updating Firebase leaderboard', e);
-      }
-      saveLocalScore(state.player, state.score, stamp);
-      renderLB();
-    }
+/* Now async because we talk to Firebase */
+async function endGame(reason) {
+  state.running = false;
+  clearInterval(timerInterval);
+  timerInterval = null;
+  banner.textContent = reason || 'Game over';
 
-    if(rank){
-      if(rank === 1){
-        endRankEl.textContent = `🏆 New High Score! You’re #1`;
-      } else {
-        endRankEl.textContent = `New leaderboard rank: #${rank}`;
-      }
-    } else {
-      endRankEl.textContent = '';
-    }
-
-    showEndOverlay(reason);
+  let name = state.player;
+  if (!name) {
+    showEndOverlay(reason, null);
+    return;
   }
 
-  function beginGame(){
-    resetSession();
-    state.running = true;
-    lastTime = null;
-    btnAbort.disabled = false;
+  const stamp = Date.now();
+  let rank = null;
 
-    let timeLeft = GAME_DURATION;
+  try {
+    await saveScoreToFirebase(state.player, state.score, stamp);
+    const rows = await fetchLeaderboardFromFirebase();
+
+    const idx = rows.findIndex(
+      r => r.name === state.player &&
+           r.score === state.score &&
+           r.timestamp === stamp
+    );
+    rank = idx >= 0 ? idx + 1 : null;
+  } catch (e) {
+    console.error('Error updating Firebase leaderboard', e);
+  }
+  saveLocalScore(state.player, state.score, stamp);
+
+  showEndOverlay(reason, rank);
+  renderLB();
+}
+
+function beginGame() {
+  resetSession();
+  state.running = true;
+  lastTime = null;
+
+  let timeLeft = GAME_DURATION;
+  document.getElementById('timer').textContent = timeLeft;
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    if (timeLeft < 0) timeLeft = 0;
     document.getElementById('timer').textContent = timeLeft;
-    timerInterval = setInterval(()=>{
-      timeLeft--;
-      if(timeLeft < 0) timeLeft = 0;
-      document.getElementById('timer').textContent = timeLeft;
-      if(timeLeft <= 0){
-        clearInterval(timerInterval);
-        timerInterval = null;
-        if(state.running) endGame('Time up!');
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      if (state.running) {
+        endGame('Time up!');
       }
-    }, 1000);
+    }
+  }, 1000);
 
-    spawnNextBug();
-  }
+  spawnNextBug();
+  btnAbort.disabled = false;
+}
 
-  /* ---------- Start / End buttons ---------- */
-  startOverlayBtn.addEventListener('click', ()=>{
-    const name = playerNameInput.value.trim();
-    if(!name) return;
-    state.player = name;
-    playerNameEl.textContent = name;
-    startOverlay.style.display = 'none';
+/* buttons in end overlay */
+endBtnPlay.addEventListener('click', () => {
+  if (state.player) {
     beginGame();
-  });
+  } else {
+    startOverlay.style.display = 'flex';
+  }
+});
 
-  btnStart.addEventListener('click', ()=>{
-    if(!state.player){
-      startOverlay.style.display = 'flex';
-      playerNameInput.focus();
-    } else if(!state.running){
-      beginGame();
-    }
-  });
+endBtnLB.addEventListener('click', () => {
+  endOverlay.style.display = 'none';
+  btnLB.click();
+});
 
-  endBtnPlay.addEventListener('click', ()=>{
-    if(state.player){
-      endOverlay.style.display = 'none';
-      beginGame();
-    } else {
-      endOverlay.style.display = 'none';
-      startOverlay.style.display = 'flex';
-    }
-  });
+/* New Game: go back to name popup */
+endBtnNew.addEventListener('click', () => {
+  endOverlay.style.display = 'none';
+  resetSession();
 
-  endBtnNew.addEventListener('click', ()=>{
-    endOverlay.style.display = 'none';
-    resetSession();
-    state.player = null;
-    playerNameEl.textContent = '—';
-    playerNameInput.value = '';
-    startOverlayBtn.disabled = true;
+  state.player = null;
+  playerNameEl.textContent = '—';
+
+  playerNameInput.value = '';
+  startOverlayBtn.disabled = true;
+
+  startOverlay.style.display = 'flex';
+  playerNameInput.focus();
+});
+
+/* start overlay button */
+startOverlayBtn.addEventListener('click', () => {
+  const name = playerNameInput.value.trim();
+  if (!name) return;
+  state.player = name;
+  playerNameEl.textContent = state.player;
+  startOverlay.style.display = 'none';
+  beginGame();
+});
+
+/* header Start button */
+btnStart.addEventListener('click', () => {
+  if (!state.player) {
     startOverlay.style.display = 'flex';
     playerNameInput.focus();
+  } else if (!state.running) {
+    beginGame();
+  }
+});
+
+/* Abort game (no save) */
+function abortGame() {
+  if (!state.running) return;
+
+  state.running = false;
+  clearInterval(timerInterval);
+  timerInterval = null;
+
+  endTitleEl.textContent = "⛔ Game Aborted";
+  endTitleEl.className = "end-title aborted";
+
+  endScoreEl.textContent = "Score: " + state.score;
+  endRankEl.textContent = "(Not saved to leaderboard)";
+  endOverlay.style.display = "flex";
+
+  btnAbort.disabled = true;
+}
+btnAbort.addEventListener("click", abortGame);
+
+/* ---------- Local scores ---------- */
+function saveLocalScore(name, score, timestamp) {
+  let list = JSON.parse(localStorage.getItem("localScores") || "[]");
+  list.push({ name, score, timestamp });
+  list.sort((a, b) => b.score - a.score);
+  list = list.slice(0, 500);
+  localStorage.setItem("localScores", JSON.stringify(list));
+}
+
+function loadLocalScores() {
+  return JSON.parse(localStorage.getItem("localScores") || "[]");
+}
+
+/* --- Mobile touch drag support --- */
+let touchGate = null;
+
+document.querySelectorAll('.gate-btn').forEach(btn => {
+  btn.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchGate = { type: btn.dataset.type };
+    btn.classList.add('dragging');
   });
+});
 
-  function abortGame() {
-    if (!state.running) return;
-    state.running = false;
-    clearInterval(timerInterval);
-    timerInterval = null;
-    endTitleEl.textContent = "⛔ Game Aborted";
-    endScoreEl.textContent = "Score: " + state.score;
-    endRankEl.textContent = "(Not saved to leaderboard)";
-    endOverlay.style.display = "flex";
-    btnAbort.disabled = true;
-  }
-  btnAbort.addEventListener("click", abortGame);
+gameArea.addEventListener('touchmove', e => {
+  if (!touchGate || !state.running || !state.currentBug) return;
 
-  function saveLocalScore(name, score, timestamp){
-    let list = JSON.parse(localStorage.getItem("localScores") || "[]");
-    list.push({ name, score, timestamp });
-    list.sort((a,b)=>b.score - a.score);
-    list = list.slice(0, 500);
-    localStorage.setItem("localScores", JSON.stringify(list));
+  const touch = e.touches[0];
+  const lanesRect = lanesEl.getBoundingClientRect();
+  const mainAxis = isMobileMode() ? (touch.clientX - lanesRect.left) : (touch.clientY - lanesRect.top);
+  const laneSize = (isMobileMode() ? lanesRect.width : lanesRect.height) / CONFIG.lanes;
+  const idx = Math.max(0, Math.min(CONFIG.lanes - 1, Math.floor(mainAxis / laneSize)));
+
+  document.querySelectorAll('.lane')
+    .forEach((el, i) => el.classList.toggle('lane-hover', i === idx));
+});
+
+gameArea.addEventListener('touchend', e => {
+  document.querySelectorAll('.lane').forEach(el => el.classList.remove('lane-hover'));
+  if (!touchGate || !state.running || !state.currentBug) {
+    touchGate = null;
+    document.querySelectorAll('.gate-btn').forEach(x => x.classList.remove('dragging'));
+    return;
   }
-  function loadLocalScores(){
-    return JSON.parse(localStorage.getItem("localScores") || "[]");
-  }
+
+  const touch = e.changedTouches[0];
+  const lanesRect = lanesEl.getBoundingClientRect();
+  const mainAxis = isMobileMode() ? (touch.clientX - lanesRect.left) : (touch.clientY - lanesRect.top);
+  const laneSize = (isMobileMode() ? lanesRect.width : lanesRect.height) / CONFIG.lanes;
+  const chosen = Math.max(0, Math.min(CONFIG.lanes - 1, Math.floor(mainAxis / laneSize)));
+
+  const coord = isMobileMode() ? touch.clientY : touch.clientX;
+  placeGate(touchGate.type, chosen, coord);
+  touchGate = null;
+
+  document.querySelectorAll('.gate-btn').forEach(x => x.classList.remove('dragging'));
+});
 </script>
 </body>
 </html>
-
-
