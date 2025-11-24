@@ -643,6 +643,25 @@
         position: fixed;
       }
     }
+    /* --- FINAL FIX FOR MOBILE PROD POSITION (always bottom) --- */
+@media (max-width: 600px) {
+
+  #gameArea {
+    position: relative !important;
+  }
+
+  #prodCol {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+
+    bottom: 110px !important;  /* final, guaranteed fixed position */
+    top: auto !important;
+
+    z-index: 50 !important;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -1711,4 +1730,5 @@
 </script>
 </body>
 </html>
+
 
