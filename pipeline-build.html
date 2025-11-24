@@ -277,7 +277,7 @@
       box-shadow:0 0 0 1px rgba(110,246,255,0.5);
     }
 
-    /* PROD column */
+    /* PROD column – tall vertical on desktop */
 
     .prod-column{
       position:absolute;
@@ -796,12 +796,6 @@
         min-height: 36px;
       }
 
-      .prod-column {
-        position: static;
-        width: 100%;
-        margin-top: 12px;
-      }
-
       .gate-bar {
         flex-direction: column;
       }
@@ -825,12 +819,14 @@
       touch-action:none;
     }
 
-    /* Mobile: vertical lanes, PROD below, gates further below */
+    /* ---------- MOBILE MODE: vertical lanes, PROD as horizontal bar, icon-only bug ---------- */
     @media (max-width: 600px) {
       .game-area{
         display:flex;
         flex-direction:column;
         padding-bottom:0;
+        height:auto;
+        min-height:480px;
       }
 
       .lanes{
@@ -868,14 +864,29 @@
         box-shadow:none;
       }
 
+      /* PROD becomes a horizontal pill under the lanes */
       .prod-column{
         position:relative;
         order:2;
         top:0;
         right:0;
         margin:4px auto 0;
-        width:160px;
-        height:auto;
+        width:220px;
+        height:72px;
+        flex-direction:row;
+        justify-content:space-between;
+        align-items:center;
+        padding:10px 14px;
+      }
+      .prod-icon{
+        font-size:26px;
+        margin-bottom:0;
+      }
+      .prod-label{
+        font-size:11px;
+      }
+      .health{
+        width:110px;
       }
 
       .wave-banner{
@@ -886,6 +897,11 @@
       .gate-bar{
         order:3;
         border-radius:0 0 20px 20px;
+      }
+
+      /* BUG: icon only on mobile */
+      .bug span:last-child{
+        display:none;
       }
     }
   </style>
@@ -921,7 +937,7 @@
     <div class="hud">
       <div class="hud-chip">
         <span class="hud-label">Mode</span>
-        <span class="hud-value">Classic (single)</span>
+        <span class="hud-value" id="modeLbl">Classic (single)</span>
       </div>
       <div class="hud-chip">
         <span class="hud-label">Upcoming</span>
@@ -1042,10 +1058,7 @@ const GAME_DURATION = 90; // seconds
 const CONFIG = {
   lanes: 5,
   totalBugs: 75,
-
-  // Bug travel timing (about 15s from start to PROD)
   bugTravelSeconds: 15,
-
   prodMax: 100,
   wrongPauseMs: 500,
   scoring: {
@@ -1138,6 +1151,7 @@ const comboEl        = document.getElementById('combo');
 const remainingEl    = document.getElementById('remaining');
 const upcomingEl     = document.getElementById('upcoming');
 const speedLbl       = document.getElementById('speedLbl');
+const modeLbl        = document.getElementById('modeLbl');
 const lbBox          = document.getElementById('lb');
 const playerNameEl   = document.getElementById('playerName');
 
@@ -1252,6 +1266,9 @@ function updateHUD() {
   const speedFactor = 1 + (state.spawnedCount * 0.12);
   speedLbl.textContent = speedFactor.toFixed(2) + 'x';
   upcomingEl.textContent = state.currentBug ? state.currentBug.def.label : '—';
+  modeLbl.textContent = isMobileMode()
+    ? `Mobile (vertical, ${CONFIG.lanes} builds)`
+    : `Classic (horizontal, ${CONFIG.lanes} builds)`;
 }
 
 function updateHealth() {
@@ -1491,11 +1508,10 @@ function placeGate(type, laneIndex, clientPos) {
 
   gameArea.appendChild(node);
 
-  let pathPos;   // coordinate along bug path (x on desktop, y on mobile)
+  let pathPos;
   let left, top;
 
   if (isMobileMode()) {
-    // Vertical movement: gate is positioned by Y within the lane, X is lane center
     const laneCenterX = laneRect.left - areaRect.left + laneRect.width / 2;
     const gateWidth = node.offsetWidth || 120;
     const halfW = gateWidth / 2;
@@ -1507,7 +1523,6 @@ function placeGate(type, laneIndex, clientPos) {
     pathPos = Math.max(minY, Math.min(maxY, pathPos));
     top = pathPos - (node.offsetHeight || 56) / 2;
   } else {
-    // Desktop: bug moves left -> right
     const laneCenterY = laneRect.top - areaRect.top + laneRect.height / 2;
     const gateWidth = node.offsetWidth || 120;
     const halfW = gateWidth / 2;
@@ -1556,7 +1571,6 @@ function spawnNextBug(manual = false) {
   const el = document.createElement('div');
   el.className = 'bug';
   el.innerHTML = `<span class="icon">${def.icon}</span><span>${def.label}</span>`;
-  // temp position so we can measure size
   el.style.left = '0px';
   el.style.top = '0px';
   el.style.zIndex = 40;
@@ -1567,7 +1581,6 @@ function spawnNextBug(manual = false) {
 
   let bug;
   if (isMobileMode()) {
-    // Vertical lanes: bug moves top -> bottom
     const lineOffsetY = 10;
     const startY = (laneRect.top - areaRect.top) + lineOffsetY;
     const x = laneRect.left - areaRect.left + laneRect.width / 2 - bugW / 2;
@@ -1594,7 +1607,6 @@ function spawnNextBug(manual = false) {
       pathEnd: prodThreshold
     };
   } else {
-    // Desktop: bug moves left -> right
     const lineOffset = 10;
     const startX = (laneRect.left - areaRect.left) + lineOffset;
     const y = laneRect.top - areaRect.top + laneRect.height / 2 - bugH / 2;
@@ -2068,6 +2080,11 @@ gameArea.addEventListener('touchend', e => {
   touchGate = null;
 
   document.querySelectorAll('.gate-btn').forEach(x => x.classList.remove('dragging'));
+});
+
+/* Recompute mode label on resize */
+window.addEventListener('resize', () => {
+  updateHUD();
 });
 </script>
 </body>
