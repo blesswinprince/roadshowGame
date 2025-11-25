@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <title>Test Early. Ship Stable.</title>
+
 <style>
   :root{
     --bg-blue:#0284c7;
@@ -21,52 +22,51 @@
   }
 
   body{
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    margin:0;
+    height:100%;
     font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     color:var(--text);
     background:
       radial-gradient(circle at 0% 0%,var(--bg-blue) 0,#020617 45%),
       radial-gradient(circle at 100% 100%,var(--bg-green) 0,#020617 45%),
       #020617;
-    overflow:hidden; /* no scroll for roadshow screen */
+    overflow:hidden;
   }
 
   .shell{
     width:100%;
-    max-width:1400px;
     height:100%;
-    padding:18px 26px;
+    padding:12px 16px;
   }
 
   .card{
     position:relative;
-    border-radius:28px;
+    width:100%;
+    height:100%;
+    border-radius:0;
     background:
       radial-gradient(circle at top left,rgba(148,163,184,.16),transparent 55%),
       rgba(15,23,42,.97);
     border:1px solid rgba(148,163,184,.6);
     box-shadow:0 26px 70px rgba(15,23,42,.95);
-    padding:18px 24px 20px;
-    height:100%;
-    overflow:hidden;
+    padding:16px 20px 18px;
     display:flex;
     flex-direction:column;
-  }
-
-  /* hide old story / banner / speech if any */
-  .step-banner,
-  .story-strip,
-  .dev-speech{
-    display:none!important;
+    overflow:hidden;
   }
 
   .card-header{
     display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:10px;
+  }
+
+  .header-main{
+    display:flex;
     flex-direction:column;
     gap:4px;
-    margin-bottom:10px;
   }
 
   .hero-title{
@@ -87,7 +87,23 @@
     color:var(--muted);
   }
 
-  /* MAIN LAYOUT: Dev on the left, pipelines + TEST on the right */
+  .play-btn{
+    border-radius:999px;
+    border:1px solid rgba(148,163,184,.8);
+    background:rgba(15,23,42,.98);
+    padding:6px 14px;
+    font-size:12px;
+    color:#e5e7eb;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    box-shadow:0 0 12px rgba(15,23,42,.8);
+  }
+  .play-btn span.icon{
+    font-size:14px;
+  }
+
   .layout{
     display:flex;
     flex-direction:row;
@@ -111,7 +127,6 @@
     min-height:0;
   }
 
-  /* Dev panel */
   .dev-panel{
     border-radius:20px;
     border:1px solid rgba(148,163,184,.55);
@@ -143,11 +158,8 @@
     font-size:32px;
     box-shadow:0 0 20px rgba(248,250,252,.7);
   }
-  .dev-meta{
-    display:flex;
-    flex-direction:column;
-    gap:3px;
-  }
+
+  .dev-meta{display:flex;flex-direction:column;gap:3px;}
   .dev-name{font-size:14px;font-weight:600;}
   .dev-branch{font-size:12px;color:#a5b4fc;}
   .dev-repo{
@@ -170,14 +182,15 @@
     display:flex;
     flex-direction:column;
     gap:4px;
-    min-width:0;
   }
+
   .pr-top{
     display:flex;
     justify-content:space-between;
     align-items:center;
     gap:10px;
   }
+
   .pr-title{font-size:13px;font-weight:600;}
   .pr-sub{font-size:11px;color:var(--muted);min-height:14px;}
   .pr-pill{
@@ -188,20 +201,14 @@
     background:rgba(15,23,42,.95);
     white-space:nowrap;
   }
+
   .pr-pill.merged{
     border-color:rgba(34,197,94,.9);
     color:#bbf7d0;
     box-shadow:0 0 10px rgba(34,197,94,.7);
   }
 
-  .pr-branches{
-    font-size:11px;
-    color:var(--muted);
-    display:flex;
-    align-items:center;
-    gap:4px;
-    flex-wrap:wrap;
-  }
+  .pr-branches{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
   .pr-branches span.branch{
     padding:2px 7px;
     border-radius:999px;
@@ -210,7 +217,6 @@
   }
   .pr-branches span.arrow{opacity:.7;}
 
-  /* Pipelines stacked vertically */
   .pipelines-area{
     display:flex;
     flex-direction:column;
@@ -227,8 +233,8 @@
     display:flex;
     flex-direction:column;
     gap:8px;
-    min-height:0;
   }
+
   .pipe-header{
     display:flex;
     justify-content:space-between;
@@ -249,13 +255,8 @@
     color:#bbf7d0;
   }
 
-  .pipe-status{
-    font-size:12px;
-    color:var(--muted);
-    min-height:16px;
-  }
+  .pipe-status{font-size:12px;color:var(--muted);min-height:16px;}
 
-  /* HORIZONTAL PIPELINES */
   .pipe-list{
     list-style:none;
     padding:0;
@@ -263,7 +264,8 @@
     display:flex;
     gap:10px;
     justify-content:center;
-    flex-wrap:wrap;
+    flex-wrap:nowrap;
+    align-items:center;
   }
 
   .pipe-step{
@@ -271,97 +273,196 @@
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:flex-start;
     gap:4px;
-    padding:8px 10px;
+    padding:10px 12px;
     border-radius:14px;
     min-width:110px;
     max-width:150px;
-    text-align:center;
     background:rgba(15,23,42,.95);
     border:1px solid rgba(55,65,81,.9);
     font-size:13px;
-    color:var(--muted);
   }
 
-  .pipe-icon{
-    width:24px;
-    height:24px;
-    border-radius:999px;
-    border:2px solid #4b5563;
-    background:#020617;
+  /* PR / MERGE big container cards */
+  .pipe-step-pr{
+    min-width:260px;
+    max-width:360px;
+    align-items:flex-start;
+  }
+
+  .pipe-main{
     display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:12px;
-    color:#9ca3af;
+    flex-direction:column;
+    align-items:flex-start;
+    text-align:left;
   }
 
-  .pipe-label{font-size:13px;}
+  .pipe-sub{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+
+  .pipe-label{
+    font-size:13px;
+  }
 
   .pipe-step--active{
     box-shadow:0 0 14px rgba(56,189,248,.7);
     border-color:var(--active);
   }
-  .pipe-step--active .pipe-icon{
-    border-color:var(--active);
-    color:var(--active);
-    box-shadow:0 0 10px rgba(56,189,248,.9);
-  }
-  .pipe-step--active .pipe-label{color:#e5e7eb;}
 
   .pipe-step--ok{
     border-color:var(--ok);
     background:#022c22;
     box-shadow:0 0 10px rgba(34,197,94,.7);
   }
-  .pipe-step--ok .pipe-icon{
-    border-color:var(--ok);
-    background:#022c22;
-    color:#bbf7d0;
-  }
-  .pipe-step--ok .pipe-label{color:#bbf7d0;}
 
   .pipe-step--fail{
     border-color:var(--fail);
     background:#451a03;
     box-shadow:0 0 10px rgba(249,115,22,.8);
   }
-  .pipe-step--fail .pipe-icon{
-    border-color:var(--fail);
-    background:#451a03;
-    color:#fed7aa;
-  }
-  .pipe-step--fail .pipe-label{color:#fed7aa;}
 
-  .pipe-step--skipped{
-    opacity:.55;
-  }
-  .pipe-step--skipped .pipe-icon{
-    border-style:dashed;
-    border-color:#6b7280;
+  /* Big outer frame inside PR / Merge */
+  .pipe-pr-frame{
+    width:100%;
+    margin-top:8px;
+    padding:8px 10px;
+    border-radius:14px;
+    border:0px solid rgba(148,163,184,0.4);
+    background:rgba(15,23,42,0.9);
   }
 
-  /* TEST ENV AS SEPARATE PANEL */
-  .test-panel{
-    border-radius:18px;
-    border:1px solid rgba(148,163,184,.55);
-    background:radial-gradient(circle at top,rgba(15,23,42,.98),#020617);
-    padding:8px 12px;
+  /* Inner test pills inside that frame */
+  .pipe-pr-tests{
     display:flex;
-    flex-direction:column;
+    flex-wrap:wrap;
     gap:6px;
   }
 
-  .test-header{
+  .pipe-pr-test{
+    padding:4px 10px;
+    border-radius:999px;
+    border:1px solid rgba(148,163,184,0.8);
     font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    color:#e5e7eb;
-    opacity:.9;
+    color:var(--muted);
+    background:rgba(15,23,42,0.95);
+    white-space:nowrap;
   }
 
-  /* TEST env box (logic stays the same) */
+  /* Inner test animation states */
+  .pipe-pr-test--active{
+    border-color: var(--active);
+    box-shadow: 0 0 8px rgba(56,189,248,0.8);
+    color: #e5e7eb;
+  }
+
+  .pipe-pr-test--ok{
+    border-color: var(--ok);
+    background:#022c22;
+    color:#bbf7d0;
+    box-shadow:0 0 6px rgba(34,197,94,0.7);
+  }
+
+  .pipe-pr-test--fail{
+    border-color: var(--fail);
+    background:#451a03;
+    color:#fed7aa;
+    box-shadow:0 0 6px rgba(249,115,22,0.8);
+  }
+
+  /* PR approved + Deploy pills (flat icon cards) */
+  .pipe-step-arrow,
+  .pipe-step-deploy{
+    min-width:auto;
+    max-width:none;
+    padding:0;
+    border:none;
+    background:transparent;
+    box-shadow:none;
+  }
+
+  .pipe-arrow-pill,
+  .pipe-deploy-pill{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    border-radius:999px;
+    border:0px solid rgba(148,163,184,0.5);
+    //background:rgba(15,23,42,0.96);
+    font-size:11px;
+    color:var(--muted);
+    transition:box-shadow .2s ease, border-color .2s ease, background .2s ease;
+  }
+
+  /* Flat circular icon */
+  .pill-icon-circle{
+    width:22px;
+    height:22px;
+    border-radius:999px;
+    border:1px solid rgba(148,163,184,0.6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    color:rgba(148,163,184,0.9);
+    background:transparent;
+    transition:background .2s ease,color .2s ease,border-color .2s ease;
+  }
+
+  /* Text block next to icon */
+  .pill-text{
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+  }
+
+  .pill-text-title{
+    font-size:11px;
+    font-weight:600;
+    color:#e5e7eb;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+
+  .pill-text-sub{
+    font-size:10px;
+    color:var(--muted);
+  }
+
+  /* When that step is executed */
+  .pipe-arrow-pill.pill-done{
+    border-color:var(--ok);
+    box-shadow:0 0 10px rgba(34,197,94,0.7);
+  }
+  .pipe-arrow-pill.pill-done .pill-icon-circle{
+    background:var(--ok);
+    border-color:var(--ok);
+    color:#022c22;
+  }
+
+  .pipe-deploy-pill.pill-done{
+    border-color:var(--active);
+    box-shadow:0 0 10px rgba(56,189,248,0.8);
+  }
+  .pipe-deploy-pill.pill-done .pill-icon-circle{
+    background:var(--active);
+    border-color:var(--active);
+    color:#0b1120;
+  }
+
+  /* TEST env as a small pill in the row, after Deploy */
+  .pipe-step-env{
+    min-width:auto;
+    max-width:none;
+    padding:0;
+    border:none;
+    background:transparent;
+    box-shadow:none;
+  }
+
   .env-box{
     border-radius:14px;
     padding:6px 9px;
@@ -372,109 +473,109 @@
     border:1px solid rgba(148,163,184,.7);
     background:rgba(15,23,42,.96);
     font-size:11px;
+    min-width:160px;
+    transition:box-shadow .2s ease,border-color .2s ease;
   }
   .env-pill{
     border-radius:999px;
     padding:3px 9px;
-    border:1px solid rgba(148,163,184,.8);
+    border:0px solid rgba(148,163,184,.8);
     display:inline-flex;
-    align-items:center;
     gap:6px;
-    background:rgba(15,23,42,.98);
-    font-size:11px;
+    align-items:center;
   }
+
   .env-dot{
-    width:9px;
-    height:9px;
-    border-radius:999px;
-    background:#6b7280; /* grey by default */
+    width:9px;height:9px;border-radius:999px;background:#6b7280;
   }
-  .env-status{color:var(--muted);}
+
+  .env-status{
+    color:var(--muted);
+  }
 
   .env-box.ok{
     border-color:rgba(34,197,94,.9);
     box-shadow:0 0 12px rgba(34,197,94,.7);
   }
-  .env-box.ok .env-pill{border-color:rgba(34,197,94,.9);}
-  .env-box.ok .env-dot{
-    background:var(--ok);
-    box-shadow:0 0 8px rgba(34,197,94,.9);
-  }
-  .env-box.ok .env-status{color:#bbf7d0;}
+  .env-box.ok .env-dot{background:var(--ok);}
 
   .env-box.fail{
     border-color:rgba(248,113,113,.9);
     box-shadow:0 0 12px rgba(248,113,113,.7);
   }
-  .env-box.fail .env-pill{border-color:rgba(248,113,113,.9);}
-  .env-box.fail .env-dot{
-    background:var(--fail);
-    box-shadow:0 0 8px rgba(248,113,113,.9);
-  }
-  .env-box.fail .env-status{color:#fecaca;}
+  .env-box.fail .env-dot{background:var(--fail);}
 
-  /* Pros / Cons */
   .insights-panel{
     display:flex;
     gap:16px;
     margin-top:4px;
     font-size:12px;
   }
+
+  /* reserve height so the card doesn’t jump when bullets appear */
   .insights-col{
     flex:1;
     border-radius:12px;
     padding:6px 8px;
-    border:1px dashed rgba(148,163,184,.5);
+    border:1px solid rgba(148,163,184,.3);
     background:rgba(15,23,42,.9);
+
+    display:flex;
+    flex-direction:column;
+    min-height:90px; /* tweak as you like */
   }
+
   .insights-title{
     font-size:11px;
     font-weight:600;
-    color:#e5e7eb;
     margin-bottom:4px;
-    text-transform:uppercase;
-    letter-spacing:.06em;
   }
+
+  /* list fills remaining space but doesn’t change outer height */
   .insights-list{
     list-style:none;
-    margin:0;
     padding-left:0;
+    margin:0;
+    flex:1;
   }
+
   .insight-item{
     opacity:0;
     transform:translateY(4px);
-    transition:all .2s ease-out;
+    transition:.2s ease-out;
     margin-bottom:3px;
     color:var(--muted);
   }
   .insight-item.visible{
-    opacity:1;
-    transform:translateY(0);
+    opacity:1;transform:translateY(0);
   }
 
   @media(max-width:900px){
     .card{border-radius:0;}
-    .layout{
-      flex-direction:column;
-    }
-    .layout-left{
-      flex:0 0 auto;
-    }
-    .pipe-list{flex-wrap:wrap;}
+    .layout{flex-direction:column;}
+    .pipe-list{flex-wrap:wrap;justify-content:flex-start;}
   }
 </style>
 </head>
+
 <body>
 <div class="shell">
   <div class="card">
     <div class="card-header">
-      <div class="hero-title">Test Early. Ship Stable.</div>
-      <div class="hero-subtitle">AS-IS vs TO-BE CI/CD pipelines, using the exact same PR.</div>
-      <div class="hero-caption">Watch how adding contract & integration checks in CI protects TEST and shortens the feedback loop.</div>
+      <div class="header-main">
+        <div class="hero-title">Test Early. Ship Stable.</div>
+        <div class="hero-subtitle">AS-IS vs TO-BE CI/CD pipelines, using the exact same PR.</div>
+        <div class="hero-caption">
+          PR checks → manual approval → merge checks → deploy marker → TEST status.
+        </div>
+      </div>
+      <button id="playToggle" class="play-btn">
+        <span class="icon">⏸</span>
+        <span class="label">Pause</span>
+      </button>
     </div>
 
     <div class="layout">
-      <!-- LEFT: Developer + PR (source of all builds / fixes) -->
       <div class="layout-left">
         <div class="dev-panel">
           <div class="dev-left">
@@ -490,7 +591,7 @@
             <div class="pr-top">
               <div>
                 <div class="pr-title">PR #1289 – Align booking API contracts</div>
-                <div id="prSub" class="pr-sub">Created just now · comparison running side by side</div>
+                <div id="prSub" class="pr-sub">Created just now · comparison running</div>
               </div>
               <div id="prPill" class="pr-pill">Open · under comparison</div>
             </div>
@@ -503,9 +604,9 @@
         </div>
       </div>
 
-      <!-- RIGHT: Pipelines + TEST env impact -->
       <div class="layout-right">
         <div class="pipelines-area">
+
           <!-- AS-IS -->
           <div class="pipe-panel">
             <div class="pipe-header">
@@ -514,7 +615,6 @@
             </div>
             <div id="pipeStatusAsIs" class="pipe-status"></div>
             <ul id="pipeListAsIs" class="pipe-list"></ul>
-
             <div class="insights-panel">
               <div class="insights-col">
                 <div class="insights-title">Pros</div>
@@ -527,18 +627,6 @@
             </div>
           </div>
 
-          <!-- AS-IS TEST env as its own component -->
-          <div class="test-panel">
-            <div class="test-header">AS-IS – TEST environment impact</div>
-            <div id="envBoxAsIs" class="env-box">
-              <div class="env-pill">
-                <span class="env-dot"></span>
-                <span>TEST env</span>
-              </div>
-              <div id="envStatusAsIs" class="env-status">Idle – waiting for build…</div>
-            </div>
-          </div>
-
           <!-- TO-BE -->
           <div class="pipe-panel">
             <div class="pipe-header">
@@ -547,7 +635,6 @@
             </div>
             <div id="pipeStatusToBe" class="pipe-status"></div>
             <ul id="pipeListToBe" class="pipe-list"></ul>
-
             <div class="insights-panel">
               <div class="insights-col">
                 <div class="insights-title">Pros</div>
@@ -560,379 +647,615 @@
             </div>
           </div>
 
-          <!-- TO-BE TEST env as its own component -->
-          <div class="test-panel">
-            <div class="test-header">TO-BE – TEST environment impact</div>
-            <div id="envBoxToBe" class="env-box">
-              <div class="env-pill">
-                <span class="env-dot"></span>
-                <span>TEST env</span>
-              </div>
-              <div id="envStatusToBe" class="env-status">Idle – waiting for build…</div>
-            </div>
-          </div>
         </div>
       </div>
-    </div> <!-- layout -->
+    </div>
   </div>
 </div>
 <script>
 (function(){
   const prPill = document.getElementById("prPill");
   const prSub  = document.getElementById("prSub");
-  const delay  = (ms) => new Promise(res=>setTimeout(res,ms));
-  let storyToken = 0;
+  const playBtn = document.getElementById("playToggle");
+  const playIcon = playBtn.querySelector(".icon");
+  const playLabel = playBtn.querySelector(".label");
 
-  const pipelines = {
-    "as-is": {
-      pipeList:   document.getElementById("pipeListAsIs"),
-      pipeStatus: document.getElementById("pipeStatusAsIs"),
-      envBox:     document.getElementById("envBoxAsIs"),
-      envStatus:  document.getElementById("envStatusAsIs"),
-      prosList:   document.getElementById("prosAsIs"),
-      consList:   document.getElementById("consAsIs")
+  let storyToken = 0;
+  let isPaused = false;
+
+  function updatePlayButton(){
+    if(isPaused){
+      playIcon.textContent = "▶";
+      playLabel.textContent = "Play";
+    }else{
+      playIcon.textContent = "⏸";
+      playLabel.textContent = "Pause";
+    }
+  }
+
+  playBtn.addEventListener("click", ()=>{
+    isPaused = !isPaused;
+    updatePlayButton();
+  });
+
+  // pause-aware delay
+  function delay(ms){
+    return new Promise(resolve=>{
+      let remaining = ms;
+      function step(){
+        if(!isPaused){
+          if(remaining <= 0){
+            resolve();
+            return;
+          }
+          const slice = Math.min(120, remaining);
+          remaining -= slice;
+        }
+        setTimeout(step, 100);
+      }
+      step();
+    });
+  }
+
+  const pipelines={
+    "as-is":{
+      pipeList:document.getElementById("pipeListAsIs"),
+      pipeStatus:document.getElementById("pipeStatusAsIs"),
+      prosList:document.getElementById("prosAsIs"),
+      consList:document.getElementById("consAsIs"),
+      envBox:null,
+      envStatus:null
     },
-    "to-be": {
-      pipeList:   document.getElementById("pipeListToBe"),
-      pipeStatus: document.getElementById("pipeStatusToBe"),
-      envBox:     document.getElementById("envBoxToBe"),
-      envStatus:  document.getElementById("envStatusToBe"),
-      prosList:   document.getElementById("prosToBe"),
-      consList:   document.getElementById("consToBe")
+    "to-be":{
+      pipeList:document.getElementById("pipeListToBe"),
+      pipeStatus:document.getElementById("pipeStatusToBe"),
+      prosList:document.getElementById("prosToBe"),
+      consList:document.getElementById("consToBe"),
+      envBox:null,
+      envStatus:null
     }
   };
 
-  /* ---------- ENV helpers ---------- */
-
-  function resetEnv(mode){
-    const ctx = pipelines[mode];
-    ctx.envBox.classList.remove("ok","fail");
-    ctx.envStatus.textContent = "Idle – waiting for build…";
-  }
+  /* ------------ ENV helpers ------------ */
 
   function setEnvLabel(mode,text){
-    const ctx = pipelines[mode];
+    const ctx=pipelines[mode];
+    if(!ctx.envBox || !ctx.envStatus) return;
     ctx.envBox.classList.remove("ok","fail");
-    ctx.envStatus.textContent = text;
+    ctx.envStatus.textContent=text;
   }
-
+  function resetEnv(mode){
+    setEnvLabel(mode,"Idle – waiting for build…");
+  }
   function setEnvState(mode,state,text){
-    const ctx = pipelines[mode];
+    const ctx=pipelines[mode];
+    if(!ctx.envBox || !ctx.envStatus) return;
     ctx.envBox.classList.remove("ok","fail");
-    if(state === "ok")   ctx.envBox.classList.add("ok");
-    if(state === "fail") ctx.envBox.classList.add("fail");
-    ctx.envStatus.textContent = text;
+    ctx.envBox.classList.add(state);
+    ctx.envStatus.textContent=text;
   }
 
-  /* ---------- Pros / Cons ---------- */
+  /* ------------ Pros / Cons ------------ */
 
   function resetProsCons(mode){
-    const ctx = pipelines[mode];
-    ctx.prosList.innerHTML = "";
-    ctx.consList.innerHTML = "";
+    const ctx=pipelines[mode];
+    ctx.prosList.innerHTML="";
+    ctx.consList.innerHTML="";
   }
 
   function addPro(mode,text){
-    const ctx = pipelines[mode];
-    const li = document.createElement("li");
-    li.textContent = text;
-    li.className = "insight-item";
-    ctx.prosList.appendChild(li);
+    const li=document.createElement("li");
+    li.textContent=text;
+    li.className="insight-item";
+    pipelines[mode].prosList.appendChild(li);
     requestAnimationFrame(()=>li.classList.add("visible"));
   }
 
   function addCon(mode,text){
-    const ctx = pipelines[mode];
-    const li = document.createElement("li");
-    li.textContent = text;
-    li.className = "insight-item";
-    ctx.consList.appendChild(li);
+    const li=document.createElement("li");
+    li.textContent=text;
+    li.className="insight-item";
+    pipelines[mode].consList.appendChild(li);
     requestAnimationFrame(()=>li.classList.add("visible"));
   }
 
-  /* ---------- Steps ---------- */
+  /* ------------ Build steps (PR, arrow, Merge, Deploy pill, Env) ------------ */
 
   function buildSteps(mode){
-    const ctx = pipelines[mode];
-    ctx.pipeList.innerHTML = "";
+    const ctx=pipelines[mode];
+    ctx.pipeList.innerHTML="";
+    ctx.envBox=null;
+    ctx.envStatus=null;
 
-    let labels;
-    if(mode === "as-is"){
-      labels = [
-        "PR CREATED (Unit + functional tests)",
-        "Merge to master",
-        "Deploy to TEST"
+    let steps;
+    if(mode==="as-is"){
+      steps=[
+        {
+          type:"pr",
+          label:"PR CREATED",
+          caption:"Checks inside the PR",
+          tests:["Unit tests","Functional tests"]
+        },
+        {
+          type:"arrow",
+          label:"PR approved"
+        },
+        {
+          type:"merge",
+          label:"MERGE TO MASTER",
+          caption:"Checks on merged branch",
+          tests:["Unit tests","Functional tests"]
+        },
+        {
+          type:"deployMarker",
+          label:"Deploy to TEST"
+        }
       ];
     }else{
-      labels = [
-        "PR CREATED (Unit + functional + contract + integration checks in CI)",
-        "Merge to master",
-        "Deploy to TEST"
+      steps=[
+        {
+          type:"pr",
+          label:"PR CREATED",
+          caption:"Checks inside the PR (CI)",
+          tests:["Unit tests","Functional tests","Contract tests","Integration tests"]
+        },
+        {
+          type:"arrow",
+          label:"PR approved"
+        },
+        {
+          type:"merge",
+          label:"MERGE TO MASTER",
+          caption:"Checks on merged branch",
+          tests:["Unit tests","Functional tests","Contract tests","Integration tests"]
+        },
+        {
+          type:"deployMarker",
+          label:"Deploy to TEST"
+        }
       ];
     }
 
-    labels.forEach((label,idx)=>{
-      const li = document.createElement("li");
-      li.className = "pipe-step";
-      const icon = document.createElement("div");
-      icon.className = "pipe-icon";
-      icon.textContent = idx+1;
-      const lbl = document.createElement("div");
-      lbl.className = "pipe-label";
-      lbl.textContent = label;
-      li.appendChild(icon);
-      li.appendChild(lbl);
+    steps.forEach(step=>{
+      if(step.type==="arrow"){
+        const li=document.createElement("li");
+        li.className="pipe-step pipe-step-arrow";
+        li.dataset.label = "PR approved";
+
+        const pill=document.createElement("div");
+        pill.className="pipe-arrow-pill";
+
+        const iconCircle=document.createElement("span");
+        iconCircle.className="pill-icon-circle";
+        iconCircle.textContent="✓";
+
+        const textWrap=document.createElement("div");
+        textWrap.className="pill-text";
+
+        const title=document.createElement("div");
+        title.className="pill-text-title";
+        title.textContent="PR APPROVED";
+
+        const sub=document.createElement("div");
+        sub.className="pill-text-sub";
+        sub.textContent="Manual reviewer step";
+
+        textWrap.appendChild(title);
+        textWrap.appendChild(sub);
+
+        pill.appendChild(iconCircle);
+        pill.appendChild(textWrap);
+        li.appendChild(pill);
+        ctx.pipeList.appendChild(li);
+        return;
+      }
+
+      if(step.type==="deployMarker"){
+        const li=document.createElement("li");
+        li.className="pipe-step pipe-step-deploy";
+        li.dataset.label = "Deploy to TEST";
+
+        const pill=document.createElement("div");
+        pill.className="pipe-deploy-pill";
+
+        const iconCircle=document.createElement("span");
+        iconCircle.className="pill-icon-circle";
+        iconCircle.textContent="⬆";
+
+        const textWrap=document.createElement("div");
+        textWrap.className="pill-text";
+
+        const title=document.createElement("div");
+        title.className="pill-text-title";
+        title.textContent="DEPLOY TO TEST";
+
+        const sub=document.createElement("div");
+        sub.className="pill-text-sub";
+        sub.textContent="Build sent to TEST env";
+
+        textWrap.appendChild(title);
+        textWrap.appendChild(sub);
+
+        pill.appendChild(iconCircle);
+        pill.appendChild(textWrap);
+        li.appendChild(pill);
+        ctx.pipeList.appendChild(li);
+        return;
+      }
+
+      const li=document.createElement("li");
+      li.className="pipe-step";
+      if(step.type==="pr" || step.type==="merge"){
+        li.classList.add("pipe-step-pr");
+      }
+      li.dataset.label = step.label;
+
+      const main=document.createElement("div");
+      main.className="pipe-main";
+
+      const lbl=document.createElement("div");
+      lbl.className="pipe-label";
+      lbl.textContent=step.label;
+      main.appendChild(lbl);
+
+      if(step.caption){
+        const sub=document.createElement("div");
+        sub.className="pipe-sub";
+        sub.textContent=step.caption;
+        main.appendChild(sub);
+      }
+
+      if(step.tests && step.tests.length){
+        const frame=document.createElement("div");
+        frame.className="pipe-pr-frame";
+
+        const wrap=document.createElement("div");
+        wrap.className="pipe-pr-tests";
+
+        step.tests.forEach(t=>{
+          const pill=document.createElement("div");
+          pill.className="pipe-pr-test";
+          pill.textContent=t;
+          wrap.appendChild(pill);
+        });
+
+        frame.appendChild(wrap);
+        main.appendChild(frame);
+      }
+
+      li.appendChild(main);
       ctx.pipeList.appendChild(li);
     });
+
+    // Add TEST env status as last item in row
+    const envLi=document.createElement("li");
+    envLi.className="pipe-step pipe-step-env";
+
+    const envBox=document.createElement("div");
+    envBox.className="env-box";
+
+    const envPill=document.createElement("div");
+    envPill.className="env-pill";
+
+    const envDot=document.createElement("span");
+    envDot.className="env-dot";
+
+    const envLabel=document.createElement("span");
+    envLabel.textContent="TEST env";
+
+    envPill.appendChild(envDot);
+    envPill.appendChild(envLabel);
+
+    const envStatus=document.createElement("div");
+    envStatus.className="env-status";
+    envStatus.textContent="Idle – waiting for build…";
+
+    envBox.appendChild(envPill);
+    envBox.appendChild(envStatus);
+    envLi.appendChild(envBox);
+    ctx.pipeList.appendChild(envLi);
+
+    ctx.envBox=envBox;
+    ctx.envStatus=envStatus;
   }
 
-  function resetPipeline(mode){
-    const ctx = pipelines[mode];
-    ctx.pipeStatus.textContent = "";
-    ctx.pipeList.innerHTML = "";
-    resetEnv(mode);
-    resetProsCons(mode);
+  /* ------------ Inner test animation ------------ */
+
+  async function runInnerTests(stepElem, innerOutcomes, perTest, token){
+    const tests = Array.from(stepElem.querySelectorAll(".pipe-pr-test"));
+    let innerFailIdx = -1;
+
+    for(let i=0;i<innerOutcomes.length && i<tests.length;i++){
+      if(token!==storyToken) return {innerFailIdx};
+      const pill = tests[i];
+      const outcome = innerOutcomes[i]; // "ok" | "fail" | "skip"
+
+      pill.classList.add("pipe-pr-test--active");
+      await delay(perTest);
+      if(token!==storyToken) return {innerFailIdx};
+      pill.classList.remove("pipe-pr-test--active");
+
+      if(outcome === "ok"){
+        pill.classList.add("pipe-pr-test--ok");
+      }else if(outcome === "fail"){
+        pill.classList.add("pipe-pr-test--fail");
+        innerFailIdx = i;
+        break;
+      }else{
+        // skip – leave neutral
+      }
+    }
+    return {innerFailIdx};
   }
 
+  /* ------------ Timeline animation for steps ------------ */
+  /**
+   * outcomes[i] can be:
+   *  - "ok" | "fail" | "skipped" | "done"
+   *  - { step: "ok" | "fail" | "skipped" | "done", inner: ["ok"|"fail"|"skip", ...] }
+   *
+   * Steps per pipeline: [PR, Arrow, Merge, DeployMarker]  (env pill is not animated)
+   */
   async function runTimeline(mode,outcomes,{token,perStep}){
-    const ctx = pipelines[mode];
-    const steps = Array.from(ctx.pipeList.querySelectorAll(".pipe-step"));
-    let failIdx = -1;
-    const skipped = [];
+    const ctx=pipelines[mode];
+    const steps=Array.from(ctx.pipeList.querySelectorAll(".pipe-step"))
+                     .filter(li=>!li.classList.contains("pipe-step-env")); // ignore env box
+    let failIdx=-1;
 
-    for(let i=0;i<outcomes.length && i<steps.length;i++){
-      if(token !== storyToken) return {failIdx};
-      const outcome = outcomes[i];
-      const step = steps[i];
-      const label = step.querySelector(".pipe-label").textContent;
+    for(let i=0;i<outcomes.length&&i<steps.length;i++){
+      if(token!==storyToken) return{failIdx};
 
-      if(outcome === "skipped"){
-        skipped.push(i);
+      const raw = outcomes[i];
+      const isObj = typeof raw === "object";
+      const stepOutcome = isObj ? (raw.step || "ok") : raw;
+      const innerOutcomes = isObj ? (raw.inner || null) : null;
+
+      const step=steps[i];
+      const isArrow = step.classList.contains("pipe-step-arrow");
+      const isDeploy = step.classList.contains("pipe-step-deploy");
+
+      if(stepOutcome==="skipped"){
         continue;
       }
 
-      step.classList.add("pipe-step--active");
-      ctx.pipeStatus.textContent = "Running " + label + "…";
+      const label = step.dataset.label || "Step";
 
-      await delay(perStep);
-      if(token !== storyToken) return {failIdx};
+      // Manual / marker steps (PR approved, Deploy)
+      if(stepOutcome==="done" && (isArrow || isDeploy)){
+        ctx.pipeStatus.textContent = label+" completed.";
+        const pill = step.querySelector(isArrow?".pipe-arrow-pill":".pipe-deploy-pill");
+        if(pill){
+          pill.classList.add("pill-done");
+        }
+        await delay(Math.min(perStep, 800));
+        continue;
+      }
+
+      // Normal PR / Merge steps
+      step.classList.add("pipe-step--active");
+      ctx.pipeStatus.textContent="Running "+label+"…";
+
+      if(innerOutcomes && step.classList.contains("pipe-step-pr")){
+        const perTest = Math.max(600, perStep / (innerOutcomes.length || 1));
+        const {innerFailIdx} = await runInnerTests(step, innerOutcomes, perTest, token);
+        if(token!==storyToken) return{failIdx};
+
+        if(innerFailIdx>=0 && stepOutcome === "fail"){
+          step.classList.remove("pipe-step--active");
+          step.classList.add("pipe-step--fail");
+          ctx.pipeStatus.textContent = label+" failed.";
+          failIdx = i;
+          break;
+        }
+      }else{
+        await delay(perStep);
+        if(token!==storyToken) return{failIdx};
+      }
 
       step.classList.remove("pipe-step--active");
 
-      if(outcome === "ok"){
+      if(stepOutcome==="ok"){
         step.classList.add("pipe-step--ok");
-        ctx.pipeStatus.textContent = label + " passed.";
-      }else if(outcome === "fail"){
+        ctx.pipeStatus.textContent=label+" passed.";
+      } else if(stepOutcome==="fail"){
         step.classList.add("pipe-step--fail");
-        ctx.pipeStatus.textContent = label + " failed.";
-        failIdx = i;
+        ctx.pipeStatus.textContent=label+" failed.";
+        failIdx=i;
         break;
       }
     }
-
-    skipped.forEach(i=>{
-      const step = steps[i];
-      if(!step) return;
-      step.classList.add("pipe-step--skipped");
-    });
-
-    return {failIdx};
+    return{failIdx};
   }
-
-  /* ---------- PR pill ---------- */
 
   function resetPR(){
-    prPill.className = "pr-pill";
-    prPill.textContent = "Open · under comparison";
-    prSub.textContent  = "Created just now · comparison running side by side";
+    prPill.className="pr-pill";
+    prPill.textContent="Open · under comparison";
+    prSub.textContent="Created just now · comparison running";
   }
 
-  /* ---------- AS-IS behaviour (3 TEST deployments) ---------- */
+  function resetPipeline(mode,{keepInsights=false}={}){
+    const ctx=pipelines[mode];
+    ctx.pipeList.innerHTML="";
+    ctx.pipeStatus.textContent="";
+    resetEnv(mode);
+    if(!keepInsights){
+      resetProsCons(mode);
+    }
+  }
+
+  /* ------------ AS-IS: multiple TEST deployments ------------ */
 
   async function runAsIs(token){
-    const mode = "as-is";
+    const mode="as-is";
 
-    resetPipeline(mode);
+    // Initial setup and static (summarised) pros/cons
+    resetPipeline(mode,{keepInsights:false});
     buildSteps(mode);
+    addPro(mode,"Simpler pipeline with fewer CI checks.");
+    addPro(mode,"Faster PR validation in CI.");
+    addCon(mode,"Issues are often detected only after deploy to TEST.");
+    addCon(mode,"Shared TEST environment is more exposed to broken builds.");
 
-    addPro(mode,"Simple flow – fewer CI stages today.");
-    addCon(mode,"Quality gates are late – issues only show up after deploy to TEST.");
-
-    // Build 1 – contract issue only seen in TEST
+    // Build #1 – TEST fails
     setEnvLabel(mode,"Waiting for Build #1 with Dev’s PR…");
-    addCon(mode,"Build #1 reaches TEST with a hidden contract bug.");
 
-    let outcomes = ["ok","ok","fail"]; // fail at Deploy to TEST
-    let r = await runTimeline(mode,outcomes,{token,perStep:1100});
-    if(token !== storyToken) return;
-    if(r.failIdx === 2){
-      setEnvState(
-        mode,
-        "fail",
-        "System tests in TEST failed – contract mismatch (`currency` vs `currencyCode`)."
-      );
-      addCon(mode,"TEST turns red for everyone while the contract bug is debugged.");
-    }
-    await delay(2000);
-    if(token !== storyToken) return;
+    let outcomes=[
+      { step:"ok", inner:["ok","ok"] }, // PR checks
+      "done",                           // PR approved (manual)
+      { step:"ok", inner:["ok","ok"] }, // Merge checks (always ok)
+      "done"                            // Deploy marker
+    ];
+    await runTimeline(mode,outcomes,{token,perStep:1800});
+    if(token!==storyToken)return;
+    setEnvState(mode,"fail","TEST failed – issue detected after deploy.");
+    await delay(1800);
+    if(token!==storyToken)return;
 
-    // Build 2 – integration problem still only seen in TEST
+    // Build #2 – TEST fails again
+    resetPipeline(mode,{keepInsights:true});
     buildSteps(mode);
-    resetEnv(mode);
-    setEnvLabel(mode,"Waiting for Build #2 after contract fix…");
-    addCon(mode,"Even after the contract fix, an integration mismatch is still hidden.");
+    setEnvLabel(mode,"Waiting for Build #2 after initial fixes…");
 
-    outcomes = ["ok","ok","fail"];
-    r = await runTimeline(mode,outcomes,{token,perStep:1100});
-    if(token !== storyToken) return;
-    if(r.failIdx === 2){
-      setEnvState(
-        mode,
-        "fail",
-        "System tests in TEST failed – integration mismatch (rupees vs paise)."
-      );
-      addCon(mode,"Second failed build keeps TEST unstable and noisy.");
-    }
-    await delay(2000);
-    if(token !== storyToken) return;
+    outcomes=[
+      { step:"ok", inner:["ok","ok"] },
+      "done",
+      { step:"ok", inner:["ok","ok"] },
+      "done"
+    ];
+    await runTimeline(mode,outcomes,{token,perStep:1800});
+    if(token!==storyToken)return;
+    setEnvState(mode,"fail","TEST failed again – further issues after redeploy.");
+    addCon(mode,"Repeated broken builds disrupt other teams using TEST.");
+    await delay(1800);
+    if(token!==storyToken)return;
 
-    // Build 3 – finally stable TEST
+    // Build #3 – finally green
+    resetPipeline(mode,{keepInsights:true});
     buildSteps(mode);
-    resetEnv(mode);
-    setEnvLabel(mode,"Waiting for Build #3 after all fixes…");
-    addCon(mode,"Third build is needed before TEST is finally useful again.");
+    setEnvLabel(mode,"Waiting for Build #3 after further fixes…");
 
-    outcomes = ["ok","ok","ok"];
-    await runTimeline(mode,outcomes,{token,perStep:1100});
-    if(token !== storyToken) return;
-
-    setEnvState(
-      mode,
-      "ok",
-      "System tests in TEST passed – TEST is finally green."
-    );
-    addCon(mode,"3 separate TEST deployments for a single PR (2 of them broken).");
-    await delay(2200);
+    outcomes=[
+      { step:"ok", inner:["ok","ok"] },
+      "done",
+      { step:"ok", inner:["ok","ok"] },
+      "done"
+    ];
+    await runTimeline(mode,outcomes,{token,perStep:1800});
+    if(token!==storyToken)return;
+    setEnvState(mode,"ok","TEST passed – environment is stable again.");
+    addCon(mode,"Multiple builds are often required to stabilise the TEST environment.");
+    await delay(2000);
   }
 
-  /* ---------- TO-BE behaviour (3 CI runs, 1 TEST deploy) ---------- */
+  /* ------------ TO-BE: CI catches issues, 1 TEST deploy ------------ */
 
   async function runToBe(token){
-    const mode = "to-be";
+    const mode="to-be";
 
-    resetPipeline(mode);
+    resetPipeline(mode,{keepInsights:false});
     buildSteps(mode);
 
-    addPro(mode,"Contract & integration checks run in CI on the PR.");
-    addPro(mode,"TEST only sees builds that already passed all CI gates.");
-    addCon(mode,"Slightly longer CI for this PR – more checks before merge.");
+    // Summarised pros/cons for TO-BE
+    addPro(mode,"CI runs contract and integration checks on the PR.");
+    addPro(mode,"Only validated builds reach TEST.");
+    addPro(mode,"Developers get faster feedback directly in CI.");
+    addPro(mode,"Shared TEST environment stays more stable.");
+    addCon(mode,"CI runs can be slightly longer per PR.");
+    addCon(mode,"More test suites to maintain in CI.");
 
-    // CI run #1 – fail at contract tests inside PR CREATED
-    setEnvLabel(mode,"TEST protected – waiting for CI on Dev’s PR (Run #1)…");
-    let outcomes = ["fail","skipped","skipped"]; // fail at PR CREATED
-    let r = await runTimeline(mode,outcomes,{token,perStep:800});
-    if(token !== storyToken) return;
-    if(r.failIdx === 0){
-      setEnvLabel(
-        mode,
-        "CI Run #1 failed inside PR CREATED – Contract tests red, TEST untouched."
-      );
-      addPro(mode,"Contract mismatch is caught early on the PR branch.");
-      addCon(mode,"Dev fixes contract and re-runs CI before merge.");
-    }
+    // CI Run #1 – fails in PR checks, no deploy
+    setEnvLabel(mode,"CI Run #1 on Dev’s PR…");
+    let outcomes=[
+      {
+        step:"fail",
+        inner:["ok","ok","fail","skip"]
+      },
+      "skipped",
+      { step:"ok", inner:["ok","ok","ok","ok"] },
+      "skipped"
+    ];
+    await runTimeline(mode,outcomes,{token,perStep:1500});
+    if(token!==storyToken)return;
+    setEnvState(mode,"ok","TEST stays green – PR is blocked in CI.");
+    addPro(mode,"Early failures are contained on the PR branch instead of in TEST.");
+    await delay(1600);
+    if(token!==storyToken)return;
+
+    // CI Run #2 – another failure in PR checks, still no deploy
+    resetPipeline(mode,{keepInsights:true});
+    buildSteps(mode);
+    setEnvLabel(mode,"CI Run #2 after early fixes…");
+    outcomes=[
+      {
+        step:"fail",
+        inner:["ok","ok","ok","fail"]
+      },
+      "skipped",
+      { step:"ok", inner:["ok","ok","ok","ok"] },
+      "skipped"
+    ];
+    await runTimeline(mode,outcomes,{token,perStep:1500});
+    if(token!==storyToken)return;
+    setEnvState(mode,"ok","TEST stays clean – failures are stopped in CI.");
+    addPro(mode,"TEST remains available for other teams even while this PR is failing.");
+    await delay(1600);
+    if(token!==storyToken)return;
+
+    // CI Run #3 – all green, one deploy to TEST
+    resetPipeline(mode,{keepInsights:true});
+    buildSteps(mode);
+    setEnvLabel(mode,"CI Run #3 – all checks expected to pass…");
+
+    outcomes=[
+      {
+        step:"ok",
+        inner:["ok","ok","ok","ok"]
+      },
+      "done",
+      {
+        step:"ok",
+        inner:["ok","ok","ok","ok"]
+      },
+      "done"
+    ];
+    await runTimeline(mode,outcomes,{token,perStep:1500});
+    if(token!==storyToken)return;
+    setEnvState(mode,"ok","Single build reaches TEST – green on first attempt.");
+    addPro(mode,"Single clean TEST deployment for this PR.");
     await delay(2000);
-    if(token !== storyToken) return;
-
-    // CI run #2 – fail at integration tests (still inside PR CREATED)
-    buildSteps(mode);
-    resetEnv(mode);
-    setEnvLabel(mode,"CI Run #2 – re-testing after contract fix…");
-    outcomes = ["fail","skipped","skipped"];
-    r = await runTimeline(mode,outcomes,{token,perStep:800});
-    if(token !== storyToken) return;
-    if(r.failIdx === 0){
-      setEnvLabel(
-        mode,
-        "CI Run #2 failed inside PR CREATED – Integration tests caught rupees vs paise."
-      );
-      addPro(mode,"Integration issue is caught before any deploy happens.");
-      addCon(mode,"Second CI run is needed, but TEST still remains clean.");
-    }
-    await delay(2000);
-    if(token !== storyToken) return;
-
-    // CI run #3 – all green, single deploy to TEST
-    buildSteps(mode);
-    resetEnv(mode);
-    setEnvLabel(mode,"CI Run #3 – all checks expected to pass → single deploy to TEST.");
-    addPro(mode,"Once CI is green, we merge and deploy to TEST exactly once.");
-
-    const outcomes3 = ["ok","ok","ok"];
-    await runTimeline(mode,outcomes3,{token,perStep:800});
-    if(token !== storyToken) return;
-
-    setEnvState(
-      mode,
-      "ok",
-      "Single build reaches TEST – already green on first attempt."
-    );
-    addPro(mode,"TEST sees one clean build for this PR – no firefighting.");
-    await delay(2200);
   }
 
-  /* ---------- Main comparison controller ---------- */
+  /* ------------ Controller ------------ */
 
   async function playComparison(withIntro){
-    const token = ++storyToken;
+    const token=++storyToken;
     resetPR();
-
-    // build empty skeleton once quickly so the screen is not blank
-    resetPipeline("as-is");
+    resetPipeline("as-is",{keepInsights:false});
     buildSteps("as-is");
-    resetPipeline("to-be");
+    resetPipeline("to-be",{keepInsights:false});
     buildSteps("to-be");
 
-    if(withIntro){
-      await delay(600);
-      if(token !== storyToken) return;
-    }
+    if(withIntro) await delay(600);
 
-    // 1️⃣ Run AS-IS completely
     await runAsIs(token);
-    if(token !== storyToken) return;
+    if(token!==storyToken)return;
+    await delay(1200);
 
-    // Small pause between the two stories
-    await delay(1500);
-    if(token !== storyToken) return;
-
-    // 2️⃣ Then run TO-BE
     await runToBe(token);
-    if(token !== storyToken) return;
+    if(token!==storyToken)return;
 
-    // Final PR summary
-    prPill.className = "pr-pill merged";
-    prPill.textContent = "Merged · TO-BE gives a cleaner path to TEST";
-    prSub.textContent  = "Same PR · AS-IS needs 3 TEST deployments vs TO-BE’s 1.";
+    prPill.className="pr-pill merged";
+    prPill.textContent="Merged · TO-BE gives a cleaner path to TEST";
+    prSub.textContent="Same PR – AS-IS needs multiple TEST deploys vs TO-BE’s single deploy.";
 
-    await delay(2600);
-
-    // Loop again from the start
-    if(token === storyToken){
-      setTimeout(()=>{
-        if(token === storyToken){
-          playComparison(false);
-        }
-      }, 1200);
-    }
+    await delay(2400);
+    playComparison(false);
   }
 
-  // start automatically and loop
+  updatePlayButton();
   playComparison(true);
 })();
 </script>
 
 </body>
 </html>
-
-
-
